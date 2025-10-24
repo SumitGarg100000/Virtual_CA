@@ -1472,7 +1472,11 @@ const MessageBubble = ({ message, characterProfile, userProfile, characters, onE
     );
 };
 
-const MessageList = ({ messages, character, userProfile, characters, isTyping, backgroundUrl, streamingText = '', onEditMessage, onDeleteMessage }) => { // <-- Props add karein
+const MessageList = ({ 
+    messages, character, userProfile, characters, isTyping, backgroundUrl, 
+    streamingText = '', onEditMessage, onDeleteMessage,
+    isBlocked, blockCount, handleUnblock, characterName, groupName
+}) => {
   const endOfMessagesRef = useRef(null);
   const defaultBg = 'https://i.redd.it/qwd83nc4xxf41.jpg';
 
@@ -1494,15 +1498,34 @@ const MessageList = ({ messages, character, userProfile, characters, isTyping, b
         characterProfile={character}
         userProfile={userProfile}
         characters={characters}
-        onEdit={onEditMessage} // <-- YEH LINE ADD KAREIN
-        onDelete={onDeleteMessage} // <-- YEH LINE ADD KAREIN
+        onEdit={onEditMessage} 
+        onDelete={onDeleteMessage} 
       />
     ));
   };
 
   return (
-    <main className="message-container p-4" style={bgStyle}>
-      <div className="space-y-2">
+    <main className="message-container" style={bgStyle}> {/* <-- STEP 1: P-4 YAHAN SE HATA DIYA HAI */}
+      
+      {/* --- STEP 2: Blocked message ko sticky banaya hai --- */}
+      {isBlocked && (
+        <div className="sticky top-0 z-10 p-4"> {/* <-- STICKY, Z-10, AUR P-4 ADD KIYA HAI */}
+            <div className="text-center p-4 bg-red-100 border border-red-400 text-red-700 rounded-md shadow-lg"> {/* <-- mb-4 hata diya, shadow add kar diya */}
+                <p className="font-bold">You are blocked by {characterName || groupName} 😣</p>
+                <p className="text-sm">You have {3 - blockCount} unblock attempt(s) remaining.</p>
+                <button
+                    onClick={handleUnblock}
+                    className="mt-2 px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
+                >
+                    Request Unblock
+                </button>
+            </div>
+        </div>
+      )}
+      {/* --- END --- */}
+      
+      {/* --- STEP 3: Messages wale div par p-4 add kiya hai --- */}
+      <div className="space-y-2 p-4"> {/* <-- P-4 YAHAN ADD KIYA HAI */}
         {renderMessages()}
         {isTyping && (
           <div className="flex justify-start items-end gap-2">
@@ -1524,6 +1547,7 @@ const MessageList = ({ messages, character, userProfile, characters, isTyping, b
     </main>
   );
 };
+
         /* OBFUSCATION SAFE - This component contains pure UI logic without React elements in system instructions */
         const BackgroundModal = ({ isOpen, onClose, onSetBackground }) => {
             const backgroundInputRef = useRef(null);
@@ -2347,18 +2371,8 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 onClearChat={handleClearChat}
                 onSetBackground={onSetBackground}
               />
-              {isBlocked && (
-                <div className="text-center p-4 my-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
-                    <p className="font-bold">You are blocked by {character.name} 😣</p>
-                    <p className="text-sm">You have {3 - blockCount} unblock attempt(s) remaining.</p>
-                    <button
-                        onClick={handleUnblock}
-                        className="mt-2 px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
-                    >
-                        Request Unblock
-                    </button>
-                </div>
-              )}
+                            
+
               {selectedMessages.length > 0 && (
                 <div className="fixed top-20 left-4 right-4 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-20 flex justify-between items-center">
                   <span className="text-sm font-medium">{selectedMessages.length} message(s) selected</span>
@@ -2389,6 +2403,12 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 selectedMessages={selectedMessages}
                 onSelectMessage={handleSelectMessage}
                 onLongPressMessage={handleLongPressMessage}
+                // --- YEH LINES ADD KAREIN ---
+                isBlocked={isBlocked}
+                blockCount={blockCount}
+                characterName={character.name}
+                handleUnblock={handleUnblock}
+                // --- END ---
               />
               <MessageInput onSend={handleSend} isBlocked={isBlocked} />
 
@@ -2721,15 +2741,8 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                     </button>
                 </div>
             </header>
-            {isBlocked && (
-                <div className="text-center p-4 my-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
-                    <p className="font-bold">You are blocked from {group.name} 😣</p>
-                    <p className="text-sm">You have {3 - blockCount} unblock attempt(s) remaining.</p>
-                    <button onClick={handleUnblock} className="mt-2 px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm">
-                        Request Unblock
-                    </button>
-                </div>
-            )}
+                        
+
             {selectedMessages.length > 0 && (
                 <div className="fixed top-20 left-4 right-4 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-20 flex justify-between items-center">
                   <span className="text-sm font-medium">{selectedMessages.length} message(s) selected</span>
@@ -2760,6 +2773,12 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 selectedMessages={selectedMessages}
                 onSelectMessage={handleSelectMessage}
                 onLongPressMessage={handleLongPressMessage}
+                // --- YEH LINES ADD KAREIN ---
+                isBlocked={isBlocked}
+                blockCount={blockCount}
+                groupName={group.name}
+                handleUnblock={handleUnblock}
+                // --- END ---
             />
             <MessageInput onSend={handleSend} onSkip={handleSkip} isBlocked={isBlocked} />
             {showUserProfile && (
