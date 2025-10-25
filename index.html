@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual Chartered Accountants - AI Tax & GST Expert</title>
+
+    <meta name="description" content="Aapka personal Virtual Chartered Accountant. GST, Income Tax, finance, aur investments se jude sawaal puchein aur turant jawaab paayein.">
+    <meta name="keywords" content="Virtual Chartered Accountant, CA Chatbot, GST Expert, Tax Consultant, Income Tax India, Financial Advisor">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta property="og:title" content="Virtual Chartered Accountants">
+    <meta property="og:description" content="Aapka personal Virtual CA. GST, Income Tax, aur finance ke sawaal puchein.">
+    <meta property="og:image" content="https://ca-app-eta.vercel.app/whatsapp.png"> 
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Virtual Chartered Accountant">
+    <meta property="og:url" content="https://ca-app-eta.vercel.app"> 
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://ca-app-eta.vercel.app/whatsapp.png">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KMZ77HZPFR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KMZ77HZPFR');
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Virtual Chartered Accountants",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "description": "An AI-powered chatbot for Chartered Accountants in India to get expert advice on GST, Income Tax, and Auditing. Saves time by analyzing documents and providing real-time updates.",
+      "developer": {
+        "@type": "Person",
+        "name": "Sumit Garg"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0" 
+      }
+    }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/indexeddb-utils.js"></script>
+    <style>
+        body {
+            background: linear-gradient(-45deg, #1e3a8a, #3b82f6, #1d4ed8, #4f46e5);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #1e3a8a;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 1.5rem;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+            padding: 1rem 1.5rem;
+        }
+        .accordion-item.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="p-4 flex justify-between items-center max-w-6xl mx-auto sticky top-0 bg-blue-900/50 backdrop-blur-md z-50">
+        <h1 class="text-2xl font-bold">Virtual CA</h1>
+        
+        <div class="relative w-full max-w-lg">
+            <input 
+                type="text" 
+                id="search-box"
+                placeholder="Search articles & updates..."
+                class="w-full pl-10 pr-4 py-2 rounded-full text-gray-800 bg-white/90 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+            />
+            <svg class="w-5 h-5 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+        
+        <a href="#login-section" class="bg-white text-blue-700 font-semibold px-4 py-2 rounded-full hover:bg-gray-200 transition hidden md:block">Login</a>
+    </nav>
+
+    <section id="login-section" class="py-16 md:py-24 text-center">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            
+            <div class="text-left md:mb-0 mb-10">
+                <h2 class="text-4xl md:text-6xl font-extrabold leading-tight">
+                    Your Personal AI-Powered
+                    <span class="text-cyan-300">Chartered Accountant</span>
+                </h2>
+                <p class="text-xl text-blue-100 mt-6">
+                    Analyze GST data, get real-time tax updates, and save hours of work. Your expert AI partner is here.
+                </p>
+            </div>
+
+            <div>
+                <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl p-8 w-full max-w-md mx-auto text-gray-800">
+                    <h3 class="text-3xl font-bold mb-6">Access Your Dashboard</h3>
+                    
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="secretCode" class="block text-sm font-medium text-gray-700 text-left">Secret Code</label>
+                            <input
+                                type="password"
+                                id="secretCode"
+                                placeholder="Enter your secret code"
+                                class="mt-1 w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
+                        <div>
+                            <label for="referenceCode" class="block text-sm font-medium text-gray-700 text-left">Reference Code</label>
+                            <input
+                                type="password"
+                                id="referenceCode"
+                                placeholder="Enter your reference code"
+                                class="mt-1 w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
+                        
+                        <button
+                            type="submit"
+                            id="login-button"
+                            class="w-full py-3 px-4 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg"
+                        >
+                            Login
+                        </button>
+                        <p id="login-error" class="text-red-600 text-sm hidden">Invalid Secret or Reference Code.</p>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-16 bg-gray-50 text-gray-800">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-12">Save Hours of Manual Work</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6">
+                    <div class="text-5xl mb-4">📄</div>
+                    <h3 class="text-xl font-semibold mb-2">Analyze Documents</h3>
+                    <p>Upload PDF, Excel, or JSON. Ask questions and get summaries in seconds.</p>
+                </div>
+                <div class="p-6">
+                    <div class="text-5xl mb-4">📰</div>
+                    <h3 class="text-xl font-semibold mb-2">Stay Updated</h3>
+                    <p>Get real-time Google Search updates on GST, MCA, and Tax news.</p>
+                </div>
+                <div class="p-6">
+                    <div class="text-5xl mb-4">👥</div>
+                    <h3 class="text-xl font-semibold mb-2">AI Group Debates</h3>
+                    <p>Add multiple AI experts to a group and get diverse perspectives on complex topics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white text-gray-800">
+        <div class="max-w-4xl mx-auto px-4">
+            
+            <div class="flex justify-center mb-8 border-b border-gray-200">
+                <button id="tab-updates" class="tab-button text-xl font-semibold py-4 px-8 border-b-4 border-indigo-600 text-indigo-600">
+                    Latest Updates
+                </button>
+                <button id="tab-blog" class="tab-button text-xl font-semibold py-4 px-8 border-b-4 border-transparent text-gray-500 hover:text-gray-700">
+                    Blog Articles
+                </button>
+            </div>
+
+            <div>
+                <div id="content-updates" class="tab-content space-y-4">
+                    <div class="searchable-item p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                        <h3 class="searchable-title text-lg font-semibold text-indigo-700">Loading Latest Updates...</h3>
+                        <p class="text-gray-600 text-sm">Please wait while we fetch today's news.</p>
+                    </div>
+                </div>
+
+                <div id="content-blog" class="tab-content space-y-4 hidden">
+                    
+                    <div class="searchable-item accordion-item bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                        <button class="accordion-header w-full flex justify-between items-center p-4 text-left">
+                            <h3 class="searchable-title text-lg font-semibold text-indigo-700">How AI is Changing GST Compliance (Article)</h3>
+                            <svg class="accordion-arrow w-6 h-6 text-gray-600 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div class="accordion-content">
+                            <p class="text-gray-700">
+                                Yeh hai poora article jo "apni language" mein likha gaya hai.
+                                <br><br>
+                                <strong>Hinglish Explanation:</strong> Socho aapke paas 1000 purchase invoices hain. Pehle aap manually check karte the. Ab, aap bas uss Excel file ko humare AI par upload kar sakte ho aur seedha pooch sakte ho, "Total ITC kitna hai?" ya "Kin invoices mein GST number galat hai?". AI GSTR-2A/2B se bhi data compare kar sakta hai. Isse aapka 3 din ka kaam 3 minute mein ho jaata hai.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="searchable-item accordion-item bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                        <button class="accordion-header w-full flex justify-between items-center p-4 text-left">
+                            <h3 class="searchable-title text-lg font-semibold text-indigo-700">5 Common Mistakes in ITR Filing (Article)</h3>
+                            <svg class="accordion-arrow w-6 h-6 text-gray-600 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div class="accordion-content">
+                            <p class="text-gray-700">
+                                Yahaan ITR filing mistakes par poora article aayega...
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 text-center">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-4">Built for CAs, By a Developer</h2>
+            <p class="text-lg text-blue-100 mb-2">Developed by: <strong>Sumit Garg</strong></p>
+            <p class="text-lg text-blue-100">Reviewed by: <strong>Ajay Kumar</strong></p>
+        </div>
+    </section>
+
+    <script>
+        // --- 1. LOGIN LOGIC ---
+        const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const loginError = document.getElementById('login-error');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginButton.disabled = true;
+            loginButton.innerText = 'Verifying...';
+            loginError.classList.add('hidden');
+
+            const secretCode = document.getElementById('secretCode').value;
+            const referenceCode = document.getElementById('referenceCode').value;
+
+            try {
+                const response = await fetch('/api/validate-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: secretCode, refCode: referenceCode }),
+                });
+                const result = await response.json();
+
+                if (response.ok && result.valid) {
+                    // Hum pehle code ko save karne ki koshish karenge.
+                    // Agar file load na bhi hui ho, toh bhi user ko redirect kar denge.
+                    // app.html isko dobara check kar lega.
+                    try {
+                        if (window.chatbotStorage && typeof window.chatbotStorage.setSecretCode === 'function') {
+                            await window.chatbotStorage.setSecretCode(secretCode);
+                            console.log('Secret code saved to IndexedDB.');
+                        } else {
+                            // Agar storage available nahi hai, toh localStorage istemal karein (fallback)
+                            localStorage.setItem('temp_secret_code', secretCode);
+                            console.warn('IndexedDB storage not found, using localStorage fallback.');
+                        }
+                    } catch (storageError) {
+                        console.error('Failed to save session:', storageError);
+                        // Save fail hone par bhi localStorage ka istemal karein aur redirect kar dein
+                        localStorage.setItem('temp_secret_code', secretCode);
+                    }
+                    
+                    // Login sahi hai, toh app.html par bhej dein
+                    window.location.href = '/app.html';
+
+                } else {
+                    loginError.innerText = result.message || 'Validation failed.';
+                    loginError.classList.remove('hidden');
+                    loginButton.disabled = false;
+                    loginButton.innerText = 'Login';
+                }
+            } catch (error) {
+                loginError.innerText = 'An error occurred. Please try again.';
+                loginError.classList.remove('hidden');
+                loginButton.disabled = false;
+                loginButton.innerText = 'Login';
+            }
+        });
+
+        // --- 2. LATEST UPDATES LOGIC ---
+        const updatesContainer = document.getElementById('content-updates');
+
+        async function fetchLatestUpdates() {
+            try {
+                const updates = [
+                    { "title": "MCA issues new circular on Form DPT-3 filing.", "url": "#", "source": "mca.gov.in" },
+                    { "title": "GST Council Meeting highlights: Changes in e-invoicing.", "url": "#", "source": "gstcouncil.gov.in" },
+                    { "title": "CBDT extends due date for ITR filing for audit cases.", "url": "#", "source": "incometaxindia.gov.in" }
+                ];
+                
+                updatesContainer.innerHTML = '';
+                if (updates.length === 0) {
+                     updatesContainer.innerHTML = '<p class="text-gray-500 text-center">No updates found for today.</p>';
+                     return;
+                }
+
+                updates.forEach(update => {
+                    const item = document.createElement('a');
+                    item.href = update.url;
+                    item.target = '_blank';
+                    item.className = 'searchable-item block p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition';
+                    
+                    item.innerHTML = `
+                        <h3 class="searchable-title text-lg font-semibold text-indigo-700">${update.title}</h3>
+                        <p class="text-gray-600 text-sm">Source: ${update.source}</p>
+                    `;
+                    updatesContainer.appendChild(item);
+                });
+            } catch (err) {
+                updatesContainer.innerHTML = '<p class="text-red-500 text-center">Could not load updates. Please try again later.</p>';
+            }
+        }
+        
+        fetchLatestUpdates();
+
+        // --- 3. TAB (BLOG/UPDATES) LOGIC ---
+        const tabUpdates = document.getElementById('tab-updates');
+        const tabBlog = document.getElementById('tab-blog');
+        const contentUpdates = document.getElementById('content-updates');
+        const contentBlog = document.getElementById('content-blog');
+
+        tabUpdates.addEventListener('click', () => {
+            contentUpdates.classList.remove('hidden');
+            contentBlog.classList.add('hidden');
+            tabUpdates.classList.add('border-indigo-600', 'text-indigo-600');
+            tabBlog.classList.remove('border-indigo-600', 'text-indigo-600');
+            tabBlog.classList.add('border-transparent', 'text-gray-500');
+        });
+
+        tabBlog.addEventListener('click', () => {
+            contentBlog.classList.remove('hidden');
+            contentUpdates.classList.add('hidden');
+            tabBlog.classList.add('border-indigo-600', 'text-indigo-600');
+            tabUpdates.classList.remove('border-indigo-600', 'text-indigo-600');
+            tabUpdates.classList.add('border-transparent', 'text-gray-500');
+        });
+
+        // --- 4. ACCORDION (BLOG) LOGIC ---
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.closest('.accordion-item');
+                item.classList.toggle('active');
+            });
+        });
+
+        // --- 5. SEARCH BOX LOGIC ---
+        const searchBox = document.getElementById('search-box');
+        searchBox.addEventListener('keyup', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.searchable-item').forEach(item => {
+                const title = item.querySelector('.searchable-title').innerText.toLowerCase();
+                
+                if (title.includes(searchTerm)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
