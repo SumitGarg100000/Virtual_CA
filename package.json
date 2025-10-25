@@ -1,0 +1,16 @@
+{
+  "name": "Virtual-CA",
+  "version": "1.0.0",
+  "description": "Generates blog posts and updates using AI",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sumit Garg",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.1.3",
+    "googleapis": "^128.0.0"
+  }
+}
