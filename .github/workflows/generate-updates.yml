@@ -26,6 +26,22 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+        # STEP 3.5: DEBUG - Check the API Key
+      - name: Debug API Key
+        run: |
+          echo "Debugging GEMINI_API_KEY..."
+          KEY_VALUE="${{ env.TEST_KEY }}"
+          if [ -z "$KEY_VALUE" ]; then
+            echo "KEY_STATUS: ERROR! GEMINI_API_KEY is EMPTY or NOT SET."
+          else
+            echo "KEY_STATUS: Key is SET."
+            echo "KEY_LENGTH: ${#KEY_VALUE}"
+            echo "KEY_FIRST_5_CHARS: ${KEY_VALUE:0:5}"
+            echo "KEY_LAST_5_CHARS: ${KEY_VALUE: -5}"
+          fi
+        env:
+          TEST_KEY: ${{ secrets.GEMINI_API_KEY }} # Secret ko env variable mein load karo
+
       # Step 4: Script ko run karo (Secrets ke saath)
       - name: Run Update Generator Script
         run: node scripts/run-update-generator.js # Script ka path
