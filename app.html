@@ -3362,7 +3362,7 @@ const CardViewScreen = ({ card, onBack }) => {
             const response = await fetch('/api/get-updates', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ topic: card.topic })
+                body: JSON.stringify({ topic: card.topic, keyIndex: currentKeyIndex })
             });
             
             if (!response.ok) {
