@@ -1,4 +1,4 @@
-// scripts/run-update-generator.js (v3.2 - Strict Finder/Writer)
+// scripts/run-update-generator.js (v3.0 - Final Consistent Logic)
 
 import { google } from 'googleapis';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -6,7 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // Helper function to get current date formatted
 function getCurrentDateFormatted() {
     return new Date().toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Kolkata' // Fixed typo
+        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Kolkata'
     });
 }
 
@@ -14,34 +14,39 @@ function getCurrentDateFormatted() {
 async function safeGenerateContent(model, prompt) {
     try {
         const result = await model.generateContent(prompt);
-        // Check for empty or blocked response
+        // Check if response exists AND if there are candidates with content
         if (!result || !result.response || !result.response.candidates || result.response.candidates.length === 0 || !result.response.candidates[0].content || !result.response.candidates[0].content.parts || result.response.candidates[0].content.parts.length === 0) {
            console.error("Gemini returned no response, was blocked, or had empty content for prompt:", prompt);
+           console.error("Full Gemini Result (if any):", JSON.stringify(result, null, 2));
+           // Check for specific block reason if available
            if (result && result.response && result.response.promptFeedback && result.response.promptFeedback.blockReason) {
                console.error("Block Reason:", result.response.promptFeedback.blockReason);
            }
-           return null;
+           return null; // Indicate failure or block
         }
-        return await result.response.text();
+        // Safely access the text part
+        return await result.response.text(); // Use the built-in text() method for safety
     } catch (error) {
         console.error("Error during Gemini generateContent call:", error);
+        // Log specific error details if available (e.g., status code)
         if (error.response) {
             console.error("API Response Status:", error.response.status);
             console.error("API Response Data:", error.response.data);
         }
-        return null;
+        return null; // Indicate API call failure
     }
 }
 
 
 // --- MAIN FUNCTION ---
 async function generateUpdate() {
-    console.log('Update generator script (v3.2) started...');
+    console.log('Update generator script (v3.0) started...');
 
     try {
         // --- Security Check ---
         if (!process.env.CRON_SECRET || process.env.CRON_SECRET === "YOUR_SECRET_HERE") {
              console.warn('CRON_SECRET is not set or is using a placeholder.');
+             // process.exit(1); // Keep commented unless strictly needed
         }
 
         // --- Initialize APIs (Drive & Gemini) ---
@@ -54,23 +59,10 @@ async function generateUpdate() {
         const drive = google.drive({ version: 'v3', auth: oauth2Client });
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-        // --- MODEL 1: The "Finder" (Dumb Search Agent) ---
-        // This model's ONLY job is to search and report raw results.
-        const modelFinder = genAI.getGenerativeModel({
+        const modelWithSearch = genAI.getGenerativeModel({
             model: "gemini-2.5-flash",
             tools: [{ "google_search": {} }],
-            generation_config: { response_mime_type: "application/json" },
         });
-
-        // --- MODEL 2: The "Writer" (Dumb Summarizer) ---
-        // This model has NO search tools. It can only summarize.
-        const modelWriter = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            // NO TOOLS HERE. This is the key to stopping hallucinations.
-        });
-        // --- END MODEL DEFINITIONS ---
-
 
         // --- Fetch Existing Titles for Duplicate Check ---
         let existingTitles = [];
@@ -80,12 +72,12 @@ async function generateUpdate() {
                 q: `'${process.env.GOOGLE_DRIVE_UPDATES_FOLDER_ID}' in parents and trashed=false`,
                 fields: 'files(description)',
                 orderBy: 'createdTime desc',
-                pageSize: 20
+                pageSize: 20 // Check last 20 updates
             });
 
             if (driveResponse.data.files && driveResponse.data.files.length > 0) {
                 existingTitles = driveResponse.data.files
-                    .map(file => file.description ? file.description.toLowerCase().trim() : '')
+                    .map(file => file.description)
                     .filter(Boolean);
                 console.log(`Found ${existingTitles.length} existing titles to avoid.`);
             } else {
@@ -93,121 +85,98 @@ async function generateUpdate() {
             }
         } catch (listError) {
             console.warn('Could not fetch existing updates list, proceeding without duplicate check.', listError.message);
-            existingTitles = [];
+            existingTitles = []; // Proceed without check if Drive fails
         }
-        const existingTitlesSet = new Set(existingTitles);
         // --- Duplicate Check Fetch END ---
 
-
-        // --- STEP 1: Find Topics ---
+        // --- Generate Strict Topic Finder Prompt ---
         const currentDate = getCurrentDateFormatted();
-        // --- CHANGE: New prompt to force RAW search results ---
         const topicFinderPrompt = `
-        **Task:** You are an automated search agent.
-        **Current Date:** ${currentDate}.
-        **Goal:** Find the most recent (last 1-2 days) news for CAs in India (GST, Income Tax, MCA).
+         **Current Date:** ${currentDate}.
+         **HIGHEST PRIORITY: ACCURACY & RECENCY.** Find VERIFIABLY recent official updates. Do NOT invent or assume.
 
-        **STEPS (MANDATORY):**
-        1.  **MANDATORY:** Execute Google Searches using queries like "latest GST notification", "latest Income Tax circular", "MCA press release", "CBIC advisory", "CBDT circular".
-        2.  **Filter:** Look *only* for results from **official government websites** (incometaxindia.gov.in, cbic.gov.in, mca.gov.in, pib.gov.in) OR **highly reputable tax portals** (taxguru.in, taxmann.com).
-        3.  **Recency:** The search result's date must be within the last 2 days from ${currentDate}.
-        4.  **Format:** Return a JSON array of the **raw search results** that match.
-        
-        **JSON Output Structure (MUST follow):**
-        Return a JSON array where each object has:
-        -   "title": The literal title from the search result.
-        -   "snippet": The snippet from the search result.
-        -   "source_url": The direct URL from the search result.
-        
-        **CRITICAL RULE:**
-        * **DO NOT INVENT or "create" a headline.** Only report the literal "title" you found.
-        * **DO NOT INVENT a "description".** Only report the "snippet".
-        * **DO NOT INVENT a "link".** Only report the "source_url".
-        * If no verifiable results are found, return an empty array \`[]\`.
+         **STEPS:**
+         1. **MANDATORY:** Use the Google Search tool to find official announcements (Notifications, Circulars, Advisories, Press Releases) in India relevant to Chartered Accountants & CS published **strictly within the last 1-2 days FROM ${currentDate}**.
+         2. **VERIFICATION (CRITICAL):** For **ANY potential topic**, first try to find and **verify the core facts** (dates, numbers) directly on **official government websites** (incometaxindia.gov.in, cbic.gov.in, mca.gov.in, pib.gov.in). This is the BEST source.
+         3. If an official source confirms it, GREAT.
+         4. If an official source is hard to find directly via search *but* the update (like a **common Due Date Extension**) is widely reported across **multiple reputable** tax portals (TaxGuru, Taxmann etc.), you can **cautiously accept** it, but clearly state the *reported* details. **Prioritize official verification whenever possible.**
+         5. **DATE FILTER:** The verified or widely reported publication date MUST be within the last 1-2 days from ${currentDate}.
+         6. **REJECT** any topic if:
+             * It cannot be verified via official sources OR multiple reputable portals.
+             * Its verified/reported date is outside the 1-2 day timeframe.
+             * It seems uncertain, speculative, or requires major assumptions.
+         7. **PRIORITIZE verified topics like:**
+             * **Due Date Extensions (High Priority)**.
+             * New official advisories.
+             * Simple official circulars/notifications.
+         8. **STRICTLY EXCLUDE:**
+             * Unverified/Older topics (outside 1-2 days).
+             * Topics already in this list: ${JSON.stringify(existingTitles)} // <-- DUPLICATE CHECK IS HERE
+             * Complex judgments, deep analysis articles, seminars, general news.
+         9. Select the single most important **VERIFIED or Widely Reported, NEW, and RECENT** topic satisfying all conditions.
+         10. If NO such topic is found after thorough verification, output **ONLY** the text "NO_NEW_VERIFIED_UPDATES_FOUND". // <-- CORRECT TEXT
+
+         **OUTPUT:**
+         Your final output MUST be ONLY the single-line title for the selected topic, including the verified/reported source's publication date.
+         Example 1 (Official): "CBDT Extends TDS Return Due Date for Q2 FY25-26 (Notification 90/2025 dated Oct 22, 2025)"
+         Example 2 (Widely Reported): "GSTR-3B Due Date for Oct 2025 Reportedly Extended to Nov 25th (As reported Oct 23, 2025)"
         `;
-        
-        console.log('Finding raw update topics using Gemini (JSON search mode)...');
-        const latestTopicRaw = await safeGenerateContent(modelFinder, topicFinderPrompt);
+
+        console.log('Finding a high-value update topic using Gemini...');
+        const latestTopicRaw = await safeGenerateContent(modelWithSearch, topicFinderPrompt);
 
         if (latestTopicRaw === null) {
+            // safeGenerateContent already logged the error
             throw new Error("Gemini call failed or was blocked during topic finding.");
         }
 
-        // --- Parse the JSON response ---
-        let foundTopics = [];
-        try {
-            let cleanedResponseText = latestTopicRaw.trim();
-            if (cleanedResponseText.startsWith('```json')) cleanedResponseText = cleanedResponseText.substring(7);
-            if (cleanedResponseText.endsWith('```')) cleanedResponseText = cleanedResponseText.substring(0, cleanedResponseText.length - 3);
-            cleanedResponseText = cleanedResponseText.trim();
-            if (cleanedResponseText === "") cleanedResponseText = "[]";
+        const latestTopic = latestTopicRaw.trim();
 
-            foundTopics = JSON.parse(cleanedResponseText);
-            if (!Array.isArray(foundTopics)) throw new Error("Parsed data is not an array");
-            console.log(`Gemini found ${foundTopics.length} potential topics.`);
-        } catch (parseError) {
-            console.error("Error parsing JSON response from Gemini:", latestTopicRaw);
-            throw new Error(`Failed to parse updates from Gemini. Original response: ${latestTopicRaw}`);
-        }
-        
-        // --- Find the first *new* topic from the list ---
-        const newTopic = foundTopics.find(topic =>
-            topic.title && topic.source_url && !existingTitlesSet.has(topic.title.toLowerCase().trim())
-        );
-
-        if (!newTopic) {
-            console.log("No unique new VERIFIED updates found after filtering duplicates.");
+        // --- Check if a valid topic was found ---
+        if (latestTopic === "NO_NEW_VERIFIED_UPDATES_FOUND" || latestTopic.length < 15) { // <-- CORRECT CHECK
+            console.log("No unique new VERIFIED updates found based on Gemini response or length check.");
             process.exit(0); // Exit gracefully
         }
 
-        const topicTitle = newTopic.title.trim();
-        const topicSnippet = newTopic.snippet ? newTopic.snippet.trim() : "No summary available.";
-        const topicUrl = newTopic.source_url;
+        // --- Log the found topic ---
+        console.log(`High-Value Update Topic Found: "${latestTopic}"`); // <-- LOGGING IS BACK
 
-        console.log(`High-Value Update Topic Selected: "${topicTitle}"`);
-        console.log(`Source URL: ${topicUrl}`);
-        // --- END STEP 1 ---
-
-
-        // --- STEP 2: Write Blog ---
-        // --- CHANGE: New prompt that ONLY uses the info from Step 1 ---
+        // --- Generate Content for the Found Topic ---
         const blogWriterPrompt = `
-         You are an expert Indian CA. Your task is to write a short, factual blog post.
-         
-         **STRICT RULE: DO NOT INVENT ANY INFORMATION. DO NOT SEARCH.**
-         You MUST base your entire article *only* on the information provided below.
-         
-         **Source Information:**
-         * **Headline:** "${topicTitle}"
-         * **Summary:** "${topicSnippet}"
-         * **Source URL:** ${topicUrl}
+         You are an expert Indian Chartered Accountant. Your task is to write a **short, clear, and factual update post** (like a mini-blog) on the topic: "${latestTopic}".
 
-         **Instructions:**
-         1.  **Title:** Your blog title MUST be an H1 tag (\`#\`) using the *exact* headline:
-             \`# ${topicTitle}\`
-         
-         2.  **Introduction:** Write 1-2 lines (Hinglish is OK) introducing the topic based on the headline.
-             (e.g., "Ek important update hai. ${topicTitle} ke baare mein ek nayi jaankari aayi hai.")
-         
-         3.  **Body:**
-             * Write a few bullet points explaining the update.
-             * Use *only* the facts available in the **Summary** ("${topicSnippet}").
-             * **DO NOT** add any new dates, numbers, or section codes unless they are explicitly in the summary.
-             * **DO NOT** invent a "Circular Number" or "Notification Date". If the summary has it, use it. If not, DO NOT add it.
-         
-         4.  **Official Source (Mandatory):** End the article by linking to the *exact* URL provided.
-             \`## Read the Full Update\`
-             \`* [Read the original source here](${topicUrl})\`
-        
-         **Exclusions:**
-         * Do not add "Published on:".
-         * Do not mention TaxGuru, Taxmann, etc. (even if the URL is from there).
+         **Core Directive: This is a fast update, not a deep blog. Be 100% original, clear, and to-the-point.**
+
+         **1. Sourcing & Links (CRITICAL RULE):**
+         * **Research:** Use Google Search to find the official notification/advisory for this topic. **Verify the link is correct.**
+         * **No Third-Party Citations:** DO NOT link to or mention TaxGuru, Taxmann, etc.
+         * **Official Links Only:** You MUST find the direct, official government link (e.g., the notification PDF) and add it correctly formatted at the very end.
+
+         **2. Persona & Tone (FOR HUMAN-LIKE WRITING):**
+         * Be a helpful colleague. Use a professional but conversational tone.
+         * **Hinglish is ALLOWED** (Roman script only). e.g., "Toh, date extend ho gayi hai."
+         * **Pure Hindi is NOT ALLOWED** (Devanagari script).
+
+         **3. Content & Structure (SHORT & Factual):**
+         * **Article Title (First Line):** MUST be an H1 tag (#). Rephrase the topic slightly if needed for flow. (e.g., \`# ${latestTopic}\`).
+         * **Introduction (1-2 lines):** "Ek important update hai. Government ne [TOPIC] ke liye [KYA KIYA HAI] announce kiya hai."
+         * **Main Body (Bullet Points):** Clearly explain the 'what' and 'why'.
+           * e.g., "**Old Due Date:** [Old Date]"
+           * e.g., "**New Due Date:** [New Date]"
+           * Mention the Notification/Circular number and date **accurately**.
+         * **Official Sources (Mandatory):** End with exactly this format (replace LINK_TO_GOV_PDF with the real link found during research):
+           \`## Read the Official Document\`
+           \`* [Download the Official Notification/Circular here](LINK_TO_GOV_PDF)\`
+
+         **4. Exclusions:**
+         * Do NOT add a 'Published on' date.
         `;
-        
-        console.log('Generating original, human-like update content (No-Search mode)...');
-        const blogContentRaw = await safeGenerateContent(modelWriter, blogWriterPrompt);
+
+        console.log('Generating original, human-like update content...');
+        const blogContentRaw = await safeGenerateContent(modelWithSearch, blogWriterPrompt);
 
         if (blogContentRaw === null) {
+            // safeGenerateContent already logged the error
             throw new Error("Gemini call failed or was blocked during content writing.");
         }
 
@@ -224,18 +193,18 @@ async function generateUpdate() {
             day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata'
         });
         blogContent += `\n\n*Published on: ${currentDateStr}*`;
-        // --- END STEP 2 ---
-
 
         // --- File Save Logic ---
         const title = blogContent.split('\n')[0].replace('# ', '').trim();
+        // Use the generated title for duplicate check, not potentially hallucinated filename part
         console.log(`Using generated title for description: "${title}"`);
 
-        // Final duplicate check
-        if (existingTitlesSet.has(title.toLowerCase().trim())) {
+        // Check against existing titles again just before saving (belt-and-suspenders)
+        if (existingTitles.includes(title.toLowerCase())) {
              console.warn(`Duplicate title found just before saving: "${title}". Skipping save.`);
-             process.exit(0);
+             process.exit(0); // Exit gracefully, already exists
         }
+
 
         const sanitizedTitle = title.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
         const fileName = `${sanitizedTitle.substring(0, 50)}_${Date.now()}.md`;
