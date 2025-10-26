@@ -2,6 +2,6 @@
   "type": "module",
   "dependencies": {
     "@google/generative-ai": "latest",
-    "@vercel/blob": "latest"
+    
   }
 }
