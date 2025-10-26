@@ -246,6 +246,6 @@ async function generateUpdate() {
         process.exit(1); // Indicate failure to GitHub Actions
     }
 }
-Player
+
 // --- Run the main function ---
 generateUpdate();
