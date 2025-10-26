@@ -3355,33 +3355,52 @@ const CardViewScreen = ({ card, onBack }) => {
     const [error, setError] = useState(null);
     
     const fetchUpdates = async () => {
-        setIsLoading(true);
-        setError(null);
-        setUpdates([]);
-        try {
-            const response = await fetch('/api/get-updates', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ topic: card.topic, keyIndex: currentKeyIndex })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            if (data.updates) {
-                setUpdates(data.updates);
-            } else {
-                setError(data.error || "Failed to get updates.");
-            }
-            
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        setIsLoading(true);
+        setError(null);
+        setUpdates([]);
+        try {
+
+            // --- ⬇️ YAHAN FIX KIYA GAYA HAI ---
+            // 1. 'currentKeyIndex' ko fetch se pahle define karein
+            // (Aap shayad ise window.chatbotStorage se la rahe hain, wahi tareeka yahan istemal karein)
+            let currentKeyIndex = 0; // Ek default (surakshit) value
+            if (window.chatbotStorage && typeof window.chatbotStorage.getKeyIndex === 'function') {
+                currentKeyIndex = window.chatbotStorage.getKeyIndex();
+            } else {
+                // Agar storage ready na ho, to console mein warn karein
+                console.warn("chatbotStorage not found, using default keyIndex 0 for updates.");
+            }
+            // --- ⬆️ FIX ENDS HERE ---
+
+            const response = await fetch('/api/get-updates', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // 2. Ab 'currentKeyIndex' variable ka istemal karein (jo ab defined hai)
+                body: JSON.stringify({ topic: card.topic, keyIndex: currentKeyIndex })
+            });
+            
+            if (!response.ok) {
+                // 429 Quota Exceeded error ko alag se handle karein
+                if (response.status === 429) {
+                    // Yahan aap key rotation logic ko call kar sakte hain, agar zaroorat ho
+                    throw new Error("Quota exceeded for this API key. Please try again later.");
+                }
+                throw new Error(`Server error: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            if (data.updates) {
+                setUpdates(data.updates);
+            } else {
+                setError(data.error || "Failed to get updates.");
+            }
+            
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
     
     // Screen load hote hi updates fetch karein
     useEffect(() => {
