@@ -2,7 +2,7 @@
   "type": "module",
   "dependencies": {
     "@google/generative-ai": "latest",
-     "googleapis": "^128.0.0"
+     "googleapis": "latest"
     
   }
 }
