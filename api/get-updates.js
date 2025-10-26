@@ -4,10 +4,10 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 
 // Vercel Environment Variable se API key lein
-const GEMINI_API_KEY = process.env.GOOGLE_API_KEY;
+const UPDATES_API_KEY = process.env.GOOGLE_API_KEY;
 
 // AI ko initialize karein
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(UPDATES_API_KEY);
 const model = genAI.getGenerativeModel({
   model: "gemini-2.5-flash",
   // Google Search tool ka istemal karein
