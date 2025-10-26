@@ -1,4 +1,4 @@
-name: Generate Latest Update (via Node.js script)
+name: Generate Latest Update (via Node.js script) 
 
 on:
   schedule:
