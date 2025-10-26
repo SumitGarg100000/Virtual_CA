@@ -201,7 +201,7 @@ async function generateBlog() {
 
         const fileMetadata = {
             name: fileName,
-            parents: [process.env.GOOGLE_DRIVE_BLOGS_FOLDER_ID], // <-- !! IMPORTANT: Make sure this ENV VAR is set in GitHub Secrets
+            parents: [process.env.GOOGLE_DRIVE_FOLDER_ID], // <-- !! IMPORTANT: Make sure this ENV VAR is set in GitHub Secrets
             mimeType: 'text/markdown',
             description: title
         };
