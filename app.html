@@ -442,6 +442,8 @@ function handleAuthClick() {
   }
 };
 
+        let currentKeyIndex = 0;
+
         // --- TYPES ---
         const MessageSender = {
             USER: 'user',
@@ -2339,6 +2341,7 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 
                 // Agar response OK (200) hai, to stream ko process karo
                 success = true; // Success mark karo taaki loop ruk jaaye
+                currentKeyIndex = keyIndexToTry;
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullText = '';
@@ -2657,6 +2660,7 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 }
 
                 success = true;
+                currentKeyIndex = keyIndexToTry;
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullResponse = '';
@@ -3360,23 +3364,13 @@ const CardViewScreen = ({ card, onBack }) => {
         setUpdates([]);
         try {
 
-            // --- ⬇️ YAHAN FIX KIYA GAYA HAI ---
-            // 1. 'currentKeyIndex' ko fetch se pahle define karein
-            // (Aap shayad ise window.chatbotStorage se la rahe hain, wahi tareeka yahan istemal karein)
-            let currentKeyIndex = 0; // Ek default (surakshit) value
-            if (window.chatbotStorage && typeof window.chatbotStorage.getKeyIndex === 'function') {
-                currentKeyIndex = window.chatbotStorage.getKeyIndex();
-            } else {
-                // Agar storage ready na ho, to console mein warn karein
-                console.warn("chatbotStorage not found, using default keyIndex 0 for updates.");
-            }
-            // --- ⬆️ FIX ENDS HERE ---
+            const keyIndexToUse = currentKeyIndex;
 
             const response = await fetch('/api/get-updates', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 // 2. Ab 'currentKeyIndex' variable ka istemal karein (jo ab defined hai)
-                body: JSON.stringify({ topic: card.topic, keyIndex: currentKeyIndex })
+                body: JSON.stringify({ topic: card.topic, keyIndex: keyIndexToUse })
             });
             
             if (!response.ok) {
