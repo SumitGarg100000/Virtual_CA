@@ -876,7 +876,7 @@ const _m10 = (_n10) => {
       }
 
       const _t10 = [];
-      while (_r10 < _p10.length && _p10[_r10].trim().startsWith('|') && _p10[_r10].trim().endsWith('|')) {
+      while (_r10 < _p10.length && _p10[_r10].trim().startsWith('|') && _p10[_r10].trim().endsWith('|')) {
         _t10.push(_p10[_r10]);
         _r10++;
       }
@@ -939,7 +939,7 @@ const DataTable = ({ headers: _v10, rows: _w10 }) => {
             ))}
           </tbody>
         </table>
-       </div>
+      </div>
       <div className="flex justify-end mt-2">
         <button
           onClick={_z10}
@@ -1195,7 +1195,7 @@ const MessageList = ({ 
     ));
   };
 
-  return (
+   return (
     <main className="message-container" style={_r13}>
       
       {_k13 && (
@@ -1483,7 +1483,9 @@ const MessageList = ({ 
                                 key={_o15}
                                 src={_n15}
                                 alt={`Avatar ${_o15 + 1}`}
-                                className={`w-12 h-12 rounded-lg object-cover cursor-pointer border-2 ${_t14.activeAvatarIndex === _o15 ? 'border-blue-600' : 'border-gray-200'}`}
+                                className={`w-12 h-12 rounded-lg object-cover cursor-pointer border-2 ${
+                                    _t14.activeAvatarIndex === _o15 ? 'border-blue-600' : 'border-gray-200'
+                                }`}
                                 onClick={() => _u14(_p15 => ({ ..._p15, activeAvatarIndex: _o15 }))}
                             />
                         ))}
@@ -1823,8 +1825,6 @@ const MessageList = ({ 
                                     {_e17.map(_k17 => (
                                         <div
                                             key={_k17.id}
-                                         <div
-                                            key={_k17.id}
                                             onClick={() => {
                                                 _g17(_k17.id);
                                                 _c17();
@@ -1842,7 +1842,7 @@ const MessageList = ({ 
                                     ))}
                                 </div>
                             )}
-                        </div>
+                         </div>
                     </div>
                 </>
             );
@@ -2732,8 +2732,8 @@ return (
             onClose={() => _y25(false)}
             characters={_e25}
             groups={_f25}
-            onSelectCharacter={_f17}
-            onSelectGroup={_g17}
+            onSelectCharacter={_g25}
+            onSelectGroup={_h25}
             showIndividual={_z25}
             setShowIndividual={_a26}
         />
@@ -2771,7 +2771,7 @@ return (
                         onCancel={() => _u25(false)}
                     />
                 </div>
-               </div>
+            </div>
         )}
         {_v25 && (
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
