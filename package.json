@@ -2,7 +2,9 @@
   "type": "module",
   "dependencies": {
     "@google/generative-ai": "latest",
-    "googleapis": "latest"
+    "googleapis": "latest",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",
@@ -16,4 +18,3 @@
     "build": "webpack --mode=production"
   }
 }
- 
