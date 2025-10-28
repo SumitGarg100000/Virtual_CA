@@ -1,6 +1,6 @@
 // obfuscate.js
 const JavaScriptObfuscator = require('javascript-obfuscator');
-const fs = require('fs');
+const fs = require('fs'); 
 const path = require('path');
 
 // Vercel build environment mein build folder root mein hota hai
