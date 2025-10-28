@@ -1,1 +1,91 @@
 
+/* Styles from original index.html */
+body {
+    /* background: linear-gradient(-45deg, #1e3a8a, #3b82f6, #1d4ed8, #4f46e5); */ /* Replaced by Tailwind bg-gray-200 in App */
+    /* background-size: 400% 400%; */
+    /* animation: gradientBG 20s ease infinite; */
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 #1e3a8a; /* Consider Tailwind scrollbar utilities */
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Accordion and Modal styles from index.html (Keep if used elsewhere or remove) */
+.accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease-out; padding: 0 1.5rem; }
+.accordion-item.active .accordion-content { max-height: 1000px; padding: 1rem 1.5rem; }
+.accordion-item.active .accordion-arrow { transform: rotate(180deg); }
+.modal-overlay { transition: opacity 0.3s ease; }
+.modal-container { transition: transform 0.3s ease, opacity 0.3s ease; }
+
+/* Markdown styles from index.html (Keep if Marked.js is used) */
+.markdown-content h2 { font-size: 1.5rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.markdown-content h3 { font-size: 1.25rem; font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; }
+.markdown-content p { margin-bottom: 1rem; line-height: 1.6; }
+.markdown-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+.markdown-content li { margin-bottom: 0.5rem; }
+.markdown-content strong { font-weight: bold; }
+.markdown-content em { font-style: italic; }
+
+/* Styles from app.html */
+html, body {
+    height: 100%;
+    overflow: hidden; /* Prevent body scroll */
+    /* background-color: #e5e7eb; /* Default bg-gray-200 */
+}
+
+#root {
+    height: 100vh;
+    height: 100dvh; /* Use dynamic viewport height */
+}
+
+/* Custom classes for fixed header layout */
+.app-container {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent container scroll */
+}
+
+.fixed-header {
+  /* Position fixed handled by Tailwind sticky/fixed */
+   height: 72px; /* Example height, adjust as needed */
+   flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.message-container {
+    flex: 1; /* Take remaining space */
+    overflow-y: auto; /* Enable scrolling ONLY here */
+    padding-top: 72px; /* Space for fixed header */
+    padding-bottom: 72px; /* Space for fixed footer */
+}
+
+.chat-footer {
+   /* Position fixed handled by Tailwind sticky/fixed */
+    height: 72px; /* Example height, adjust as needed */
+    flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+/* Add Tailwind base styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add custom scrollbar styles if needed */
+.message-container::-webkit-scrollbar {
+  width: 8px;
+}
+.message-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.message-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+.message-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
