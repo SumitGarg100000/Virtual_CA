@@ -1,5 +1,4 @@
-
-  
+ 
         import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
         import ReactDOM from 'react-dom/client';
         import { GoogleGenerativeAI } from "@google/generative-ai";
