@@ -2,7 +2,17 @@
   "type": "module",
   "dependencies": {
     "@google/generative-ai": "latest",
-     "googleapis": "latest"
-    
+    "googleapis": "latest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-react": "^7.22.15",
+    "babel-loader": "^9.1.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-obfuscator": "^3.5.1"
+  },
+  "scripts": {
+    "build": "webpack --mode=production"
   }
 }
