@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual Chartered Accountants - AI Tax & GST Expert</title>
+
+    <meta name="description" content="Aapka personal Virtual Chartered Accountant. GST, Income Tax, finance, aur investments se jude sawaal puchein aur turant jawaab paayein.">
+    <meta name="keywords" content="Virtual Chartered Accountant, CA Chatbot, GST Expert, Tax Consultant, Income Tax India, Financial Advisor">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta property="og:title" content="Virtual Chartered Accountants">
+    <meta property="og:description" content="Aapka personal Virtual CA. GST, Income Tax, aur finance ke sawaal puchein.">
+    <meta property="og:image" content="https://ca-app-eta.vercel.app/whatsapp.png"> 
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Virtual Chartered Accountant">
+    <meta property="og:url" content="https://ca-app-eta.vercel.app"> 
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://ca-app-eta.vercel.app/whatsapp.png">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KMZ77HZPFR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KMZ77HZPFR');
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Virtual Chartered Accountants",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "description": "An AI-powered chatbot for Chartered Accountants in India to get expert advice on GST, Income Tax, and Auditing. Saves time by analyzing documents and providing real-time updates.",
+      "developer": { "@type": "Person", "name": "Sumit Garg" },
+      "offers": { "@type": "Offer", "price": "0" }
+    }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> 
+    <script src="js/indexeddb-utils.js"></script>
+    <style>
+        body {
+            background: linear-gradient(-45deg, #1e3a8a, #3b82f6, #1d4ed8, #4f46e5);
+            background-size: 400% 400%; animation: gradientBG 20s ease infinite;
+            scrollbar-width: thin; scrollbar-color: #3b82f6 #1e3a8a;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
+        }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease-out; padding: 0 1.5rem; }
+        .accordion-item.active .accordion-content { max-height: 1000px; padding: 1rem 1.5rem; }
+        .accordion-item.active .accordion-arrow { transform: rotate(180deg); }
+        .modal-overlay { transition: opacity 0.3s ease; }
+        .modal-container { transition: transform 0.3s ease, opacity 0.3s ease; }
+        .markdown-content h2 { font-size: 1.5rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .markdown-content h3 { font-size: 1.25rem; font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .markdown-content p { margin-bottom: 1rem; line-height: 1.6; }
+        .markdown-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .markdown-content li { margin-bottom: 0.5rem; }
+        .markdown-content strong { font-weight: bold; }
+        .markdown-content em { font-style: italic; }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="p-4 flex justify-between items-center max-w-6xl mx-auto sticky top-0 bg-blue-900/50 backdrop-blur-md z-50">
+        <h1 class="text-2xl font-bold">Virtual CA</h1>
+        <div class="relative w-full max-w-lg">
+            <input type="text" id="search-box" placeholder="Search articles & updates..." class="w-full pl-10 pr-4 py-2 rounded-full text-gray-800 bg-white/90 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-300" />
+            <svg class="w-5 h-5 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        </div>
+        <a href="#login-section" class="bg-white text-blue-700 font-semibold px-4 py-2 rounded-full hover:bg-gray-200 transition hidden md:block">Login</a>
+    </nav>
+
+    <section id="login-section" class="py-16 md:py-24 text-center">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="text-left md:mb-0 mb-10">
+                <h2 class="text-4xl md:text-6xl font-extrabold leading-tight">Your Personal AI-Powered <span class="text-cyan-300">Chartered Accountant</span></h2>
+                <p class="text-xl text-blue-100 mt-6">Analyze GST data, get real-time tax updates, and save hours of work. Your expert AI partner is here.</p>
+            </div>
+            <div>
+                <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl p-8 w-full max-w-md mx-auto text-gray-800">
+                    <h3 class="text-3xl font-bold mb-6">Access Your Dashboard</h3>
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="secretCode" class="block text-sm font-medium text-gray-700 text-left">Secret Code</label>
+                            <input type="password" id="secretCode" placeholder="Enter your secret code" class="mt-1 w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                            <label for="referenceCode" class="block text-sm font-medium text-gray-700 text-left">Reference Code</label>
+                            <input type="password" id="referenceCode" placeholder="Enter your reference code" class="mt-1 w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <button type="submit" id="login-button" class="w-full py-3 px-4 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg">Login</button>
+                        <p id="login-error" class="text-red-600 text-sm hidden">Invalid Secret or Reference Code.</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-gray-50 text-gray-800">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-12">Save Hours of Manual Work</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6"><div class="text-5xl mb-4">📄</div><h3 class="text-xl font-semibold mb-2">Analyze Documents</h3><p>Upload PDF, Excel, or JSON. Ask questions and get summaries in seconds.</p></div>
+                <div class="p-6"><div class="text-5xl mb-4">📰</div><h3 class="text-xl font-semibold mb-2">Stay Updated</h3><p>Get real-time updates on GST, MCA, and Tax news automatically.</p></div>
+                <div class="p-6"><div class="text-5xl mb-4">👥</div><h3 class="text-xl font-semibold mb-2">AI Group Debates</h3><p>Add multiple AI experts to a group and get diverse perspectives on complex topics.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white text-gray-800">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex justify-center mb-8 border-b border-gray-200">
+                <button id="tab-updates" class="tab-button text-xl font-semibold py-4 px-8 border-b-4 border-indigo-600 text-indigo-600">Latest Updates</button>
+                <button id="tab-blog" class="tab-button text-xl font-semibold py-4 px-8 border-b-4 border-transparent text-gray-500 hover:text-gray-700">Blog Articles</button>
+            </div>
+            <div>
+                <div id="content-updates" class="tab-content space-y-4 max-h-96 overflow-y-auto"></div>
+                <div id="content-blog" class="tab-content space-y-4 hidden max-h-96 overflow-y-auto"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 text-center">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-4">Built for CAs, By a Developer</h2>
+            <p class="text-lg text-blue-100 mb-2">Developed by: <strong>Sumit Garg</strong></p>
+             <div class="mt-4 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-6 text-blue-100 text-sm">
+                <a href="tel:+919716804520" class="flex items-center hover:text-cyan-300 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>+91 97168 04520</a>
+                <a href="mailto:Sumitgarg100000@gmail.com" class="flex items-center hover:text-cyan-300 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>Sumitgarg100000@gmail.com</a>
+            </div>
+        </div>
+    </section>
+    
+    <div id="blog-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 hidden opacity-0">
+        <div class="modal-container bg-white text-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col transform scale-95 opacity-0">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h2 id="modal-title" class="text-2xl font-bold text-indigo-700">Loading Article...</h2>
+                <button id="modal-close-btn" class="p-2 rounded-full hover:bg-gray-200"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            </div>
+            <div id="modal-content" class="p-6 overflow-y-auto markdown-content">
+                <div class="flex justify-center items-center h-64"><div class="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600"></div></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const showLoadingMessage = (container, message) => {
+        container.innerHTML = `<div class="p-4 bg-gray-50 rounded-lg shadow-sm"><h3 class="text-lg font-semibold text-indigo-700">${message}</h3><p class="text-gray-600 text-sm">Please wait...</p></div>`;
+    };
+
+    // --- 1. LOGIN LOGIC ---
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loginButton = document.getElementById('login-button');
+            const loginError = document.getElementById('login-error');
+            loginButton.disabled = true; loginButton.innerText = 'Verifying...';
+            loginError.classList.add('hidden');
+            const secretCode = document.getElementById('secretCode').value;
+            const referenceCode = document.getElementById('referenceCode').value;
+            try {
+                const response = await fetch('/api/validate-code', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: secretCode, refCode: referenceCode }),
+                });
+                const result = await response.json();
+                if (response.ok && result.valid) {
+                    try {
+                        if (window.chatbotStorage) await window.chatbotStorage.setSecretCode(secretCode);
+                        else localStorage.setItem('temp_secret_code', secretCode);
+                    } catch (storageError) { localStorage.setItem('temp_secret_code', secretCode); }
+                    window.location.href = '/app.html';
+                } else { throw new Error(result.message || 'Validation failed.'); }
+            } catch (error) {
+                loginError.innerText = error.message || 'An error occurred.';
+                loginError.classList.remove('hidden');
+                loginButton.disabled = false; loginButton.innerText = 'Login';
+            }
+        });
+    }
+
+   // --- 2. LATEST UPDATES LOGIC (NEW - Google Drive) ---
+    const updatesContainer = document.getElementById('content-updates');
+    async function fetchLatestUpdates() {
+        showLoadingMessage(updatesContainer, 'Loading Latest Updates...');
+        try {
+            // Vercel Blob ki jagah naye API endpoint ko call karein
+            const response = await fetch('/api/get-home-updates'); 
+            if (!response.ok) throw new Error('Network response error');
+            const updates = await response.json();
+            
+            updatesContainer.innerHTML = '';
+            if (!Array.isArray(updates) || updates.length === 0) {
+                updatesContainer.innerHTML = '<p class="text-gray-500 text-center">No recent updates found.</p>'; return;
+            }
+
+            // --- AAPKI 25 UPDATES KI LIMIT ---
+            const limitedUpdates = updates.slice(0, 25);
+            // --- LIMIT END ---
+
+            // Accordion ki jagah ab Blog jaisa button layout banayein
+            limitedUpdates.forEach(update => {
+                const item = document.createElement('div');
+                item.className = 'searchable-item bg-gray-50 border rounded-lg shadow-sm';
+                item.innerHTML = `
+                    <button class="w-full flex justify-between items-center p-4 text-left" 
+                        data-item-id="${update.id}" 
+                        data-item-title="${update.title}"
+                        data-content-url="/api/get-update-content">
+                        <div><h3 class="searchable-title text-lg font-semibold text-indigo-700">${update.title}</h3><p class="text-sm text-gray-500 mt-1">${update.createdDate}</p></div>
+                        <svg class="w-6 h-6 text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </button>`;
+                updatesContainer.appendChild(item);
+            });
+            
+            // Naye modal function ko call karne ke liye event listener add karein
+            document.querySelectorAll('#content-updates [data-item-id]').forEach(button => {
+                button.addEventListener('click', () => openContentModal(button.dataset.itemId, button.dataset.itemTitle, button.dataset.contentUrl));
+            });
+            
+        } catch (err) {
+            updatesContainer.innerHTML = `<p class="text-red-500 text-center">Could not load updates: ${err.message}</p>`;
+        }
+    } 
+    // --- 3. BLOG LIST LOGIC ---
+    const blogContainer = document.getElementById('content-blog');
+    async function fetchBlogList() {
+        showLoadingMessage(blogContainer, 'Loading Blog Articles...');
+        try {
+            const response = await fetch('/api/get-blogs');
+            if (!response.ok) throw new Error('Network response error');
+            const blogs = await response.json();
+            blogContainer.innerHTML = '';
+            if (blogs.length === 0) { blogContainer.innerHTML = '<p class="text-gray-500 text-center">No articles found.</p>'; return; }
+            blogs.forEach(blog => {
+                const item = document.createElement('div');
+                item.className = 'searchable-item bg-gray-50 border rounded-lg shadow-sm';
+                // data- attributes ko naye modal logic ke hisaab se badla
+                item.innerHTML = `
+                    <button class="w-full flex justify-between items-center p-4 text-left" 
+                        data-item-id="${blog.id}" 
+                        data-item-title="${blog.title}"
+                        data-content-url="/api/get-blog-content">
+                        <div><h3 class="searchable-title text-lg font-semibold text-indigo-700">${blog.title}</h3><p class="text-sm text-gray-500 mt-1">${blog.createdDate}</p></div>
+                        <svg class="w-6 h-6 text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </button>`;
+                blogContainer.appendChild(item);
+            });
+            
+            // Ab yeh naye 'openContentModal' function ko call karega
+            document.querySelectorAll('#content-blog [data-item-id]').forEach(button => {
+                button.addEventListener('click', () => openContentModal(button.dataset.itemId, button.dataset.itemTitle, button.dataset.contentUrl));
+            });
+        } catch(err) { blogContainer.innerHTML = `<p class="text-red-500 text-center">Could not load articles: ${err.message}</p>`; }
+    }
+
+// --- 4. MODAL LOGIC (Reusable for Blogs & Updates) ---
+    const modal = document.getElementById('blog-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    
+    // 'openBlogModal' ko 'openContentModal' naam de diya
+    async function openContentModal(itemId, itemTitle, contentUrl) {
+        modal.classList.remove('hidden');
+        setTimeout(() => { modal.classList.remove('opacity-0'); modal.querySelector('.modal-container').classList.remove('scale-95', 'opacity-0'); }, 10);
+        document.body.style.overflow = 'hidden';
+        modalTitle.innerText = itemTitle; // Title set kiya
+        modalContent.innerHTML = `<div class="flex justify-center items-center h-64"><div class="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600"></div></div>`;
+        try {
+            // 'contentUrl' (jo humne button se pass kiya) ke basis par fetch karein
+            const response = await fetch(`${contentUrl}?id=${itemId}`);
+            if (!response.ok) throw new Error('Failed to load content.');
+            
+            // Pehle 'marked.parse' ke pehle title nikaalne wala logic daal dein (jo humne discuss kiya tha)
+            let markdownText = await response.text();
+            let extractedTitle = itemTitle; 
+            const lines = markdownText.split('\n');
+            const firstLine = lines[0].trim();
+
+            if (firstLine.startsWith('# ')) {
+                extractedTitle = firstLine.substring(2).trim(); 
+                lines.shift();
+                markdownText = lines.join('\n');
+            }
+            
+            modalTitle.innerText = extractedTitle;
+            modalContent.innerHTML = marked.parse(markdownText);
+        
+        } catch (error) { modalContent.innerHTML = `<p class="text-red-500 text-center">${error.message}</p>`; }
+    }
+    
+    function closeBlogModal() { // Is function ka naam wahi rehne de sakte hain
+        modal.querySelector('.modal-container').classList.add('scale-95', 'opacity-0');
+        modal.classList.add('opacity-0');
+        setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = 'auto'; }, 300);
+    }
+    modalCloseBtn.addEventListener('click', closeBlogModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeBlogModal(); });
+    
+
+    // --- 5. TAB LOGIC ---
+    const tabUpdates = document.getElementById('tab-updates');
+    const tabBlog = document.getElementById('tab-blog');
+    const contentUpdates = document.getElementById('content-updates');
+    const contentBlog = document.getElementById('content-blog');
+    tabUpdates.addEventListener('click', () => {
+        contentUpdates.classList.remove('hidden'); contentBlog.classList.add('hidden');
+        tabUpdates.classList.add('border-indigo-600', 'text-indigo-600');
+        tabBlog.classList.remove('border-indigo-600', 'text-indigo-600');
+    });
+    tabBlog.addEventListener('click', () => {
+        contentBlog.classList.remove('hidden'); contentUpdates.classList.add('hidden');
+        tabBlog.classList.add('border-indigo-600', 'text-indigo-600');
+        tabUpdates.classList.remove('border-indigo-600', 'text-indigo-600');
+    });
+
+    // --- 6. SEARCH BOX LOGIC ---
+    const searchBox = document.getElementById('search-box');
+    searchBox.addEventListener('keyup', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        document.querySelectorAll('.searchable-item').forEach(item => {
+            const titleEl = item.querySelector('.searchable-title');
+            if (titleEl) item.style.display = titleEl.innerText.toLowerCase().includes(searchTerm) ? '' : 'none';
+        });
+    });
+    
+   
+
+    // --- Initial Data Fetch ---
+    fetchLatestUpdates();
+    fetchBlogList();
+});
+</script>
+
+</body>
+</html>
