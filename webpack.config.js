@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path'; 
 import { fileURLToPath } from 'url';
 import WebpackObfuscator from 'webpack-obfuscator';
 import CopyWebpackPlugin from 'copy-webpack-plugin'; // <-- STEP 1: IMPORT KAREIN
