@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (window.chatbotStorage) await window.chatbotStorage.setSecretCode(secretCode);
                         else localStorage.setItem('temp_secret_code', secretCode);
                     } catch (storageError) { localStorage.setItem('temp_secret_code', secretCode); }
-                    window.location.href = '/app.html';
+                    window.location.href = '/';
                 } else { throw new Error(result.message || 'Validation failed.'); }
             } catch (error) {
                 loginError.innerText = error.message || 'An error occurred.';
