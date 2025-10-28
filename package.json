@@ -17,4 +17,4 @@
   "scripts": {
     "build": "webpack --mode=production"
   }
-} 
+}
