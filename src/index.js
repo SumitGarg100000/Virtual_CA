@@ -21,7 +21,7 @@
     });
   },
 
-  async getDeactivatedKeys() {
+    async getDeactivatedKeys() {
     const db = await this.getDB();
     return new Promise(resolve => {
       const transaction = db.transaction(this.storeName, 'readonly');
@@ -29,20 +29,22 @@
       const request = store.getAll();
       request.onsuccess = async () => {
         const now = Date.now();
-        const twentyFourHours = 24 * 60 * 60 * 1000;
+        // === BADLAAV YAHAN ===
+        // 24 ghante ko 5 minute kar diya
+        const fiveMinutes = 5 * 60 * 1000;
         
         // Purani, expired keys ko DB se hatao
-        const keysToRemove = request.result.filter(key => (now - key.timestamp) > twentyFourHours);
+        const keysToRemove = request.result.filter(key => (now - key.timestamp) > fiveMinutes); // <-- BADLAAV
         for (const key of keysToRemove) {
           await this.activateKey(key.index);
         }
-
         // Sirf active cooldown waali keys return karo
-        const activeCooldowns = request.result.filter(key => (now - key.timestamp) <= twentyFourHours);
+        const activeCooldowns = request.result.filter(key => (now - key.timestamp) <= fiveMinutes); // <-- BADLAAV
         resolve(activeCooldowns);
       };
     });
   },
+
 
   async deactivateKey(index) {
     const db = await this.getDB();
@@ -1759,43 +1761,57 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 )
             );
         };
-
+         
         let success = false;
-        let keyIndexToTry = 0;
 
-        // Loop tab tak chalega jab tak success na mil jaaye ya saari keys try na ho jaayein
-        while (!success && keyIndexToTry < TOTAL_API_KEYS) {
-            // Har baar loop chalne se pehle, check karo ki current keyIndex deactivated to nahi hai
-            const deactivatedKeys = await apiKeyManager.getDeactivatedKeys();
-            if (deactivatedKeys.some(key => key.index === keyIndexToTry)) {
-                console.log(`Key index ${keyIndexToTry} is on cooldown. Skipping.`);
-                keyIndexToTry++; // Agli key ka number try karo
-                continue; // Loop ka ye wala step skip kardo
-            }
+        // === YAHAN SE POORA LOGIC BADAL GAYA HAI ===
 
+        // 1. Pehle, saari 'deactivated' keys ki list lo (jo 5 min se kam purani hain)
+        const deactivatedKeys = await apiKeyManager.getDeactivatedKeys();
+        const deactivatedIndices = deactivatedKeys.map(key => key.index);
+
+        // 2. Saari 'possible' keys ki list banao (e.g., [0, 1, 2])
+        const allKeyIndices = Array.from({ length: TOTAL_API_KEYS }, (_, i) => i);
+
+        // 3. Sirf 'active' keys ki list banao (jo deactivated nahi hain)
+        let activeKeyIndices = allKeyIndices.filter(index => !deactivatedIndices.includes(index));
+
+        // 4. Active keys ki list ko RANDOM SHUFFLE karo (taaki load balance ho)
+        // Fisher-Yates shuffle algorithm
+        for (let i = activeKeyIndices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [activeKeyIndices[i], activeKeyIndices[j]] = [activeKeyIndices[j], activeKeyIndices[i]];
+        }
+        
+        // 5. Ab 'while' loop ki jagah, 'for...of' loop chalao
+        // Yeh loop sirf active keys par hi chalega
+        for (const keyIndexToTry of activeKeyIndices) {
             try {
-                // Modified function ko call karo aur key ka index bhejo
+            
+                // Ab yahan deactivate check ki zaroorat nahi, kyonki list pehle se filtered hai
+                
+                // Function ko call karo aur key ka index bhejo
                 const response = await generateChatResponseStream(character, userProfile, updatedMessages, messageForAI, updateStreamingMessage, () => {}, keyIndexToTry);
 
+                // Agar server ne 429 (Quota Exceeded) bheja
                 if (response.status === 429) {
-                    // Agar server ne 429 (Quota Exceeded) bheja
-                    
                     const errorData = await response.json();
+                    // Ek custom 'QuotaError' phenko (throw) taaki 'catch' use pakad sake
                     throw { name: 'QuotaError', failedIndex: errorData.failedKeyIndex };
                 }
-
+                // Agar koi aur server error (jaise 500)
                 if (!response.ok) {
-                    // Koi aur server error
                     throw new Error(`Server error: ${response.statusText}`);
                 }
                 
-                // Agar response OK (200) hai, to stream ko process karo
-                success = true; // Success mark karo taaki loop ruk jaaye
-                currentKeyIndex = keyIndexToTry;
+                // Agar response OK (200) hai, to success hua
+                success = true; 
+                currentKeyIndex = keyIndexToTry; // Agli baar ke liye key save karo
+                
+                // Stream ko padho
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullText = '';
-
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
@@ -1803,40 +1819,48 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                     fullText += chunk;
                     updateStreamingMessage(chunk);
                 }
-
+                
+                // YEH AAPKA ORIGINAL [BLOCK_USER] LOGIC HAI
                 if (fullText.trim() === '[BLOCK_USER]') {
                     setBlockCount(prev => prev + 1);
                     setIsBlocked(true);
                     setMessages(prev => prev.filter(msg => msg.id !== aiMessageId));
                 }
+                
+                // Success mil gaya, is 'for' loop ko yahin tod do (break)
+                break; 
 
             } catch (error) {
+                // YEH CATCH BLOCK HAI
                 if (error.name === 'QuotaError') {
-                    // Agar QuotaError hai to key ko deactivate karo aur agli key try karo
+                    // Agar QuotaError hai to key ko 5 min ke liye deactivate karo
                     console.warn(`Key at index ${error.failedIndex} failed. Deactivating and trying next.`);
                     await apiKeyManager.deactivateKey(error.failedIndex);
-                    keyIndexToTry++; // Agli key ke liye index badhao
+                    // Loop apne aap agli shuffled key try karega
                 } else {
-                    // Agar koi aur error hai to loop rok do
+                    // Agar koi aur (serious) error hai (jaise 500) to loop rok do
                     console.error("A non-quota error occurred:", error);
                     updateStreamingMessage("\n\nSomething went wrong. Please retry.");
-                    break; 
+                    break; // Loop ko tod do
                 }
             }
         }
+        // === LOGIC BADLAAV KHATAM ===
 
+        // YEH CHECK LOOP KHATAM HONE KE BAAD CHALEGA
         if (!success) {
-            console.error("All API keys failed or were on cooldown.");
+            console.error("All available API keys failed or were on cooldown.");
             // Agar saari keys fail ho gayi to user ko batao
             setMessages(prev => prev.map(msg => 
-                msg.id === aiMessageId && msg.text === '' 
-                ? {...msg, text: "All services are currently busy. Please try again later."} 
+                msg.id === aiMessageId && msg.text === ''
+                ? {...msg, text: "All services are currently busy. Please try again later."}
                 : msg
             ));
         }
         
         setIsTyping(false);
     }, [character, userProfile, isBlocked]);
+
 
     const [selectedMessages, setSelectedMessages] = useState([]);
 
@@ -2086,107 +2110,113 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
         } : msg));
     };
         
-        let success = false;
-        let keyIndexToTry = 0;
+                let success = false;
 
-        while (!success && keyIndexToTry < TOTAL_API_KEYS) {
-            const deactivatedKeys = await apiKeyManager.getDeactivatedKeys();
-            if (deactivatedKeys.some(key => key.index === keyIndexToTry)) {
-                console.log(`Key index ${keyIndexToTry} is on cooldown for group chat. Skipping.`);
-                keyIndexToTry++;
-                continue;
-            }
+        // === YAHAN SE POORA LOGIC BADAL GAYA HAI ===
 
-            try { 
+        // 1. Pehle, saari 'deactivated' keys ki list lo (jo 5 min se kam purani hain)
+        const deactivatedKeys = await apiKeyManager.getDeactivatedKeys();
+        const deactivatedIndices = deactivatedKeys.map(key => key.index);
+
+        // 2. Saari 'possible' keys ki list banao (e.g., [0, 1, 2])
+        const allKeyIndices = Array.from({ length: TOTAL_API_KEYS }, (_, i) => i);
+
+        // 3. Sirf 'active' keys ki list banao (jo deactivated nahi hain)
+        let activeKeyIndices = allKeyIndices.filter(index => !deactivatedIndices.includes(index));
+
+        // 4. Active keys ki list ko RANDOM SHUFFLE karo (taaki load balance ho)
+        for (let i = activeKeyIndices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [activeKeyIndices[i], activeKeyIndices[j]] = [activeKeyIndices[j], activeKeyIndices[i]];
+        }
+        
+        // 5. Ab 'while' loop ki jagah, 'for...of' loop chalao
+        // Yeh loop sirf active keys par hi chalega
+        for (const keyIndexToTry of activeKeyIndices) {
+            try {
+        
+                // Function ko call karo aur key ka index bhejo
                 const response = await generateGroupChatResponseStream(groupMembers, userProfile, updatedMessages, messageForAI, updateStreamingMessage, currentSkips, () => {}, keyIndexToTry);
 
-
+                // Agar server ne 429 (Quota Exceeded) bheja
                 if (response.status === 429) {
                     const errorData = await response.json();
+                    // Ek custom 'QuotaError' phenko (throw) taaki 'catch' use pakad sake
                     throw { name: 'QuotaError', failedIndex: errorData.failedKeyIndex };
                 }
+                // Agar koi aur server error (jaise 500)
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.statusText}`);
                 }
-
+                
+                // Agar response OK (200) hai, to success hua
                 success = true;
-                currentKeyIndex = keyIndexToTry;
+                currentKeyIndex = keyIndexToTry; // Agli baar ke liye key save karo
+                
+                // Stream ko padho
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullResponse = '';
-
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
                     const chunk = decoder.decode(value, { stream: true });
-                    // Streaming UI update yahan nahi hoga, poora response aane ke baad hoga
                     fullResponse += chunk;
                 }
                 
-               
-
-     // Ab poore response ko naye logic se parse karke messages create karo
-    if (fullResponse.includes('[BLOCK_USER]')) {
-        setBlockCount(prev => prev + 1);
-        setIsBlocked(true);
-        setMessages(prev => prev.filter(m => m.id !== groupStreamId)); // Temp message hatao
-    } else {
-        const newMessages = [];
-        const lines = fullResponse.split('\n');
-        
-        // Regex to find lines that start with "Name: "
-        // Yeh kisi bhi naam (jisme space ho) ko dhund lega
-        const nameRegex = /^([\w\s]+):\s*(.*)/;
-
-        lines.forEach(line => {
-            const match = line.match(nameRegex);
-
-            if (match) {
-                // Agar line "Name: Message" format mein hai, to yeh ek naya message hai
-                const characterName = match[1].trim();
-                const messageText = match[2].trim();
-                const character = groupMembers.find(c => c.name === characterName);
-
-                if (character) {
-                    newMessages.push({
-                        id: `msg_${Date.now()}_${Math.random()}`,
-                        sender: character.id,
-                        text: messageText, // Shuruaati message text
-                        timestamp: Date.now()
+                // YEH AAPKA ORIGINAL [BLOCK_USER] AUR MESSAGE PARSING LOGIC HAI
+                if (fullResponse.includes('[BLOCK_USER]')) {
+                    setBlockCount(prev => prev + 1);
+                    setIsBlocked(true);
+                    setMessages(prev => prev.filter(m => m.id !== groupStreamId)); // Temp message hatao
+                } else {
+                    const newMessages = [];
+                    const lines = fullResponse.split('\n');
+                    
+                    const nameRegex = /^([\w\s]+):\s*(.*)/;
+                    lines.forEach(line => {
+                        const match = line.match(nameRegex);
+                        if (match) {
+                            const characterName = match[1].trim();
+                            const messageText = match[2].trim();
+                            const character = groupMembers.find(c => c.name === characterName);
+                            if (character) {
+                                newMessages.push({
+                                    id: `msg_${Date.now()}_${Math.random()}`,
+                                    sender: character.id,
+                                    text: messageText, 
+                                    timestamp: Date.now()
+                                });
+                            }
+                        } else if (newMessages.length > 0 && line.trim().length > 0) {
+                            newMessages[newMessages.length - 1].text += '\n' + line;
+                        }
                     });
+                    
+                    setMessages(prev => [...prev.filter(m => m.id !== groupStreamId), ...newMessages.filter(m => m.text)]);
                 }
-            } else if (newMessages.length > 0 && line.trim().length > 0) {
-                // Agar line "Name: " se shuru nahi ho rahi, to yeh pichhle message ka hissa hai (multi-line)
-                // Pichhle message mein is line ko jod do.
-                newMessages[newMessages.length - 1].text += '\n' + line;
-            }
-        });
-        
-        // Temp message ko replace karke naye, sahi format wale messages daalo
-        setMessages(prev => [...prev.filter(m => m.id !== groupStreamId), ...newMessages.filter(m => m.text)]);
-    }
-
-    // =======================================================================
-    // === BADLAV KHATAM ===
-    // =======================================================================
-
-
-
-
                 
+                // Success mil gaya, is 'for' loop ko yahin tod do (break)
+                break;
+
             } catch (error) {
+                // YEH CATCH BLOCK HAI
                 if (error.name === 'QuotaError') {
+                    // Agar QuotaError hai to key ko 5 min ke liye deactivate karo
                     console.warn(`Key at index ${error.failedIndex} failed for group chat. Deactivating.`);
                     await apiKeyManager.deactivateKey(error.failedIndex);
-                    keyIndexToTry++;
+                    // Loop apne aap agli shuffled key try karega
                 } else {
+                    // Agar koi aur (serious) error hai (jaise 500) to loop rok do
                     console.error("Group chat API error:", error);
                     setMessages(prev => prev.map(msg => msg.id === groupStreamId ? {...msg, text: "Something went wrong."} : msg));
-                    break;
+                    break; // Loop ko tod do
                 }
             }
         }
+        // === LOGIC BADLAAV KHATAM ===
         
+        // YEH CHECK LOOP KHATAM HONE KE BAAD CHALEGA
         if (!success) {
             console.error("All API keys for group chat failed.");
             setMessages(prev => prev.map(msg => msg.id === groupStreamId ? {...msg, text: "All services are currently busy. Please try again later."} : msg));
@@ -2194,6 +2224,7 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
 
         setIsTyping(false);
     }, [groupMembers, userProfile, consecutiveSkips, isBlocked]);
+
     
     // handleSend aur handleSkip ab naye function ko call karenge
     const handleSend = (text, attachments = []) => handleApiCall(false, text, attachments);
