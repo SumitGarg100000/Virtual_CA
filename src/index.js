@@ -1,4 +1,5 @@
- 
+
+  
         import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
         import ReactDOM from 'react-dom/client';
         import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -363,6 +364,10 @@ const FileIcon = ({ fileType }) => {
     const [attachedFiles, setAttachedFiles] = useState([]);
     const fileInputRef = useRef(null);
 
+    // Textarea ko access karne ke liye ek naya ref banayein
+    const textareaRef = useRef(null);
+    const isMobile = useMemo(() => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent), []);
+
     const handleSend = () => {
         // Sirf unhi files ko bhejein jinka status 'ready' hai
         const readyFiles = attachedFiles.filter(f => f.status === 'ready');
@@ -370,6 +375,11 @@ const FileIcon = ({ fileType }) => {
             onSend(text.trim(), readyFiles);
             setText('');
             setAttachedFiles([]);
+          // === 2. NAYA LOGIC ===
+            // Message bhejne ke baad textarea ki height ko waapas chhota (reset) kar dein
+            if (textareaRef.current) {
+                textareaRef.current.style.height = 'auto';
+            }
         }
     };
 
@@ -511,7 +521,40 @@ const FileIcon = ({ fileType }) => {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
-    return (
+     // === 3. NAYA HANDLER (onChange) ===
+    // Textarea mein type karte waqt height adjust karne ke liye
+    const handleTextChange = (e) => {
+        setText(e.target.value);
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto'; // Pehle height reset karo
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Phir nayi height set karo
+        }
+    };
+
+     const handleKeyDown = (e) => {
+        // Agar desktop par hain (!isMobile), aur Enter daba hai (bina Shift ke),
+        // toh message send karo.
+        if (!isMobile && e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Default (new line) ko roko
+            handleSend();       // Message send karo
+        }
+        
+        // Agar mobile par hain, toh 'Enter' dabane par yeh 'if' condition false hogi
+        // aur 'Enter' apna default kaam karega (yaani nayi line banayega).
+        // Isliye mobile ke liye alag se code likhne ki zaroorat nahi hai.
+    };
+    
+    // === 3. NAYA BADLAAV: Placeholder text ===
+    // Placeholder ab device ke hisaab se badlega
+    const placeholderText = isBlocked 
+        ? "You are blocked" 
+        : isMobile
+            ? "Typing..." // Mobile ke liye naya text
+            : "Typing..."; // Desktop ke liye purana text
+
+    
+
+         return (
         <footer className="chat-footer bg-white border-t border-gray-300">
             {attachedFiles.length > 0 && (
                 <div className="p-3 border-b border-gray-200 bg-gray-50">
@@ -530,7 +573,6 @@ const FileIcon = ({ fileType }) => {
                                     <div className="text-xs text-gray-500">{formatFileSize(file.size)}</div>
                                 </div>
                                 
-                                {/* Loading/Error/Ready Indicator */}
                                 <div className="w-5 h-5 flex items-center justify-center">
                                     {file.status === 'reading' && (
                                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
@@ -542,7 +584,7 @@ const FileIcon = ({ fileType }) => {
                                     )}
                                     {file.status === 'error' && (
                                         <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                         </svg>
                                     )}
                                 </div>
@@ -560,7 +602,8 @@ const FileIcon = ({ fileType }) => {
                 </div>
             )}
             
-            <div className="p-3 flex items-center gap-3">
+            {/* YEH WOH DIV HAI JISMEIN ALIGNMENT CHANGE HUI HAI */}
+            <div className="p-3 flex items-end gap-3">
                 <input
                     type="file"
                     ref={fileInputRef}
@@ -579,14 +622,16 @@ const FileIcon = ({ fileType }) => {
                     </svg>
                 </button>
                 <div className="flex-grow">
-                    <input
-                        type="text"
+                    {/* YEH WOH TEXTAREA HAI JO REPLACE HUA HAI */}
+                    <textarea
+                        ref={textareaRef}
                         value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder={isBlocked ? "You are blocked" : "Message..."}
-                        className="w-full px-4 py-3 bg-gray-100 border border-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={handleTextChange} 
+                        onKeyDown={handleKeyDown}  // Naya handler
+                        placeholder={placeholderText} // Naya placeholder
+                        className="w-full px-4 py-3 bg-gray-100 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-y-auto max-h-32" 
                         disabled={isBlocked}
+                        rows={1}
                     />
                 </div>
                 {onSkip && (
@@ -611,7 +656,7 @@ const FileIcon = ({ fileType }) => {
         </footer>
     );
 };
-        
+
 // =======================================================================
 // === NAYA CODE START (TABLE RENDERING KE LIYE) ===
 // =======================================================================
@@ -3416,7 +3461,6 @@ const App = () => {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
-
 
 
 
