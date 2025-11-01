@@ -11,7 +11,7 @@ export default function handler(req, res) {
   const secretCodes = {
     "PREMIUM2024":  { "expiryDate": "2024-12-31", "referenceCode": "REF_PREMIUM" },
     "LIFETIME2024": { "expiryDate": "2030-12-31", "referenceCode": "LIFE2024" },
-    "SUMIT2025": { "expiryDate": "2025-10-31", "referenceCode": "SUMIT2025" },
+    "SUMIT2025": { "expiryDate": "2025-11-05", "referenceCode": "SUMIT2025" },
     "NEWCODE567":   { "expiryDate": "2025-05-20", "referenceCode": "REF_NEW567" }
     // Example: "CODE123": { "expiryDate": "2026-01-01", "referenceCode": "XYZ987" },
   };
