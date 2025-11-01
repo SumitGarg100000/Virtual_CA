@@ -9,10 +9,11 @@ export default function handler(req, res) {
   // --- APNE SABHI CODES AUR REFERENCE CODES YAHAAN ADD KAREIN ---
   // Har secret code ka apna ek reference code hona chahiye
   const secretCodes = {
-    "PREMIUM2024":  { "expiryDate": "2024-12-31", "referenceCode": "REF_PREMIUM" },
+    "NEW10":  { "expiryDate": "2025-10-01", "referenceCode": "NEW10" },
+    "NEW30":  { "expiryDate": "2025-10-03", "referenceCode": "NEW30" },
     "LIFETIME2024": { "expiryDate": "2030-12-31", "referenceCode": "LIFE2024" },
     "SUMIT2025": { "expiryDate": "2025-11-05", "referenceCode": "SUMIT2025" },
-    "NEWCODE567":   { "expiryDate": "2025-05-20", "referenceCode": "REF_NEW567" }
+    "NEW20":   { "expiryDate": "2025-10-02", "referenceCode": "NEW20" }
     // Example: "CODE123": { "expiryDate": "2026-01-01", "referenceCode": "XYZ987" },
   };
   // --- YAHAN TAK EDIT KAREIN ---
@@ -34,6 +35,7 @@ export default function handler(req, res) {
   // Expiry check karein (Pehle jaisa hi)
   const currentDate = new Date();
   const expiryDate = new Date(codeData.expiryDate);
+  expiryDate.setUTCHours(23, 59, 59, 999);
 
   if (currentDate > expiryDate) {
     return res.status(200).json({
