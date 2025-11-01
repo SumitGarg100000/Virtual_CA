@@ -36,7 +36,8 @@ export default function handler(req, res) {
   const currentDate = new Date();
   const expiryDate = new Date(codeData.expiryDate);
   expiryDate.setUTCHours(23, 59, 59, 999);
-
+  // Indian time pr lane k liye 5 hour oiche set kiys h
+  expiryDate.setMinutes(expiryDate.getMinutes() - 330); 
   if (currentDate > expiryDate) {
     return res.status(200).json({
       valid: false,
