@@ -52,6 +52,8 @@ export default {
         
         // app.html ko 'dist' mein copy karo
         { from: 'app.html', to: 'app.html' },     
+        // demo.html ko 'dist' mein copy karo
+        { from: 'demo.html', to: 'demo.html' },
         
         // instructions.html ko 'dist' mein copy karo
         { from: 'instructions.html', to: 'instructions.html' }, 
