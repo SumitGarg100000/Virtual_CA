@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual CA - Presentation Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Gradient Background */
+        body {
+            background: linear-gradient(-45deg, #1e3a8a, #3b82f6, #1d4ed8, #4f46e5);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #1e3a8a;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Presentation-specific styles */
+        #presentation-canvas {
+            transition: opacity 0.5s ease-in-out;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        
+        /* Text Overlay */
+        #text-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease-out;
+            pointer-events: none;
+        }
+        #text-overlay.show {
+            opacity: 1;
+        }
+
+        /* Disclaimer Overlay */
+        #disclaimer-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Click animation */
+        .demo-click {
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.6), 0 0 0 6px rgba(251, 191, 36, 0.4) !important;
+            transition: box-shadow 0.3s ease-out;
+        }
+
+        /* Typing cursor animation */
+        .typing-cursor {
+            animation: blink 0.7s infinite;
+            font-weight: bold;
+            color: #3b82f6; /* Blue cursor */
+        }
+        .ai-cursor {
+            color: #333; /* Dark cursor for AI bubble */
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Bubble animations */
+        .message-bubble {
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Modal animations */
+        .modal-enter {
+            animation: modalIn 0.3s ease-out;
+        }
+        @keyframes modalIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        /* Table Styles (Aapke code se inspired) */
+        .demo-table {
+            margin-top: 8px;
+            text-align: left;
+            font-size: 0.875rem;
+            color: #374151; /* text-gray-700 */
+        }
+        .demo-table div { /* For mobile stacking, not implemented here for simplicity */
+            overflow-x: auto;
+            border: 1px solid #D1D5DB; /* border-gray-300 */
+            border-radius: 8px;
+            background-color: #F9FAFB; /* bg-gray-50 */
+        }
+        .demo-table table {
+            min-width: 100%;
+            divide-y: #E5E7EB; /* divide-gray-200 */
+        }
+        .demo-table th {
+            background-color: #F3F4F6; /* bg-gray-100 */
+            padding: 6px 10px;
+            font-weight: 600;
+            color: #4B5563; /* text-gray-600 */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .demo-table tbody {
+            background-color: white;
+            divide-y: #E5E7EB; /* divide-gray-200 */
+        }
+        .demo-table td {
+            padding: 6px 10px;
+            white-space: nowrap;
+        }
+        .demo-table strong {
+            color: #D97706; /* text-yellow-600 */
+        }
+    </style>
+</head>
+<body class="h-screen antialiased">
+
+    <div id="presentation-canvas" class="h-full">
+        </div>
+
+    <div id="text-overlay"></div>
+    
+    <div id="disclaimer-overlay" class.="hidden">
+        <div class="text-center text-white p-8">
+            <h1 class="text-4xl font-bold mb-4">Demo Complete</h1>
+            <p class="text-lg text-gray-300">
+                This presentation is for illustrative and advertising purposes only.
+                <br>
+                All characters, data, and responses are simulated.
+            </p>
+            <p class="text-lg text-gray-300 mt-4">
+                Restarting demo...
+            </p>
+        </div>
+    </div>
+
+
+    <script>
+        // --- 1. HTML SCENES ---
+        const sceneLogin = `
+            <div class="h-full flex items-center justify-center">
+                <section id="login-section" class="py-16 md:py-24 text-center w-full">
+                    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div class="text-left md:mb-0 mb-10">
+                            <h2 class="text-4xl md:text-6xl font-extrabold leading-tight text-white">Your Personal AI-Powered <span class="text-cyan-300">Chartered Accountant</span></h2>
+                            <p class="text-xl text-blue-100 mt-6">Analyze GST data, get real-time tax updates, and save hours of work. Your expert AI partner is here.</p>
+                        </div>
+                        <div>
+                            <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl p-8 w-full max-w-md mx-auto text-gray-800">
+                                <h3 class="text-3xl font-bold mb-6">Access Your Dashboard</h3>
+                                <form id="login-form" class="space-y-4">
+                                    <div>
+                                        <label for="secretCode" class="block text-sm font-medium text-gray-700 text-left">Secret Code</label>
+                                        <input type="password" id="secretCode" placeholder="Enter your secret code" class="mt-1 w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                    </div>
+                                    <div>
+                                        <label for="referenceCode" class="block text-sm font-medium text-gray-700 text-left">Reference Code</label>
+                                        <input type="password" id="referenceCode" placeholder="Enter your reference code" class="mt-1 w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                    </div>
+                                    <button type="submit" id="login-button" class="w-full py-3 px-4 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg">Login</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        `;
+
+        const sceneApp = `
+            <div class="app-container w-full h-full bg-gray-100 flex flex-col">
+                <div id="app-view" class="flex-grow overflow-hidden relative">
+                    
+                    <div id="chat-list-screen" class="flex flex-col h-full bg-blue-600">
+                        <header class="bg-blue-600 text-white p-4 pt-8 flex items-center justify-between">
+                            <div class="flex items-center gap-1">
+                                <button class="p-2 hover:bg-white/20 rounded"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                                <button class="p-2 hover:bg-white/20 rounded-full" title="Logout"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></button>
+                            </div>
+                            <h1 class="text-xl font-bold">Virtual CA</h1>
+                            <div class="flex items-center gap-2">
+                                <button id="drive-status-btn" class="py-1 px-3 rounded-full text-xs font-semibold transition-colors bg-white hover:bg-gray-200 text-blue-600">Connect to Drive</button>
+                                <button id="app-user-profile-btn" class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                    <img src="01_CABOY.png" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                                </button>
+                            </div>
+                        </header>
+                        <div id="expiry-bar" class="hidden relative text-center p-2 bg-red-600 text-white text-sm font-semibold">
+                            Subscription valid until: <strong>05-11-2025</strong>
+                        </div>
+                        <main class="flex-grow bg-white rounded-t-3xl p-4 overflow-y-auto">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-lg font-bold text-gray-700">Chats</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <button id="new-ai-btn" class="py-2 px-3 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700">New AI</button>
+                                    <button id="new-group-btn" class="py-2 px-3 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700">New Group</button>
+                                    <button id="latest-updates-btn" class="py-2 px-3 bg-teal-600 text-white rounded-full text-sm hover:bg-teal-700">Latest Updates</button>
+                                </div>
+                            </div>
+                            <div id="chat-list-container" class="space-y-3">
+                                <div id="chat-list-empty" class="flex flex-col items-center justify-center text-center text-gray-500 pt-16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                    <p>No chats yet. Start by creating a "New AI".</p>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+
+                    <div id="chat-screen" class="hidden flex flex-col h-full bg-gray-100">
+                        <header id="chat-header" class="fixed-header bg-blue-600 text-white p-3 flex items-center shadow-md z-10 w-full">
+                            <button id="chat-back-btn" class="p-2 rounded-full hover:bg-white/20">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                            <img id="chat-header-img" src="01_CAGIRL.png" alt="Tax Dost" class="w-10 h-10 rounded-full object-cover ml-2">
+                            <div class="ml-3 flex-grow">
+                                <h2 id="chat-header-title" class="font-semibold text-lg">Tax Dost</h2>
+                                <p id="chat-header-subtitle" class="text-sm opacity-90">Friend • Tax Consultant</p>
+                            </div>
+                        </header>
+                        <main id="message-list-container" class="message-container flex-grow overflow-y-auto pt-20" style="background-image: url('https://i.redd.it/qwd83nc4xxf41.jpg'); background-size: cover; background-position: center;">
+                            <div id="block-message-bar" class="hidden sticky top-0 z-10 p-4">
+                                <div class="text-center p-4 bg-red-100 border border-red-400 text-red-700 rounded-md shadow-lg">
+                                    <p class="font-bold">You are blocked by <span id="blocker-name">Tax Dost</span> 😣</p>
+                                    <p class="text-sm">You have 2 unblock attempt(s) remaining.</p>
+                                    <button id="unblock-btn" class="mt-2 px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm">Request Unblock</button>
+                                </div>
+                            </div>
+                            <div id="message-list" class="space-y-2 p-4"></div>
+                        </main>
+                        <footer class="chat-footer bg-white border-t border-gray-300">
+                            <div id="file-preview-bar" class="hidden p-3 border-b border-gray-200 bg-gray-50"></div>
+                            <div class="p-3 flex items-end gap-3">
+                                <button id="attach-btn" class="p-2 text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg></button>
+                                <div class="flex-grow">
+                                    <textarea id="message-input" placeholder="Message (Shift + Enter for new line)..." class="w-full px-4 py-3 bg-gray-100 border border-transparent rounded-2xl resize-none overflow-y-auto max-h-32" rows="1"></textarea>
+                                </div>
+                                <button id="skip-btn" class="hidden p-2 text-white bg-gray-600 hover:bg-gray-700 rounded-full transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                                <button id="send-btn" class="p-3 text-white rounded-full bg-blue-600 hover:bg-blue-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+                                </button>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <div id="updates-dashboard-screen" class="hidden flex flex-col h-full bg-blue-600">
+                        <header class="bg-blue-600 text-white p-4 pt-8 flex items-center justify-between">
+                            <button id="updates-back-btn" class="p-2 hover:bg-white/20 rounded"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                            <h1 class="text-xl font-bold">Latest Updates</h1>
+                            <div class="w-10"></div>
+                        </header>
+                        <main class="flex-grow bg-white rounded-t-3xl p-4 overflow-y-auto relative">
+                            <div id="updates-list-container" class="space-y-3">
+                                <div id="updates-list-empty" class="flex flex-col items-center justify-center text-center text-gray-500 pt-16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h6m-4-4h2"></path></svg>
+                                    <p>Create your first Update Card to track topics.</p>
+                                </div>
+                            </div>
+                            <button id="new-update-card-btn" class="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 z-20">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            </button>
+                        </main>
+                    </div>
+
+                    <div id="updates-view-screen" class="hidden flex flex-col h-full bg-gray-100">
+                        <header class="fixed-header bg-blue-600 text-white p-3 flex items-center shadow-md z-10 w-full">
+                            <button id="update-view-back-btn" class="p-2 rounded-full hover:bg-white/20"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                            <div class="ml-3 flex-grow"><h2 class="font-semibold text-lg">📄 GST Due Dates</h2></div>
+                            <button id="refresh-updates-btn" class="p-2 rounded-full hover:bg-white/20"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2a8.001 8.001 0 0015.357 2m0 0H15"></path></svg></button>
+                        </header>
+                        <main id="update-content-container" class="message-container flex-grow overflow-y-auto pt-20 p-4">
+                            </main>
+                    </div>
+                    
+                    <div id="user-profile-modal" class="hidden modal-enter absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div class="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-4 text-gray-800">
+                            <h2 class="text-xl font-bold text-center text-gray-700">Your Profile</h2>
+                            <div class="flex flex-col items-center space-y-2">
+                                <img src="01_CABOY.png" alt="Your avatar" class="w-24 h-24 rounded-full object-cover border-2 border-gray-300">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Your Name *</label>
+                                <input id="user-profile-name-input" type="text" value="Alex" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+                            </div>
+                            <div class="flex justify-end space-x-2 pt-4">
+                                <button id="save-user-profile-btn" class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Save Profile</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="new-ai-modal" class="hidden modal-enter absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div class="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 space-y-4 text-gray-800">
+                            <h2 class="text-xl font-bold text-center text-gray-700">AI Character Profile</h2>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Name *</label>
+                                <input id="new-ai-name-input" type="text" placeholder="AI Name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Expert</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <button data-expertise="Tax Consultant" class="expertise-btn px-3 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300">Tax Consultant</button>
+                                    <button data-expertise="GST Expert" class="expertise-btn px-3 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300">GST Expert</button>
+                                </div>
+                            </div>
+                            <div class="flex justify-end space-x-2 pt-4">
+                                <button id="save-ai-btn" class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Save Profile</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="new-group-modal" class="hidden modal-enter absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div class="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 space-y-4 text-gray-800">
+                            <h2 class="text-xl font-bold text-center text-gray-700">Create Group Chat</h2>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Group Name</label>
+                                <input id="group-name-input" type="text" placeholder="E.g., Audit Team" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Select AI Profiles</label>
+                                <div id="group-member-list" class="mt-1 space-y-2 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2"></div>
+                            </div>
+                            <div class="flex justify-end space-x-2 pt-4">
+                                <button id="save-group-btn" class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Create Group</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="create-card-modal" class="hidden modal-enter absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div class="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-4 text-gray-800">
+                            <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create New Update Card</h1>
+                            <form class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Card Name</label>
+                                    <input id="card-name-input" type="text" placeholder="e.g., My GST Tracker" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Topic / Keywords</label>
+                                    <input id="card-topic-input" type="text" placeholder="e.g., Latest GST notifications India" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />
+                                </div>
+                                <div class="flex justify-end space-x-2 pt-4">
+                                    <button id="save-card-btn" type="button" class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Save Card</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // --- 2. HTML SNIPPETS (Tukde) ---
+                // Avatars
+        const AVATAR_USER = "01_CABOY.png";
+        const AVATAR_TAX = "01_CAGIRL.png";
+        const AVATAR_GST = "02_CAGIRL.png";
+        const AVATAR_GROUP = "01_CABOY.png";
+
+        // Naye AIs
+        const snippetTaxDostItem = `<div id="chat-item-taxdost" class="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 message-bubble"><img src="${AVATAR_TAX}" alt="Tax Consultant" class="w-12 h-12 rounded-full object-cover"><div class="ml-4 flex-grow"><p class="font-semibold text-gray-800">Tax Consultant</p><p class="text-sm text-gray-600">Professional • Tax Consultant</p></div></div>`;
+        const snippetGstExpertItem = `<div id="chat-item-gstauditor" class="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 message-bubble"><img src="${AVATAR_GST}" alt="GST Expert" class="w-12 h-12 rounded-full object-cover"><div class="ml-4 flex-grow"><p class="font-semibold text-gray-800">GST Expert</p><p class="text-sm text-gray-600">Professional • GST Expert</p></div></div>`;
+        // Group Member List
+        const snippetGroupMemberList = `<label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" data-member="taxdost" class="rounded text-blue-600" /><span class="text-sm text-gray-700">Tax Consultant</span></label><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" data-member="gstauditor" class="rounded text-blue-600" /><span class="text-sm text-gray-700">GST Expert</span></label>`;
+        // Group Item
+        const snippetNewGroupItem = `<div id="chat-item-group" class="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 message-bubble"><div class="w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center"><span class="text-blue-800 font-semibold">A</span></div><div class="ml-4 flex-grow"><p class="font-semibold text-gray-800">Audit Team</p><p class="text-sm text-gray-600">Group (2 members)</p></div></div>`;
+        // Update Card
+        const snippetNewUpdateCard = `<div id="card-item-gst" class="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 message-bubble"><div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0"><span class="text-3xl">📄</span></div><div class="ml-4 flex-grow min-w-0"><p class="font-semibold text-gray-800 truncate">GST Due Dates</p><p class="text-sm text-gray-600 truncate">latest GST due date extensions</p></div></div>`;
+        // Loading Snippet
+        const snippetLoadingUpdates = `<div class="flex justify-center items-center h-32"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div><p class="ml-3 text-gray-600">Fetching latest updates...</p></div>`;
+        // Updates List Snippet
+        const snippetUpdatesList = `<div class="space-y-3"><div class="p-4 bg-white rounded-xl shadow-md flex items-start gap-3"><span class="text-blue-500 font-bold text-lg">1.</span><p class="text-gray-800">CBDT extends ITR filing due date for AY 2025-26 to 31st Dec 2025.</p></div><div class="p-4 bg-white rounded-xl shadow-md flex items-start gap-3"><span class="text-blue-500 font-bold text-lg">2.</span><p class="text-gray-800">GST Council clarifies taxability of ESOPs and corporate guarantees.</p></div><div class="p-4 bg-white rounded-xl shadow-md flex items-start gap-3"><span class="text-blue-500 font-bold text-lg">3.</span><p class="text-gray-800">New MCA forms (Form 2, Form 3) for LLP incorporation now active.</p></div></div>`;
+        
+        // Chat Bubbles
+        const snippetUserBubble = (id, text) => `<div class="flex items-end gap-2 mb-1 justify-end message-bubble"><img src="${AVATAR_USER}" alt="Your avatar" class="w-8 h-8 rounded-full object-cover flex-shrink-0"><div class="relative max-w-sm md:max-w-md"><div class="px-4 py-3 rounded-2xl shadow-lg border bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-400"><p id="${id}" class="whitespace-pre-wrap">${text}</p></div></div></div>`;
+        const snippetAiBubble = (id, avatar) => `<div class="flex items-end gap-2 mb-1 justify-start message-bubble"><img src="${avatar}" alt="AI" class="w-8 h-8 rounded-full object-cover flex-shrink-0"><div class="relative max-w-sm md:max-w-md"><div class="px-4 py-3 rounded-2xl shadow-lg border bg-white text-gray-800 border-gray-200 shadow-md"><p id="${id}" class="whitespace-pre-wrap"></p></div></div></div>`;
+        const snippetAiGroupBubble = (id, avatar, name) => `<div class="flex items-end gap-2 mb-1 justify-start message-bubble"><img src="${avatar}" alt="${name}" class="w-8 h-8 rounded-full object-cover flex-shrink-0"><div class="relative max-w-sm md:max-w-md"><div class="px-4 py-3 rounded-2xl shadow-lg border bg-white text-gray-800 border-gray-200 shadow-md"><p id="${id}" class="whitespace-pre-wrap"></p><div class="flex items-center justify-between mt-1 text-gray-500"><span class="text-xs font-bold">${name}</span></div></div></div></div>`;
+        const snippetTypingBubble = (id, avatar) => `<div id="${id}" class="flex justify-start items-end gap-2 message-bubble"><img src="${avatar}" alt="ai" class="w-8 h-8 rounded-full object-cover"><div class="bg-white rounded-2xl p-3 max-w-xs shadow"><div class="flex items-center justify-center space-x-1"><span class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-0"></span><span class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-150"></span><span class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-300"></span></div></div></div>`;
+        const snippetFilePreview = (name, iconSvg) => `<div class="relative bg-white border border-gray-300 rounded-lg p-2 flex items-center gap-2 max-w-xs"><div class="w-8 h-8 rounded flex items-center justify-center bg-blue-500">${iconSvg}</div><div class="flex-1 min-w-0"><div class="text-xs font-medium text-gray-900 truncate">${name}</div><div class="text-xs text-gray-500">Processing...</div></div><div class="w-5 h-5 flex items-center justify-center"><div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div></div></div>`;
+        const snippetFileIcon = (type) => {
+            if (type === 'pdf') return '<svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H5zm0 2h10v12H5V4zm2 2a1 1 0 00-1 1v1a1 1 0 102 0V7a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v1a1 1 0 102 0V7a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v1a1 1 0 102 0V7a1 1 0 00-1-1zm-6 5a1 1 0 00-1 1v1a1 1 0 102 0v-1a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v1a1 1 0 102 0v-1a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v1a1 1 0 102 0v-1a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
+            if (type === 'excel') return '<svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H5zm0 2h10v2H5V4zm0 4h10v2H5V8zm0 4h10v2H5v-2z" clip-rule="evenodd"></path></svg>';
+            if (type === 'json') return '<svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zM6 7a1 1 0 000 2h8a1 1 0 100-2H6zM4 11a1 1 0 100 2h12a1 1 0 100-2H4zM3 15a1 1 0 100 2h14a1 1 0 100-2H3z" clip-rule="evenodd"></path></svg>';
+            if (type === 'image') return '<svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4V5h12v10zm-4-4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>';
+            return '<svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>';
+        };
+        const snippetUserBubbleWithFile = (textId, text, fileName, iconSvg) => `<div class="flex items-end gap-2 mb-1 justify-end message-bubble"><img src="${AVATAR_USER}" alt="Your avatar" class="w-8 h-8 rounded-full object-cover flex-shrink-0"><div class="relative max-w-sm md:max-w-md"><div class="px-4 py-3 rounded-2xl shadow-lg border bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-400"><div class="mb-2 space-y-2"><div class="p-2 rounded-lg flex items-center gap-3 bg-blue-700/50"><div class="w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 bg-blue-500">${iconSvg}</div><div class="flex-1 min-w-0"><p class="text-sm font-medium truncate text-white">${fileName}</p><p class="text-xs text-blue-100">Attached</p></div></div></div><p id="${textId}" class="whitespace-pre-wrap">${text}</p></div></div></div>`;
+        
+        // --- 3. HELPER FUNCTIONS (Animation Tools) ---
+
+        const canvas = document.getElementById('presentation-canvas');
+        const overlay = document.getElementById('text-overlay');
+        const disclaimer = document.getElementById('disclaimer-overlay');
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Text Overlay dikhane ke liye
+        async function showOverlay(text, duration = 2000) {
+            overlay.innerText = text;
+            overlay.classList.add('show');
+            await sleep(duration);
+            overlay.classList.remove('show');
+            await sleep(400); // Fade out transition
+        }
+        
+        // Input box mein type karne ke liye
+        async function typeWriter(element, text, speed = 50) {
+            element.value = '';
+            element.focus();
+            for (let i = 0; i < text.length; i++) {
+                element.value += text.charAt(i);
+                await sleep(speed);
+            }
+        }
+
+        // Chat bubble mein type karne ke liye
+        async function typeHTML(element, text, speed = 10) {
+            element.innerHTML = '';
+            let currentText = '';
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/<br>/g, '\n');
+
+            for (let i = 0; i < text.length; i++) {
+                currentText += text.charAt(i);
+                element.innerHTML = currentText.replace(/\n/g, '<br>') + '<span class="typing-cursor ai-cursor">|</span>';
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(speed);
+            }
+            element.innerHTML = currentText.replace(/\n/g, '<br>'); // Cursor hatao
+            scrollToBottom(document.getElementById('message-list-container'));
+        }
+
+        // Click animation dikhane ke liye
+        async function clickElement(element, duration = 300) {
+            if (!element) {
+                console.error("Demo Error: Element not found for clicking.");
+                return;
+            }
+            element.classList.add('demo-click');
+            await sleep(duration);
+            element.classList.remove('demo-click');
+            await sleep(200); // Click ke baad thoda pause
+        }
+        
+        // Scene badalne ke liye
+        async function showScene(sceneHTML) {
+            canvas.style.opacity = 0;
+            await sleep(500); // Fade out
+            canvas.innerHTML = sceneHTML;
+            await sleep(100); // Content render hone do
+            canvas.style.opacity = 1;
+            await sleep(500); // Fade in
+        }
+
+        // Scroll helper
+        function scrollToBottom(element) {
+            if (element) {
+                element.scrollTop = element.scrollHeight;
+            }
+        }
+
+        // --- 4. THE MOVIE SCRIPT ---
+        
+        async function playDemo() {
+            try {
+                // === SCENE 1: LOGIN ===
+                await showScene(sceneLogin);
+                await showOverlay("Waiting for user to login...", 2000);
+                await sleep(1500);
+
+                const secretCodeInput = document.getElementById('secretCode');
+                const refCodeInput = document.getElementById('referenceCode');
+                const loginBtn = document.getElementById('login-button');
+
+                await typeWriter(secretCodeInput, "SUMIT2025", 80);
+                await sleep(500);
+                await typeWriter(refCodeInput, "SUMIT2025", 80);
+                await sleep(1000);
+                await showOverlay("Validating credentials...", 1000);
+                await clickElement(loginBtn);
+                loginBtn.innerText = "Verifying...";
+                
+                // === SCENE 2: TRANSITION TO APP ===
+                await showScene(sceneApp);
+                const expiryBar = document.getElementById('expiry-bar');
+                expiryBar.classList.remove('hidden'); 
+                await showOverlay("Login Successful! Welcome.", 2000);
+                await sleep(3000); // Expiry bar 3 sec dikhegi
+                expiryBar.classList.add('hidden'); 
+                await sleep(1000);
+
+                // === SCENE 3: GOOGLE DRIVE CONNECT ===
+                await showOverlay("Connecting to Google Drive for backup...", 2000);
+                const driveBtn = document.getElementById('drive-status-btn');
+                await clickElement(driveBtn);
+                driveBtn.innerText = "Connecting...";
+                await sleep(1500);
+                driveBtn.classList.remove('bg-white', 'text-blue-600', 'hover:bg-gray-200');
+                driveBtn.classList.add('bg-green-500', 'text-white');
+                driveBtn.innerText = "Drive Connected";
+                await sleep(1500);
+
+                // === SCENE 4: USER PROFILE UPDATE ===
+                await showOverlay("Updating user profile...", 1500);
+                const userProfileBtn = document.getElementById('app-user-profile-btn');
+                await clickElement(userProfileBtn);
+                await sleep(500);
+                const userProfileModal = document.getElementById('user-profile-modal');
+                userProfileModal.classList.remove('hidden');
+                await sleep(1000);
+                
+                await typeWriter(userProfileModal.querySelector('#user-profile-name-input'), "Sumit Garg", 70);
+                await sleep(500);
+                
+                const saveProfileBtn = userProfileModal.querySelector('#save-user-profile-btn');
+                await clickElement(saveProfileBtn);
+                await sleep(500);
+                userProfileModal.classList.add('hidden');
+                await sleep(1000);
+
+                // === SCENE 5: LATEST UPDATES ===
+                await showOverlay("Checking 'Latest Updates' feature...", 2000);
+                const latestUpdatesBtn = document.getElementById('latest-updates-btn');
+                await clickElement(latestUpdatesBtn);
+                await sleep(500);
+                
+                document.getElementById('chat-list-screen').classList.add('hidden');
+                const updatesScreen = document.getElementById('updates-dashboard-screen');
+                updatesScreen.classList.remove('hidden');
+                await sleep(1500);
+                
+                await showOverlay("Creating a new 'Update Card'...", 2000);
+                const newCardBtn = updatesScreen.querySelector('#new-update-card-btn');
+                await clickElement(newCardBtn);
+                await sleep(500);
+                
+                const createCardModal = document.getElementById('create-card-modal');
+                createCardModal.classList.remove('hidden');
+                await sleep(1000);
+                
+                await typeWriter(createCardModal.querySelector('#card-name-input'), "GST Due Dates", 70);
+                await sleep(500);
+                await typeWriter(createCardModal.querySelector('#card-topic-input'), "latest GST due date extensions", 70);
+                await sleep(1000);
+                
+                const saveCardBtn = createCardModal.querySelector('#save-card-btn');
+                await clickElement(saveCardBtn);
+                await sleep(500);
+                createCardModal.classList.add('hidden');
+                
+                updatesScreen.querySelector('#updates-list-empty').classList.add('hidden');
+                updatesScreen.querySelector('#updates-list-container').innerHTML = snippetNewUpdateCard;
+                await sleep(2000);
+                
+                await showOverlay("Opening card to fetch live updates...", 2000);
+                await clickElement(document.getElementById('card-item-gst'));
+                await sleep(500);
+                
+                updatesScreen.classList.add('hidden');
+                const updateViewScreen = document.getElementById('updates-view-screen');
+                updateViewScreen.classList.remove('hidden');
+                const updateContentContainer = document.getElementById('update-content-container');
+                updateContentContainer.innerHTML = snippetLoadingUpdates;
+                
+                const refreshBtn = document.getElementById('refresh-updates-btn').querySelector('svg');
+                refreshBtn.classList.add('animate-spin');
+                await sleep(3000);
+                refreshBtn.classList.remove('animate-spin');
+                
+                updateContentContainer.innerHTML = snippetUpdatesList;
+                await sleep(4000);
+                
+                await showOverlay("Going back to chat list...", 1500);
+                await clickElement(document.getElementById('update-view-back-btn'));
+                await sleep(500);
+                updateViewScreen.classList.add('hidden');
+                updatesScreen.classList.remove('hidden');
+                await sleep(500);
+                
+                await clickElement(updatesScreen.querySelector('#updates-back-btn'));
+                await sleep(500);
+                updatesScreen.classList.add('hidden');
+                document.getElementById('chat-list-screen').classList.remove('hidden');
+                await sleep(1000);
+
+                // === SCENE 6: CREATE 2 AIs ===
+                await showOverlay("Creating two AI profiles...", 1500);
+                const newAiBtn = document.getElementById('new-ai-btn');
+                const newAiModal = document.getElementById('new-ai-modal');
+                const saveAiBtn = newAiModal.querySelector('#save-ai-btn');
+                const chatListContainer = document.getElementById('chat-list-container');
+                
+                // AI 1: Tax Consultant
+                await clickElement(newAiBtn); await sleep(500);
+                newAiModal.classList.remove('hidden'); await sleep(500);
+                await typeWriter(newAiModal.querySelector('#new-ai-name-input'), "Tax Consultant", 70);
+                await sleep(500);
+                const expertiseBtn1 = newAiModal.querySelector('button[data-expertise="Tax Consultant"]');
+                await clickElement(expertiseBtn1);
+                expertiseBtn1.classList.add('bg-blue-600', 'text-white');
+                await clickElement(saveAiBtn); await sleep(500);
+                newAiModal.classList.add('hidden');
+                document.getElementById('chat-list-empty').classList.add('hidden');
+                chatListContainer.innerHTML += snippetTaxDostItem;
+                await sleep(1000);
+                
+                // AI 2: GST Expert
+                await clickElement(newAiBtn); await sleep(500);
+                newAiModal.classList.remove('hidden'); await sleep(500);
+                await typeWriter(newAiModal.querySelector('#new-ai-name-input'), "GST Expert", 70);
+                await sleep(500);
+                const expertiseBtn2 = newAiModal.querySelector('button[data-expertise="GST Expert"]');
+                await clickElement(expertiseBtn2);
+                expertiseBtn2.classList.add('bg-blue-600', 'text-white');
+                await clickElement(saveAiBtn); await sleep(500);
+                newAiModal.classList.add('hidden');
+                chatListContainer.innerHTML += snippetGstExpertItem;
+                await sleep(2000);
+
+                // === SCENE 7: START INDIVIDUAL CHAT ===
+                await showOverlay("Starting chat with 'Tax Consultant'...", 2000);
+                const taxDostChat = document.getElementById('chat-item-taxdost');
+                await clickElement(taxDostChat);
+                await sleep(1000);
+                
+                document.getElementById('chat-list-screen').classList.add('hidden');
+                const chatScreen = document.getElementById('chat-screen');
+                chatScreen.classList.remove('hidden');
+                
+                // Chat header ko update karo
+                document.getElementById('chat-header-title').innerText = "Tax Consultant";
+                document.getElementById('chat-header-subtitle').innerText = "Professional • Tax Consultant";
+                document.getElementById('chat-header-img').src = AVATAR_TAX;
+                
+                await sleep(1000);
+
+                // === SCENE 8: DEMO CHATS (Advanced) ===
+                const messageInput = chatScreen.querySelector('#message-input');
+                const sendBtn = chatScreen.querySelector('#send-btn');
+                const messageList = chatScreen.querySelector('#message-list');
+                const filePreviewBar = chatScreen.querySelector('#file-preview-bar');
+                const attachBtn = chatScreen.querySelector('#attach-btn');
+                
+                // Q1: Tax Slabs (Updated)
+                await showOverlay("Asking about new tax slabs...", 2000);
+                await typeWriter(messageInput, "What are the income tax slabs for FY 2025-26?", 40);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubble("user-q1", "What are the income tax slabs for FY 2025-26?");
+                messageInput.value = ''; await sleep(1000);
+                messageList.innerHTML += snippetTypingBubble("t1", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(3000); document.getElementById('t1').remove();
+                messageList.innerHTML += snippetAiBubble("ai-a1", AVATAR_TAX);
+                await typeHTML(document.getElementById('ai-a1'), "Hello Sumit! For **FY 2025-26 (AY 2026-27)**, the new tax regime slabs are:<div class='demo-table'><div><table><thead><tr><th>Income Slab</th><th>Tax Rate</th></tr></thead><tbody><tr><td>Up to ₹4,00,000</td><td>Nil</td></tr><tr><td>₹4L - ₹8L</td><td>5%</td></tr><tr><td>₹8L - ₹12L</td><td>10%</td></tr><tr><td>₹12L - ₹16L</td><td>15%</td></tr><tr><td>₹16L - ₹20L</td><td>20%</td></tr><tr><td>₹20L - ₹24L</td><td>25%</td></tr><tr><td>Above ₹24L</td><td>30%</td></tr></tbody></table></div></div>", 10);
+                await sleep(3000);
+
+                // Q2: PDF (Bank Statement)
+                await showOverlay("Attaching PDF Bank Statement...", 2000);
+                await typeWriter(messageInput, "Analyze this statement. What's the total for 'ABC Ltd' and total debits?", 40);
+                await clickElement(attachBtn); await sleep(500);
+                filePreviewBar.innerHTML = snippetFilePreview("Bank_Statement.pdf", snippetFileIcon('pdf'));
+                filePreviewBar.classList.remove('hidden');
+                await sleep(2000); // File processing...
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubbleWithFile("user-q2", "Analyze this statement. What's the total for 'ABC Ltd' and total debits?", "Bank_Statement.pdf", snippetFileIcon('pdf'));
+                messageInput.value = ''; filePreviewBar.classList.add('hidden'); await sleep(1000);
+                messageList.innerHTML += snippetTypingBubble("t2", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(4000); document.getElementById('t2').remove();
+                messageList.innerHTML += snippetAiBubble("ai-a2", AVATAR_TAX);
+                await typeHTML(document.getElementById('ai-a2'), "Analyzed. Total debits are **₹1,45,200**. \n\nThe total amount paid to 'ABC Ltd' is **₹30,000** (in 2 transactions).", 15);
+                await sleep(3000);
+
+                // Q3: Image (Table)
+                await showOverlay("Attaching an image of an invoice...", 2000);
+                await typeWriter(messageInput, "Extract the table data from this invoice image.", 40);
+                await clickElement(attachBtn); await sleep(500);
+                filePreviewBar.innerHTML = snippetFilePreview("invoice_img.png", snippetFileIcon('image'));
+                filePreviewBar.classList.remove('hidden');
+                await sleep(2000);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubbleWithFile("user-q3", "Extract the table data from this invoice image.", "invoice_img.png", snippetFileIcon('image'));
+                messageInput.value = ''; filePreviewBar.classList.add('hidden'); await sleep(1000);
+                messageList.innerHTML += snippetTypingBubble("t3", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(5000); document.getElementById('t3').remove();
+                messageList.innerHTML += snippetAiBubble("ai-a3", AVATAR_TAX);
+                await typeHTML(document.getElementById('ai-a3'), "Here is the data extracted from the image:<div class='demo-table'><div><table><thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody><tr><td>Laptop</td><td>1</td><td>80,000</td><td>80,000</td></tr><tr><td>Mouse</td><td>2</td><td>1,000</td><td>2,000</td></tr><tr><td>Total</td><td></td><td></td><td>82,000</td></tr></tbody></table></div></div>", 10);
+                await sleep(3000);
+                
+                // Q4: JSON (GSTR-1)
+                await showOverlay("Attaching GSTR-1 JSON data...", 2000);
+                await typeWriter(messageInput, "Summarize this GSTR-1 JSON file in a table.", 40);
+                await clickElement(attachBtn); await sleep(500);
+                filePreviewBar.innerHTML = snippetFilePreview("GSTR1_Oct.json", snippetFileIcon('json'));
+                filePreviewBar.classList.remove('hidden');
+                await sleep(2000);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubbleWithFile("user-q4", "Summarize this GSTR-1 JSON file in a table.", "GSTR1_Oct.json", snippetFileIcon('json'));
+                messageInput.value = ''; filePreviewBar.classList.add('hidden'); await sleep(1000);
+                messageList.innerHTML += snippetTypingBubble("t4", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(5000); document.getElementById('t4').remove();
+                messageList.innerHTML += snippetAiBubble("ai-a4", AVATAR_TAX);
+                await typeHTML(document.getElementById('ai-a4'), "Here is the GSTR-1 B2B Summary:<div class='demo-table'><div><table><thead><tr><th>GSTIN</th><th>Inv No</th><th>Inv Date</th><th>Taxable</th><th>IGST</th><th>CGST</th><th>SGST</th></tr></thead><tbody><tr><td>07A...</td><td>101</td><td>05-10-25</td><td>1,50,000</td><td>27,000</td><td>0</td><td>0</td></tr><tr><td>29A...</td><td>102</td><td>12-10-25</td><td>50,000</td><td>0</td><td>4,500</td><td>4,500</td></tr><tr><td>07A...</td><td>103</td><td>20-10-25</td><td>3,00,000</td><td>54,000</td><td>0</td><td>0</td></tr><tr><td><strong>Total</strong></td><td></td><td></td><td><strong>5,00,000</strong></td><td><strong>81,000</strong></td><td><strong>4,500</strong></td><td><strong>4,500</strong></td></tr></tbody></table></div></div>", 5);
+                await sleep(3000);
+
+                // Q5: Excel (Reconciliation)
+                await showOverlay("Attaching Excel for 2B vs 3B Reconciliation...", 2500);
+                await typeWriter(messageInput, "Reconcile my GSTR-3B vs 2B from this file.", 40);
+                await clickElement(attachBtn); await sleep(500);
+                filePreviewBar.innerHTML = snippetFilePreview("ITC_Data.xlsx", snippetFileIcon('excel'));
+                filePreviewBar.classList.remove('hidden');
+                await sleep(2000);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubbleWithFile("user-q5", "Reconcile my GSTR-3B vs 2B from this file.", "ITC_Data.xlsx", snippetFileIcon('excel'));
+                messageInput.value = ''; filePreviewBar.classList.add('hidden'); await sleep(1000);
+                messageList.innerHTML += snippetTypingBubble("t5", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(5000); document.getElementById('t5').remove();
+                messageList.innerHTML += snippetAiBubble("ai-a5", AVATAR_TAX);
+                await typeHTML(document.getElementById('ai-a5'), "Here is the ITC reconciliation summary:<div class='demo-table'><div><table><thead><tr><th>Status</th><th>Taxable</th><th>IGST</th><th>CGST</th><th>SGST</th></tr></thead><tbody><tr><td>✅ Matched</td><td>2,50,000</td><td>45,000</td><td>0</td><td>0</td></tr><tr><td>❌ In 3B, not in 2B</td><td><strong>50,000</strong></td><td><strong>9,000</strong></td><td>0</td><td>0</td></tr><tr><td>⚠️ In 2B, not in 3B</td><td>20,000</td><td>0</td><td>1,800</td><td>1,800</td></tr><tr><td><strong>Net (3B - 2B)</strong></td><td></td><td><strong>+9,000</strong></td><td><strong>-1,800</strong></td><td><strong>-1,800</strong></td></tr></tbody></table></div></div><p class='mt-2'>**Action:** You need to follow up on the **₹9,000** excess ITC claimed in 3B and check why you missed the ITC of **₹3,600** (CGST+SGST).</p>", 5);
+                await sleep(3000);
+                
+                // Q6: PDF (Tax Audit)
+                await showOverlay("Attaching Tax Audit Report...", 2000);
+                await typeWriter(messageInput, "I'm auditing this file. What observations can I add for 'Loans and Advances'?", 40);
+                await clickElement(attachBtn); await sleep(500);
+                filePreviewBar.innerHTML = snippetFilePreview("Audit_File.pdf", snippetFileIcon('pdf'));
+                filePreviewBar.classList.remove('hidden');
+                await sleep(2000);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubbleWithFile("user-q6", "I'm auditing this file. What observations can I add for 'Loans and Advances'?", "Audit_File.pdf", snippetFileIcon('pdf'));
+                messageInput.value = ''; filePreviewBar.classList.add('hidden'); await sleep(1000);
+                messageList.innerHTML += snippetTypingBubble("t6", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(5000); document.getElementById('t6').remove();
+                messageList.innerHTML += snippetAiBubble("ai-a6", AVATAR_TAX);
+                await typeHTML(document.getElementById('ai-a6'), "Based on the file, here are two potential observations:\n\n1. **MSME Confirmation:** We observed that 'Loans and Advances' include trade receivables, but confirmations from MSME suppliers (as required by Sec 43B(h)) were not available for review.\n\n2. **Aging:** Advances of ₹1.5L to 'XYZ Ltd' are outstanding for > 6 months. We recommend verifying the recoverability of this amount.", 15);
+                await sleep(3000);
+
+                // Q7: Excel (Balance Sheet)
+                await showOverlay("Attaching Balance Sheet for error check...", 2500);
+                await typeWriter(messageInput, "Check this Balance Sheet for any obvious errors.", 40);
+                await clickElement(attachBtn); await sleep(500);
+                filePreviewBar.innerHTML = snippetFilePreview("BalanceSheet.xlsx", snippetFileIcon('excel'));
+                filePreviewBar.classList.remove('hidden');
+                await sleep(2000);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubbleWithFile("user-q7", "Check this Balance Sheet for any obvious errors.", "BalanceSheet.xlsx", snippetFileIcon('excel'));
+                messageInput.value = ''; filePreviewBar.classList.add('hidden'); await sleep(1000);
+                messageList.innerHTML += snippetTypingBubble("t7", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(4000); document.getElementById('t7').remove();
+                messageList.innerHTML += snippetAiBubble("ai-a7", AVATAR_TAX);
+                await typeHTML(document.getElementById('ai-a7'), "Found a critical error:\n\n**The Balance Sheet does not tally.**\n\n- Total Assets: **₹10,50,000**\n- Total Liabilities + Equity: **₹10,20,000**\n\nThere is a **mismatch of ₹30,000**. Please check the 'Trade Payables' or 'Cash & Bank' balance.", 15);
+                await sleep(3000);
+
+
+                // === SCENE 9: GO BACK & CREATE GROUP ===
+                await showOverlay("Going back to create a group chat...", 2000);
+                const backBtnChat = chatScreen.querySelector('#chat-back-btn');
+                await clickElement(backBtnChat);
+                await sleep(1000);
+                chatScreen.classList.add('hidden');
+                document.getElementById('chat-list-screen').classList.remove('hidden');
+                await sleep(1000);
+                
+                const newGroupBtn = document.getElementById('new-group-btn');
+                await clickElement(newGroupBtn);
+                await sleep(500);
+                
+                const newGroupModal = document.getElementById('new-group-modal');
+                newGroupModal.classList.remove('hidden');
+                document.getElementById('group-member-list').innerHTML = snippetGroupMemberList;
+                await sleep(1000);
+                
+                await showOverlay("Creating 'Audit Team' group...", 2000);
+                await typeWriter(newGroupModal.querySelector('#group-name-input'), "Audit Team", 70);
+                await sleep(500);
+                
+                // Members select karo
+                await clickElement(newGroupModal.querySelector('input[data-member="taxdost"]'));
+                newGroupModal.querySelector('input[data-member="taxdost"]').checked = true;
+                await sleep(500);
+                await clickElement(newGroupModal.querySelector('input[data-member="gstauditor"]'));
+                newGroupModal.querySelector('input[data-member="gstauditor"]').checked = true;
+                await sleep(1000);
+                
+                const saveGroupBtn = newGroupModal.querySelector('#save-group-btn');
+                await clickElement(saveGroupBtn);
+                await sleep(500);
+                newGroupModal.classList.add('hidden');
+                
+                document.getElementById('chat-list-container').innerHTML += snippetNewGroupItem;
+                await sleep(2000);
+                
+                // === SCENE 10: GROUP CHAT DEBATE ===
+                await showOverlay("Starting group chat...", 1500);
+                const auditTeamChat = document.getElementById('chat-item-group');
+                await clickElement(auditTeamChat);
+                await sleep(1000);
+                
+                document.getElementById('chat-list-screen').classList.add('hidden');
+                chatScreen.classList.remove('hidden');
+                
+                // Header badlo
+                document.getElementById('chat-header-title').innerText = "Audit Team";
+                document.getElementById('chat-header-subtitle').innerText = "Group Chat • 2 members";
+                document.getElementById('chat-header-img').src = AVATAR_GROUP;
+                document.getElementById('skip-btn').classList.remove('hidden'); // SKIP BUTTON DIKHAO
+                messageList.innerHTML = ''; // Messages clear karo
+                await sleep(1000);
+
+                await showOverlay("Asking AIs to debate...", 2000);
+                await typeWriter(messageInput, "Please debate: What are the ITC implications for capital goods used for both taxable and exempt supplies?", 40);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubble("user-q-group", "Please debate: What are the ITC implications for capital goods used for both taxable and exempt supplies?");
+                messageInput.value = '';
+                await sleep(1000);
+
+                await showOverlay("Clicking 'Skip' to let AIs talk...", 2500);
+                const skipBtn = document.getElementById('skip-btn');
+                await clickElement(skipBtn);
+                await sleep(1000);
+                
+                messageList.innerHTML += snippetTypingBubble("t-group1", AVATAR_GST);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(3000); document.getElementById('t-group1').remove();
+                messageList.innerHTML += snippetAiGroupBubble("ai-g1", AVATAR_GST, "GST Expert");
+                await typeHTML(document.getElementById('ai-g1'), "As per **Rule 43**, ITC on such capital goods is attributed to exempt supplies over 5 years (60 months). This reversal must be calculated and added to the output tax liability monthly.", 15);
+                await sleep(3000);
+                
+                await showOverlay("Clicking 'Skip' again...", 2000);
+                await clickElement(skipBtn);
+                await sleep(1000);
+                
+                messageList.innerHTML += snippetTypingBubble("t-group2", AVATAR_TAX);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(4000); document.getElementById('t-group2').remove();
+                messageList.innerHTML += snippetAiGroupBubble("ai-g2", AVATAR_TAX, "Tax Consultant");
+                await typeHTML(document.getElementById('ai-g2'), "Correct, **GST Expert**. But what about the GST on Joint Development Agreements (JDA)? The valuation under Rule 30 vs Rule 31 is always a grey area and causes disputes.", 15);
+                await sleep(3000);
+
+                await showOverlay("Clicking 'Skip' for AI response...", 2000);
+                await clickElement(skipBtn);
+                await sleep(1000);
+                
+                messageList.innerHTML += snippetTypingBubble("t-group3", AVATAR_GST);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(4000); document.getElementById('t-group3').remove();
+                messageList.innerHTML += snippetAiGroupBubble("ai-g3", AVATAR_GST, "GST Expert");
+                await typeHTML(document.getElementById('ai-g3'), "For JDAs, Rule 31 (open market value) is preferred. However, if that's not ascertainable, the 110% cost method under Rule 30 can be used, but it often leads to lower valuation. It's risky.", 15);
+                await sleep(3000);
+
+                // === SCENE 11: BLOCK FEATURE ===
+                await showOverlay("Testing the block feature...", 2000);
+                await typeWriter(messageInput, "This is inappropriate.", 40);
+                await sleep(500);
+                await clickElement(sendBtn);
+                messageList.innerHTML += snippetUserBubble("user-q-block", "This is inappropriate.");
+                messageInput.value = '';
+                await sleep(1000);
+                
+                messageList.innerHTML += snippetTypingBubble("t-block", AVATAR_GST);
+                scrollToBottom(document.getElementById('message-list-container'));
+                await sleep(3000);
+                document.getElementById('t-block').remove();
+                
+                await showOverlay("User has been blocked by AI.", 2000);
+                document.getElementById('blocker-name').innerText = "Audit Team";
+                document.getElementById('block-message-bar').classList.remove('hidden');
+                messageInput.disabled = true;
+                messageInput.placeholder = "You are blocked";
+                sendBtn.style.backgroundColor = '#9CA3AF';
+                await sleep(4000);
+
+                await showOverlay("Requesting unblock (1/3)...", 2000);
+                const unblockBtn = document.getElementById('unblock-btn');
+                await clickElement(unblockBtn);
+                await sleep(500);
+                document.getElementById('block-message-bar').classList.add('hidden');
+                messageInput.disabled = false;
+                messageInput.placeholder = "Message (Shift + Enter for new line)...";
+                sendBtn.style.backgroundColor = '#2563EB';
+                await sleep(1000);
+
+                // === SCENE 12: END & DISCLAIMER ===
+                await showOverlay("Demo Complete!", 2000);
+                
+                disclaimer.classList.remove('hidden');
+                disclaimer.style.opacity = 1;
+                await sleep(5000);
+                disclaimer.style.opacity = 0;
+                await sleep(500);
+                disclaimer.classList.add('hidden');
+                
+                // Poora demo loop par chalao
+                playDemo();
+            } catch (err) {
+                console.error("Demo failed:", err);
+                canvas.innerHTML = `<div class="h-full flex items-center justify-center p-8"><div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert"><strong class="font-bold">Demo Error!</strong><span class="block sm:inline"> ${err.message}. Please check console.</span></div></div>`;
+            }
+        }
+
+        // --- 5. DEMO SHURU KARO ---
+        document.addEventListener('DOMContentLoaded', playDemo);
+
+    </script>
+</body>
+</html>
