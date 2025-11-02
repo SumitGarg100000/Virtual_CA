@@ -145,7 +145,7 @@
 
     <div id="text-overlay"></div>
     
-    <div id="disclaimer-overlay" class.="hidden">
+    <div id="disclaimer-overlay" class="hidden">
         <div class="text-center text-white p-8">
             <h1 class="text-4xl font-bold mb-4">Demo Complete</h1>
             <p class="text-lg text-gray-300">
@@ -251,7 +251,7 @@
                             </div>
                             <div id="message-list" class="space-y-2 p-4"></div>
                         </main>
-                        <footer class="chat-footer bg-white border-t border-gray-300">
+                        <footer class="chat-footer fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 z-10">
                             <div id="file-preview-bar" class="hidden p-3 border-b border-gray-200 bg-gray-50"></div>
                             <div class="p-3 flex items-end gap-3">
                                 <button id="attach-btn" class="p-2 text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg></button>
@@ -288,12 +288,12 @@
                     </div>
 
                     <div id="updates-view-screen" class="hidden flex flex-col h-full bg-gray-100">
-                        <header class="fixed-header bg-blue-600 text-white p-3 pt-8 flex items-center shadow-md z-10 w-full">
+                      <header class="fixed top-0 left-0 right-0 bg-blue-600 text-white p-3 pt-8 flex items-center shadow-md z-10">
                             <button id="update-view-back-btn" class="p-2 rounded-full hover:bg-white/20"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
                             <div class="ml-3 flex-grow"><h2 class="font-semibold text-lg">📄 GST Due Dates</h2></div>
                             <button id="refresh-updates-btn" class="p-2 rounded-full hover:bg-white/20"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2a8.001 8.001 0 0015.357 2m0 0H15"></path></svg></button>
                         </header>
-                        <main id="update-content-container" class="message-container flex-grow overflow-y-auto pt-20 p-4">
+                        <main id="update-content-container" class="message-container flex-grow overflow-y-auto pt-24 p-4">
                             </main>
                     </div>
                     
