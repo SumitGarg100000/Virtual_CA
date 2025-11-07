@@ -136,7 +136,7 @@
                 console.error("Error finding or creating folder:", error);
                 let errorMessage = "An unknown error occurred. Check console for details.";
                 if (error && error.body) { try { const errorDetails = JSON.parse(error.body); if (errorDetails.error && errorDetails.error.message) { errorMessage = errorDetails.error.message; } } catch (e) { errorMessage = "Could not read the exact error message from Google."; } }
-                alert("Google Drive Error: " + errorMessage);
+              //  alert("Google Drive Error: " + errorMessage);
                 return null;
             }
         },
@@ -192,7 +192,7 @@
                 return result.id;
             } catch (error) {
                 console.error("Error uploading file with fetch:", error);
-                alert("Google Drive UPLOAD Error: " + error.message);
+              //  alert("Google Drive UPLOAD Error: " + error.message);
                 return null;
             }
         },
@@ -222,7 +222,7 @@
                 return result.id;
             } catch (error) {
                 console.error("Error updating file with fetch:", error);
-                alert("Google Drive UPDATE Error: " + error.message);
+         //       alert("Google Drive UPDATE Error: " + error.message);
                 return null;
             }
         },
