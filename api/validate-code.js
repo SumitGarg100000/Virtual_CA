@@ -10,7 +10,7 @@ export default function handler(req, res) {
   // Har secret code ka apna ek reference code hona chahiye
   const secretCodes = {
     "CAGPT":  { "expiryDate": "2025-11-08", "referenceCode": "CAGPT" },
-    "NEW30":  { "expiryDate": "2025-11-03", "referenceCode": "NEW30" },
+    "APPLE2025":  { "expiryDate": "2025-11-20", "referenceCode": "APPLE2025" },
     "LIFETIME2024": { "expiryDate": "2030-12-31", "referenceCode": "LIFE2024" },
     "SUMIT2025": { "expiryDate": "2025-11-05", "referenceCode": "SUMIT2025" },
     "NEW20":   { "expiryDate": "2025-11-02", "referenceCode": "NEW20" }
