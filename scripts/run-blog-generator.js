@@ -60,7 +60,7 @@ async function generateBlog() {
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY); // Use the correct ENV var name
         const modelWithSearch = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
+            model: "gemini-1.5-flash",
             tools: [{ "google_search": {} }],
         });
 
