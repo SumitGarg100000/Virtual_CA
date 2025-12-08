@@ -232,16 +232,16 @@ async function generateBlog() {
 
         // Add new blog metadata to the TOP of the list
         // FIX: Matching the exact structure you showed me (id, title, date, url)
-       // --- ISKO COPY KARKE PASTE KARO ---
+     
         const listEntry = {
             id: blogData.id,
             title: blogData.title,
 
-            // --- DATE FIX (Undefined Hatane ke liye) ---
-            date: blogData.date,            // Option 1
-            publishedDate: blogData.date,   // Option 2 (Zyadatar yehi chahiye hota hai)
-            publishedOn: blogData.date,     // Option 3
-            // -------------------------------------------
+            // --- DATE FIX (Frontend 'createdDate' maang raha hai) ---
+            date: blogData.date, 
+            createdDate: blogData.date,  // <--- YE HAI MAIN FIX
+            publishedDate: blogData.date,
+            // -------------------------------------------------------
 
             url: `/data/blogs/${fileName}`,
             slug: blogData.slug,
