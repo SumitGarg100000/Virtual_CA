@@ -1,4 +1,4 @@
-// scripts/run-update-generator.js (v3.3 - Local JSON & Stable Model)
+// scripts/run-update-generator.js (v3.5 - List Updater & Stable Model)
 
 import fs from 'fs';
 import path from 'path';
@@ -24,6 +24,7 @@ async function safeGenerateContent(model, prompt) {
             }
             return null; // Indicate failure or block
         }
+        // Safely access the text part
         return await result.response.text(); 
     } catch (error) {
         console.error("Error during Gemini generateContent call:", error);
@@ -38,7 +39,7 @@ async function safeGenerateContent(model, prompt) {
 
 // --- MAIN FUNCTION ---
 async function generateUpdate() {
-    console.log('Update generator script (v3.3 - Local JSON) started...');
+    console.log('Update generator script (v3.5 - List Updater) started...');
 
     try {
         // --- Security Check ---
@@ -49,45 +50,38 @@ async function generateUpdate() {
 
         // --- Initialize Gemini ONLY ---
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        
         // FIXED: Using 'gemini-2.5-flash' to avoid 429 Quota Errors
         const modelWithSearch = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
+            model: "gemini-2.5-flash", 
             tools: [{ "google_search": {} }],
         });
 
         // --- Define Local Paths ---
         const projectRoot = process.cwd();
         const updatesDir = path.join(projectRoot, 'data', 'updates');
+        // ADDED: Path for the central list file
+        const listFilePath = path.join(projectRoot, 'data', 'update-list.json');
 
 
-        // --- Fetch Existing Titles for Duplicate Check (LOCAL JSON) ---
+        // --- Fetch Existing Titles for Duplicate Check (From List File) ---
+        // Hum list file se hi check karenge, wo zyada reliable hai
         let existingTitles = [];
-        try {
-            console.log(`Checking for existing updates in: ${updatesDir}`);
-            
-            if (fs.existsSync(updatesDir)) {
-                const files = fs.readdirSync(updatesDir);
-                
-                // Read JSON files to extract titles
-                existingTitles = files.map(file => {
-                    if (path.extname(file) === '.json') {
-                        try {
-                            const content = fs.readFileSync(path.join(updatesDir, file), 'utf-8');
-                            const json = JSON.parse(content);
-                            return json.title ? json.title.toLowerCase() : null;
-                        } catch (err) {
-                            return null;
-                        }
-                    }
-                    return null;
-                }).filter(Boolean); // Remove nulls
+        let updateList = [];
 
-                console.log(`Found ${existingTitles.length} existing titles locally to avoid.`);
+        try {
+            console.log(`Checking for existing updates list at: ${listFilePath}`);
+            if (fs.existsSync(listFilePath)) {
+                const listData = fs.readFileSync(listFilePath, 'utf8');
+                updateList = JSON.parse(listData);
+                existingTitles = updateList.map(u => u.title.toLowerCase());
+                console.log(`Found ${existingTitles.length} existing updates in list.`);
             } else {
-                console.log('Updates directory does not exist yet. No duplicates to check.');
+                console.log('Update list file does not exist yet. No duplicates to check.');
             }
         } catch (listError) {
-            console.warn('Error reading local files for duplicate check:', listError.message);
+            console.warn('Error reading update list file:', listError.message);
+            updateList = [];
             existingTitles = [];
         }
         // --- Duplicate Check Fetch END ---
@@ -114,7 +108,7 @@ async function generateUpdate() {
             * Simple official circulars/notifications.
          8. **STRICTLY EXCLUDE:**
             * Unverified/Older topics (outside 1-2 days).
-            * Topics already in this list: ${JSON.stringify(existingTitles)} // <-- LOCAL DUPLICATE CHECK
+            * Topics already in this list: ${JSON.stringify(existingTitles)} // <-- CHECK DUPLICATES
             * Complex judgments, deep analysis articles, seminars, general news.
          9. Select the single most important **VERIFIED or Widely Reported, NEW, and RECENT** topic.
       10. If NO such topic is found after thorough verification, output **ONLY** the text "NO_NEW_VERIFIED_UPDATES_FOUND".
@@ -240,8 +234,28 @@ async function generateUpdate() {
         console.log(`Attempting to save update file locally at: ${filePath}`);
         
         fs.writeFileSync(filePath, JSON.stringify(updateData, null, 2), 'utf8');
+        console.log(`✅ Individual update saved: ${fileName}`);
 
-        console.log(`✅ Update article saved successfully as JSON: ${fileName}`);
+
+        // --- 4. UPDATE THE CENTRAL LIST (update-list.json) ---
+        // Ye naya logic hai taaki website par list update ho
+        console.log('Updating update-list.json...');
+        
+        const listEntry = {
+            id: updateData.id,
+            title: updateData.title,
+            date: updateData.date,
+            slug: updateData.slug,
+            excerpt: blogContent.substring(0, 100).replace(/#/g, '').trim() + "..." // Clean excerpt
+        };
+
+        // List mein sabse upar add karo
+        updateList.unshift(listEntry);
+
+        // Wapis save karo list file ko
+        fs.writeFileSync(listFilePath, JSON.stringify(updateList, null, 2), 'utf8');
+        console.log(`✅ update-list.json updated successfully.`);
+
         process.exit(0);
 
     } catch (error) {
