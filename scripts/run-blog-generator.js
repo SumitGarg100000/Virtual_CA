@@ -1,4 +1,4 @@
-// scripts/run-blog-generator.js (v3.3 - Local JSON & Stable Model)
+// scripts/run-blog-generator.js (v3.4 - Local JSON, Stable Model & List Updater)
 
 import fs from 'fs';
 import path from 'path';
@@ -39,7 +39,7 @@ async function safeGenerateContent(model, prompt) {
 
 // --- MAIN FUNCTION ---
 async function generateBlog() {
-    console.log('Blog generator script (v3.3 - Local JSON) started...');
+    console.log('Blog generator script (v3.4 - List Updater) started...');
 
     try {
         // --- Security Check ---
@@ -50,7 +50,8 @@ async function generateBlog() {
 
         // --- Initialize Gemini ONLY ---
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // FIXED: Using 'gemini-2.5-flash' to avoid 429 Quota Errors
+        
+        // FIXED: Changed to 'gemini-2.5-flash' to avoid 429 Quota Errors
         const modelWithSearch = genAI.getGenerativeModel({
             model: "gemini-2.5-flash", 
             tools: [{ "google_search": {} }],
@@ -59,6 +60,8 @@ async function generateBlog() {
         // --- Define Local Paths ---
         const projectRoot = process.cwd();
         const blogsDir = path.join(projectRoot, 'data', 'blogs');
+        // ADDED: Path for the central list file
+        const listFilePath = path.join(projectRoot, 'data', 'blog-list.json');
 
 
         // --- Gemini se Latest Analytical Topic Dhoondhwao ---
@@ -208,8 +211,39 @@ async function generateBlog() {
         console.log(`Attempting to save blog file locally at: ${filePath}`);
         
         fs.writeFileSync(filePath, JSON.stringify(blogData, null, 2), 'utf8');
-
         console.log(`✅ Blog article saved successfully as JSON: ${fileName}`);
+
+        // --- 4. UPDATE THE CENTRAL LIST (blog-list.json) ---
+        // Ye logic naya add kiya hai taaki website par list update ho
+        console.log('Updating blog-list.json...');
+        let blogList = [];
+        
+        // Read existing list if it exists
+        if (fs.existsSync(listFilePath)) {
+            try {
+                const listData = fs.readFileSync(listFilePath, 'utf8');
+                blogList = JSON.parse(listData);
+            } catch (err) {
+                console.warn("Could not read existing list, starting fresh.");
+                blogList = [];
+            }
+        }
+
+        // Add new blog metadata to the TOP of the list
+        const listEntry = {
+            id: blogData.id,
+            title: blogData.title,
+            date: blogData.date,
+            slug: blogData.slug,
+            excerpt: blogContent.substring(0, 150).replace(/#/g, '').replace(/\*/g, '').trim() + "..." // Clean preview
+        };
+
+        blogList.unshift(listEntry); // Add to beginning of array
+
+        // Save updated list
+        fs.writeFileSync(listFilePath, JSON.stringify(blogList, null, 2), 'utf8');
+        console.log(`✅ blog-list.json updated successfully.`);
+
         process.exit(0);
 
     } catch (error) {
