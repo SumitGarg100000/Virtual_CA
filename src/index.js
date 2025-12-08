@@ -1698,7 +1698,7 @@ const MessageList = ({
         /* OBFUSCATION SAFE - This component contains pure UI logic without React elements in system instructions */
         const ChatScreen = ({ character, userProfile, onCharacterUpdate, onBack, onUserProfileUpdate, backgroundUrl, onSetBackground }) => {
 
-            const TOTAL_API_KEYS = 3; // Example: Agar aapke paas 3 keys hain
+            const TOTAL_API_KEYS = 5; // Example: Agar aapke paas 3 keys hain
           const [messages, setMessages] = useState(character.messages);
           const [isTyping, setIsTyping] = useState(false);
           const [showAiProfile, setShowAiProfile] = useState(false);
@@ -2011,7 +2011,7 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
 
   const GroupChatScreen = ({ group, characters, userProfile, onGroupUpdate, onBack, onUserProfileUpdate, backgroundUrl, onSetBackground }) => {
     // ==> IMPORTANT: Apni total API keys ka number yahan daalein <==
-    const TOTAL_API_KEYS = 3; // Example: Agar aapke paas 3 keys hain
+    const TOTAL_API_KEYS = 5; // Example: Agar aapke paas 3 keys hain
 
     const [messages, setMessages] = useState(group.messages || []);
     const [isTyping, setIsTyping] = useState(false);
