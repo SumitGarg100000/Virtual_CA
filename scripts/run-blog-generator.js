@@ -232,13 +232,21 @@ async function generateBlog() {
 
         // Add new blog metadata to the TOP of the list
         // FIX: Matching the exact structure you showed me (id, title, date, url)
+       // --- ISKO COPY KARKE PASTE KARO ---
         const listEntry = {
             id: blogData.id,
             title: blogData.title,
-            date: blogData.date,
-            url: `/data/blogs/${fileName}` // <--- URL FIELD ADDED
-        };
 
+            // --- DATE FIX (Undefined Hatane ke liye) ---
+            date: blogData.date,            // Option 1
+            publishedDate: blogData.date,   // Option 2 (Zyadatar yehi chahiye hota hai)
+            publishedOn: blogData.date,     // Option 3
+            // -------------------------------------------
+
+            url: `/data/blogs/${fileName}`,
+            slug: blogData.slug,
+            excerpt: blogContent.substring(0, 150).replace(/#/g, '').replace(/\*/g, '').trim() + "..."
+        };
         blogList.unshift(listEntry); // Add to beginning of array
 
         // Save updated list
