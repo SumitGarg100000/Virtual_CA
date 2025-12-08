@@ -1,4 +1,4 @@
-// scripts/run-update-generator.js (v3.5 - List Updater & Stable Model)
+// scripts/run-update-generator.js (v3.5 - URL Field, Hyphenated Slugs & Stable Model)
 
 import fs from 'fs';
 import path from 'path';
@@ -39,7 +39,7 @@ async function safeGenerateContent(model, prompt) {
 
 // --- MAIN FUNCTION ---
 async function generateUpdate() {
-    console.log('Update generator script (v3.5 - List Updater) started...');
+    console.log('Update generator script (v3.5 - URL Fix) started...');
 
     try {
         // --- Security Check ---
@@ -208,10 +208,11 @@ async function generateUpdate() {
              process.exit(0);
         }
 
-        const sanitizedTitle = title.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+        // FIX: Use hyphens instead of underscores for SEO friendly URLs
+        const sanitizedTitle = title.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '-').toLowerCase();
         
         // File name ends with .json
-        const fileName = `${sanitizedTitle.substring(0, 50)}_${Date.now()}.json`;
+        const fileName = `${sanitizedTitle}-${Date.now()}.json`;
 
         // 1. Ensure the directory exists
         if (!fs.existsSync(updatesDir)) {
@@ -221,9 +222,9 @@ async function generateUpdate() {
 
         // 2. Prepare JSON Object for Website
         const updateData = {
-            id: Date.now().toString(),
+            id: fileName.replace('.json', ''), // ID must match filename for API to find it
             title: title,
-            slug: sanitizedTitle.toLowerCase(),
+            slug: sanitizedTitle,
             date: currentDateStr,
             content: blogContent, // Full Markdown content
             type: "update"
@@ -238,15 +239,15 @@ async function generateUpdate() {
 
 
         // --- 4. UPDATE THE CENTRAL LIST (update-list.json) ---
-        // Ye naya logic hai taaki website par list update ho
+        // Ye logic naya add kiya hai taaki website par list update ho
         console.log('Updating update-list.json...');
         
+        // FIX: Matching the exact structure with 'url' field
         const listEntry = {
             id: updateData.id,
             title: updateData.title,
             date: updateData.date,
-            slug: updateData.slug,
-            excerpt: blogContent.substring(0, 100).replace(/#/g, '').trim() + "..." // Clean excerpt
+            url: `/data/updates/${fileName}` // <--- URL FIELD ADDED
         };
 
         // List mein sabse upar add karo
@@ -254,7 +255,7 @@ async function generateUpdate() {
 
         // Wapis save karo list file ko
         fs.writeFileSync(listFilePath, JSON.stringify(updateList, null, 2), 'utf8');
-        console.log(`✅ update-list.json updated successfully.`);
+        console.log(`✅ update-list.json updated successfully with URL field.`);
 
         process.exit(0);
 
