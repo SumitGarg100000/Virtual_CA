@@ -242,12 +242,20 @@ async function generateUpdate() {
         // Ye logic naya add kiya hai taaki website par list update ho
         console.log('Updating update-list.json...');
         
-        // FIX: Matching the exact structure with 'url' field
+       // --- ISKO COPY KARKE PASTE KARO ---
         const listEntry = {
             id: updateData.id,
             title: updateData.title,
+
+            // --- DATE FIX (Undefined Hatane ke liye) ---
             date: updateData.date,
-            url: `/data/updates/${fileName}` // <--- URL FIELD ADDED
+            publishedDate: updateData.date,
+            publishedOn: updateData.date,
+            // -------------------------------------------
+
+            url: `/data/updates/${fileName}`,
+            slug: updateData.slug,
+            excerpt: blogContent.substring(0, 100).replace(/#/g, '').trim() + "..."
         };
 
         // List mein sabse upar add karo
