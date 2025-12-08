@@ -242,16 +242,16 @@ async function generateUpdate() {
         // Ye logic naya add kiya hai taaki website par list update ho
         console.log('Updating update-list.json...');
         
-       // --- ISKO COPY KARKE PASTE KARO ---
+      // --- ISKO COPY KARKE REPLACE KARO ---
         const listEntry = {
             id: updateData.id,
             title: updateData.title,
 
-            // --- DATE FIX (Undefined Hatane ke liye) ---
+            // --- DATE FIX (Frontend 'createdDate' maang raha hai) ---
             date: updateData.date,
+            createdDate: updateData.date, // <--- YE HAI MAIN FIX
             publishedDate: updateData.date,
-            publishedOn: updateData.date,
-            // -------------------------------------------
+            // -------------------------------------------------------
 
             url: `/data/updates/${fileName}`,
             slug: updateData.slug,
