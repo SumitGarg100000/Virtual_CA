@@ -1,136 +1,229 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// scripts/run-blog-generator.js (v3.1 - Robust Parsing & Better Prompts)
 import fs from 'fs';
 import path from 'path';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// --- CONFIGURATION: Folders ---
-const BLOGS_DIR = path.join(process.cwd(), 'data', 'blogs');
-const LIST_FILE = path.join(process.cwd(), 'data', 'blog-list.json');
-
-// --- Helper: Date Formatter ---
+// Helper function to get current date formatted
 function getCurrentDateFormatted() {
-    return new Date().toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Kolkata'
-    });
+    return new Date().toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Kolkata'
+    });
 }
 
-// --- Helper: Delay for Retries ---
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// --- Helper: Safe Gemini Call (With Retry Logic) ---
+// Helper function to handle potential Gemini errors gracefully
 async function safeGenerateContent(model, prompt) {
-    const maxRetries = 5;
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-            const result = await model.generateContent(prompt);
-            return result.response.text();
-        } catch (error) {
-            const isOverloaded = error.message.includes('503') || error.status === 503;
-            const isRateLimit = error.message.includes('429') || error.status === 429;
-
-            if ((isOverloaded || isRateLimit) && attempt < maxRetries) {
-                const waitTime = 2000 * Math.pow(2, attempt - 1); // 2s, 4s, 8s...
-                console.warn(`⚠️ API Busy (Attempt ${attempt}). Retrying in ${waitTime / 1000}s...`);
-                await delay(waitTime);
-                continue;
-            }
-            
-            // If it's a fatal error, log it and return null
-            console.error("❌ Gemini Fatal Error:", error.message);
-            return null;
-        }
-    }
-    return null;
+    try {
+        const result = await model.generateContent(prompt);
+        // Check if response exists AND if there are candidates with content
+        if (!result || !result.response || !result.response.candidates || result.response.candidates.length === 0 || !result.response.candidates[0].content || !result.response.candidates[0].content.parts || result.response.candidates[0].content.parts.length === 0) {
+           console.error("Gemini returned no response, was blocked, or had empty content for prompt:", prompt);
+           console.error("Full Gemini Result (if any):", JSON.stringify(result, null, 2));
+           // Check for specific block reason if available
+           if (result && result.response && result.response.promptFeedback && result.response.promptFeedback.blockReason) {
+               console.error("Block Reason:", result.response.promptFeedback.blockReason);
+           }
+           return null; // Indicate failure or block
+        }
+        // Safely access the text part
+        return await result.response.text(); // Use the built-in text() method for safety
+    } catch (error) {
+        console.error("Error during Gemini generateContent call:", error);
+        // Log specific error details if available (e.g., status code)
+        if (error.response) {
+            console.error("API Response Status:", error.response.status);
+            console.error("API Response Data:", error.response.data);
+        }
+        return null; // Indicate API call failure
+    }
 }
+
 
 // --- MAIN FUNCTION ---
 async function generateBlog() {
-    console.log('🚀 Blog Generator started (Local Mode)...');
+    console.log('Blog generator script (v3.1) started...');
 
-    try {
-        // 1. Initialize Gemini (Using STABLE 1.5 Flash)
+    try {
+        // --- Security Check ---
+        if (!process.env.CRON_SECRET || process.env.CRON_SECRET === "YOUR_SECRET_HERE") {
+             console.warn('CRON_SECRET is not set or is using a placeholder.');
+             // process.exit(1); // Uncomment to exit if secret is mandatory
+        }
+
+        // --- Initialize APIs (Gemini Only) ---
+        // Google Drive setup removed as we are saving locally
+        
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", tools: [{ "google_search": {} }] });
+        const modelWithSearch = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            tools: [{ "google_search": {} }],
+        });
 
-        // 2. Find Topic
-        const currentDate = getCurrentDateFormatted();
-        console.log('🔍 Finding trending topic...');
-        
-        const topicPrompt = `
-          **Current Date:** ${currentDate}.
-          Find a critical legal/tax update for Indian CAs from the last 7 days.
-          Verify it exists. Output ONLY the title. 
-          If nothing found, output: NO_TOPIC
-        `;
-        
-        const topicRaw = await safeGenerateContent(model, topicPrompt);
-        const topic = topicRaw ? topicRaw.trim() : "NO_TOPIC";
 
-        if (topic.includes("NO_TOPIC") || topic.length < 10) {
-            console.log("⚠️ No new topic found. Exiting.");
-            process.exit(0);
+        // --- Gemini se Latest Analytical Topic Dhoondhwao ---
+        const currentDate = getCurrentDateFormatted(); // Get current date
+        const topicFinderPrompt = `
+         **Current Date:** ${currentDate}.
+         **HIGHEST PRIORITY: ACCURACY & RECENCY.** Do NOT invent, assume, or select outdated topics.
+
+         **STEPS:**
+         1. **MANDATORY:** Use the Google Search tool to find significant legal/tax updates in India relevant to CAs/CSs published **strictly within the last 7-10 days FROM ${currentDate}**. Use all sources for research.
+         2. **VERIFICATION (CRITICAL):** For any potential topic (judgment, circular, amendment), verify the core facts and **publication/judgment date** across **multiple reliable sources** (official sites, reputable legal portals). Do NOT rely on a single source.
+         3. **DATE FILTER:** The verified publication/judgment date MUST be within the last 7-10 days from ${currentDate}.
+         4. **REJECT** any topic if:
+            - It cannot be reliably verified across multiple sources.
+            - Its verified date is outside the required timeframe.
+            - It requires significant assumptions.
+         5. **PRIORITIZE verified, recent topics involving deep analysis, such as:**
+            - Major Supreme Court/High Court judgments.
+            - New, complex circulars/notifications.
+            - Significant legal amendments.
+            - Important official clarifications (FAQs).
+         6. **STRICTLY EXCLUDE:**
+            - Unverified or older topics (regardless of significance).
+            - Simple news (due dates, reminders), seminars, general economic news.
+         7. Select the single most impactful **VERIFIED and RECENT** topic.
+         8. If NO such topic is found after thorough verification, output **ONLY** the text "NO_SUITABLE_VERIFIED_TOPIC_FOUND". This is mandatory if accuracy/recency cannot be guaranteed.
+
+         **OUTPUT:**
+         Create your own original, professional topic title for the selected topic, including the verified source's publication/judgment date.
+         Your final output MUST be ONLY this single-line title.
+         Example: "Supreme Court Clarifies GST ITC Rules for Bona Fide Purchases (Judgment dated Oct 18, 2025)"
+        `;
+        
+        console.log('Finding a high-value topic using Gemini...');
+        // --- UPDATED to use safeGenerateContent ---
+        const latestTopicRaw = await safeGenerateContent(modelWithSearch, topicFinderPrompt);
+
+        if (latestTopicRaw === null) {
+            // safeGenerateContent already logged the error
+            throw new Error("Gemini call failed or was blocked during topic finding.");
+        }
+        const latestTopic = latestTopicRaw.trim();
+        // --- END OF UPDATE ---
+
+       if (latestTopic === "NO_SUITABLE_VERIFIED_TOPIC_FOUND" || latestTopic.length < 15) { // Update this line
+        console.log("Could not find a suitable VERIFIED topic..."); // Update log
+        process.exit(0);
         }
-        console.log(`✅ Topic Found: "${topic}"`);
+        console.log(`High-Value Topic Found: "${latestTopic}"`);
 
-        // 3. Generate Content
-        console.log('✍️ Writing article...');
-        const contentPrompt = `
-          Write a detailed blog post on: "${topic}".
-          **IMPORTANT:** Start directly with a # Heading (H1). 
-          Use Markdown format.
-          Do NOT add any intro text like "Here is the blog".
-        `;
+        // --- Gemini se Found Topic par Original Blog Likhwao ---
+        const blogWriterPrompt = `
+         You are an expert Indian Chartered Accountant and Legal Analyst. Your task is to write a comprehensive, 100% original, and deeply analytical blog article on the topic: "${latestTopic}".
 
-        const content = await safeGenerateContent(model, contentPrompt);
-        if (!content) throw new Error("Failed to generate content after retries");
+         **Core Directive: This MUST be original content written by you. DO NOT copy-paste from any website. Your goal is to research, analyze, synthesize, and explain the information in your own unique words to pass all plagiarism checks and rank on Google.**
 
-        // 4. Create File Metadata
-        const titleLine = content.split('\n')[0].replace('#', '').trim();
-        const finalTitle = titleLine || topic;
+         **1. Sourcing & Analysis (CRITICAL RULE):**
+         * **Deep Research:** You MUST use Google Search to research this topic thoroughly.
+         * **Synthesize Multiple Sources:** Your analysis must be based on synthesizing information from *multiple* different sources (e.g., official notifications, reputable legal portals). **Do not rely on just one source.**
+         * **No Third-Party Citations:** You MUST NOT link to or even mention any third-party websites (like TaxGuru, Taxmann, etc.) in your article.
+         * **Link Priority (CRITICAL):**
+           * 1. **(BEST)** The direct official PDF/Judgment link (e.g., from egazette.nic.in, cbic.gov.in, main.sci.gov.in).
+           * 2. **(GOOD)** If the direct PDF/Judgment link cannot be found, link to the *official Press Release (PIB)* or the main *'Notifications'/'Judgments' section* of the relevant ministry/court website (e.g., 'https://cbic.gov.in/notifications', 'https://main.sci.gov.in/judgments').
+           * 3. **(LAST RESORT)** If no specific link is found, link to the ministry/court homepage (e.g., 'https://incometaxindia.gov.in/', 'https://mca.gov.in/').
+         * **CRITICAL:** **NEVER** invent (hallucinate) a link. If you cannot find a link from Priority 1 or 2, use Priority 3.
+
+         **2. Persona & Tone (FOR HUMAN-LIKE WRITING):**
+         * **Be a Colleague, Not a Robot:** Write as a senior, experienced colleague explaining a complex topic to another professional. Be helpful and insightful, not just descriptive.
+         * **Conversational & Engaging:** Use a professional *but conversational* tone. Ask rhetorical questions (e.g., "Toh ab iska matlab kya hai?", "Aap soch rahe honge ki iska impact kya hoga?").
+         * **Simple Language:** Avoid overly complex jargon. Jahaan zaroori ho, complex term ko explain karein.
+         * **Strategic Hinglish:** Feel free to use simple Hinglish phrases *naturally* where they fit, just like a real Indian professional would (e.g., "Yeh rule ab applicable nahi hai", "Isse clients ko kaafi relief milegi", "Yeh poora maamla kya hai?").
+         * **Avoid AI Clichés:** Do not use robotic phrases like "In today's fast-paced world," "In conclusion," "It is important to note," or "This blog post will delve into...". Be direct and start naturally.
+         
+         **Hinglish vs. Hindi (CRITICAL):**
+             * **ALLOWED (Hinglish):** You can (and should) mix simple Hindi/Urdu words into English sentences *naturally*, as long as you use the **Roman (English) alphabet**. (e.g., "Yeh rule ab *applicable* nahi hai", "Isse clients ko *kaafi* relief milegi", "Let's *samjho* this new notification").
+             * **NOT ALLOWED (Pure Hindi):** You MUST NOT write full sentences in the Devanagari (Hindi) script (e.g., "क्या आप भी परेशान हैं?"). All content, and especially **all headings and sub-headings, MUST be in the Roman (English) alphabet.**
+
+         **3. Format:**
+         * Use Markdown. Structure the article with a main heading (#), logical sub-headings (##, ###), and bullet points (*).
+        * Use **bold** for key terms and legal provisions.
+
+         **4. Content & Structure (Unlimited Words):**
+         * **Article Title (First Line):** The very first line MUST be an H1 tag (#) containing a new, engaging, SEO-friendly version of the topic. (e.g., \`# ${latestTopic}: A Complete Analysis\`).
+         * **Introduction:** Start with a hook or a common problem professionals are facing. (e.g., "Kya aap bhi GST ke is naye rule se confuse hain? Chaliye, isko aasaan bhasha mein samajhte hain.")
+         * **Detailed Analysis:** This is the main body. Explain the 'what', 'why', and 'how'. Cover all situations. Mention important dates.
+         * **If it's an Amendment:** Use a Markdown table to compare the **Old Provision** vs. **New Provision**.
+         * **If it's a Judgment:** Structure your analysis clearly: \`### Facts of the Case\`, \`### Legal Provisions Involved\`, \`### The Court's Decision & Rationale\`.
+         * **Practical Examples:** Include 1-2 real-world examples.
+         * **Conclusion (Final Thoughts):** Summarize the key takeaways. End with a concluding thought or actionable advice.
+         * **Official Sources (Mandatory):** End the article with: \`## Read the Official Document\` \n \`* [Download the Official Notification/Circular here](LINK_TO_GOV_PAGE_OR_PDF)\` \n \`* [Read the Full Judgment here](LINK_TO_COURT_WEBSITE)\` (Include relevant links).
+
+         **5. OUTPUT FORMATTING (CRITICAL):**
+         * **START IMMEDIATELY:** Your response MUST start *directly* with the H1 tag (the '#' character).
+         * **NO PREAMBLE:** Do NOT include *any* preamble, conversational text, thinking process, or any text like "Here's the plan..." or "I found the link..." before the H1 tag.
+
+         **6. Exclusions:**
+         * Do NOT add a 'Published on' date.
+        `; // <-- Prompt ends here with backtick
+
+        console.log('Generating original, human-like blog content...');
+        // --- UPDATED to use safeGenerateContent ---
+        const blogContentRaw = await safeGenerateContent(modelWithSearch, blogWriterPrompt);
+
+        if (blogContentRaw === null) {
+            // safeGenerateContent already logged the error
+            throw new Error("Gemini call failed or was blocked during content writing.");
+        }
+        // --- END OF UPDATE ---
         
-        const slug = finalTitle.toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, ''); 
-        
-        const fileName = `${slug}.json`;
-        const filePath = path.join(BLOGS_DIR, fileName);
+        // --- NEW: Clean the response and find the start of the article ---
+        // Find the index of the *first* H1 tag (which is '# ')
+        const h1Index = blogContentRaw.indexOf('# ');
 
-        // 5. Data Object
-        const blogPost = {
-            id: slug,
-            title: finalTitle,
-            date: getCurrentDateFormatted(),
-            content: content,
-            created_at: new Date().toISOString()
-        };
+        if (!blogContentRaw || h1Index === -1) {
+            // The response is empty OR the H1 tag is missing completely
+            console.error("Invalid blog content received (empty or no H1 tag found):", blogContentRaw);
+            throw new Error("Gemini did not return valid blog content (missing '# ').");
+        }
 
-        // 6. Save JSON File
-        fs.writeFileSync(filePath, JSON.stringify(blogPost, null, 2));
-        console.log(`💾 Saved Blog File: ${fileName}`);
+        // Slice the content from the H1 tag onwards, trimming any leading whitespace
+        let blogContent = blogContentRaw.substring(h1Index).trim();
+        // --- END OF NEW CODE ---
 
-        // 7. Update Master List
-        let listData = [];
-        if (fs.existsSync(LIST_FILE)) {
-            const raw = fs.readFileSync(LIST_FILE, 'utf8');
-            listData = JSON.parse(raw);
+
+        // --- Add Current Date ---
+       blogContent = blogContent.replace(/^\*Published on:.*$/gm, '').trim();
+        const currentDateStr = new Date().toLocaleString('en-IN', {
+            day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata'
+        });
+        blogContent += `\n\n*Published on: ${currentDateStr}*`;
+
+        // --- File Save Karne ka Logic (Local System) ---
+        const title = blogContent.split('\n')[0].replace('# ', '').trim();
+        const sanitizedTitle = title.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+        const fileName = `${sanitizedTitle.substring(0, 50)}_${Date.now()}.md`;
+
+        // 1. Define the local path: root/data/blogs
+        const projectRoot = process.cwd(); // Gets the root directory of the project
+        const outputDir = path.join(projectRoot, 'data', 'blogs');
+
+        // 2. Ensure the directory exists (Create recursively if missing)
+        if (!fs.existsSync(outputDir)) {
+            console.log(`Directory not found. Creating: ${outputDir}`);
+            fs.mkdirSync(outputDir, { recursive: true });
         }
 
-        const listItem = {
-            id: slug,
-            title: finalTitle,
-            date: blogPost.date,
-            url: `/data/blogs/${fileName}`
-        };
+        // 3. Write the file locally
+        const filePath = path.join(outputDir, fileName);
+        console.log(`Attempting to save file locally at: ${filePath}`);
+        
+        fs.writeFileSync(filePath, blogContent, 'utf8');
 
-        listData.unshift(listItem);
-        fs.writeFileSync(LIST_FILE, JSON.stringify(listData, null, 2));
-        console.log(`📝 Updated Master List.`);
+        console.log(`✅ Blog article saved successfully: ${fileName}`);
 
-        process.exit(0);
+     
+     // Exit successfully
+        process.exit(0);
 
-    } catch (error) {
-        console.error('❌ Error:', error);
-        process.exit(1);
-    }
-}
+    } catch (error) { // <-- Catch block starts here
+        console.error('❌ Error in blog generator script:', error.message);
+        if (error.stack) {
+            console.error('Stack trace:', error.stack);
+        }
+        // Exit with error code for GitHub Actions
+        process.exit(1);
+    } // <-- Catch block ends here
+} // <-- generateBlog function ends here
 
-generateBlog();
+// --- Run the main function ---
+generateBlog(); // <-- Final call to run the function
