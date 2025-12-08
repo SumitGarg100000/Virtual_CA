@@ -1,0 +1,43 @@
+name: Auto Generate Blog & Updates
+
+# Schedule: Har 12 ghante mein chalega
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  # Manually chalane ke liye button bhi de rahe hain
+  workflow_dispatch:
+
+permissions:
+  contents: write # Folder mein file save karne ki permission
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Blog Generator
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/run-blog-generator.js
+
+      - name: Run Update Generator
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/run-update-generator.js
+
+      - name: Commit and Push New Content
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: '🤖 AI: Added new blog/update content'
+          file_pattern: 'data/' # Sirf data folder ko commit karega
