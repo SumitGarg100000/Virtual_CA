@@ -1,0 +1,37 @@
+name: Build and Obfuscate
+
+# Yeh Action kab chalega: Jab bhi 'main' branch par code push hoga
+on:
+  push:
+    branches:
+      - main  # Agar aapki branch ka naam 'master' hai, toh 'main' ki jagah 'master' likhein
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Aapka code server par download karega
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Node.js (jismein npm hota hai) setup karega
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Node.js ka version
+
+      # Step 3: Saare tools (Webpack, Babel) install karega
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Hamari 'build' command chalaayega
+      - name: Build and Obfuscate
+        run: npm run build
+
+      # Step 5: Nayi 'dist' folder ki saari files ko waapas repository mein commit karega
+      - name: Commit obfuscated file
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'CI: Build and obfuscate new bundle.js'
+          file_pattern: 'dist' # <-- !!! YEH BADLAAV HAI !!!
