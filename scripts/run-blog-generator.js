@@ -1,4 +1,4 @@
-// scripts/run-blog-generator.js (v3.4 - Local JSON, Stable Model & List Updater)
+// scripts/run-blog-generator.js (v3.5 - URL Field, Hyphenated Slugs & Stable Model)
 
 import fs from 'fs';
 import path from 'path';
@@ -39,7 +39,7 @@ async function safeGenerateContent(model, prompt) {
 
 // --- MAIN FUNCTION ---
 async function generateBlog() {
-    console.log('Blog generator script (v3.4 - List Updater) started...');
+    console.log('Blog generator script (v3.5 - URL Fix) started...');
 
     try {
         // --- Security Check ---
@@ -51,7 +51,7 @@ async function generateBlog() {
         // --- Initialize Gemini ONLY ---
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        // FIXED: Changed to 'gemini-2.5-flash' to avoid 429 Quota Errors
+        // FIXED: Using 'gemini-2.5-flash' to avoid 429 Quota Errors
         const modelWithSearch = genAI.getGenerativeModel({
             model: "gemini-2.5-flash", 
             tools: [{ "google_search": {} }],
@@ -185,10 +185,12 @@ async function generateBlog() {
 
         // --- File Save Logic (LOCAL - JSON Format) ---
         const title = blogContent.split('\n')[0].replace('# ', '').trim();
-        const sanitizedTitle = title.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+        
+        // Use hyphens instead of underscores for SEO friendly URLs and match your existing format
+        const sanitizedTitle = title.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '-').toLowerCase();
         
         // File name ends with .json
-        const fileName = `${sanitizedTitle.substring(0, 50)}_${Date.now()}.json`;
+        const fileName = `${sanitizedTitle}-${Date.now()}.json`;
 
         // 1. Ensure the directory exists
         if (!fs.existsSync(blogsDir)) {
@@ -198,9 +200,9 @@ async function generateBlog() {
 
         // 2. Prepare JSON Object for Website
         const blogData = {
-            id: Date.now().toString(),
+            id: fileName.replace('.json', ''), // ID must match filename for API to find it
             title: title,
-            slug: sanitizedTitle.toLowerCase(),
+            slug: sanitizedTitle,
             date: currentDateStr,
             content: blogContent, // Full Markdown content
             type: "blog"
@@ -214,7 +216,6 @@ async function generateBlog() {
         console.log(`✅ Blog article saved successfully as JSON: ${fileName}`);
 
         // --- 4. UPDATE THE CENTRAL LIST (blog-list.json) ---
-        // Ye logic naya add kiya hai taaki website par list update ho
         console.log('Updating blog-list.json...');
         let blogList = [];
         
@@ -230,19 +231,19 @@ async function generateBlog() {
         }
 
         // Add new blog metadata to the TOP of the list
+        // FIX: Matching the exact structure you showed me (id, title, date, url)
         const listEntry = {
             id: blogData.id,
             title: blogData.title,
             date: blogData.date,
-            slug: blogData.slug,
-            excerpt: blogContent.substring(0, 150).replace(/#/g, '').replace(/\*/g, '').trim() + "..." // Clean preview
+            url: `/data/blogs/${fileName}` // <--- URL FIELD ADDED
         };
 
         blogList.unshift(listEntry); // Add to beginning of array
 
         // Save updated list
         fs.writeFileSync(listFilePath, JSON.stringify(blogList, null, 2), 'utf8');
-        console.log(`✅ blog-list.json updated successfully.`);
+        console.log(`✅ blog-list.json updated successfully with URL field.`);
 
         process.exit(0);
 
