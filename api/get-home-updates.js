@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-
+ 
 export default function handler(req, res) {
   try {
     const listFilePath = path.join(process.cwd(), 'data', 'update-list.json');
