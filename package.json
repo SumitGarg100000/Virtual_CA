@@ -4,7 +4,9 @@
     "@google/generative-ai": "latest",
     "googleapis": "latest",
     "react": "^18.3.1",
+    "exceljs": "^4.4.0",
     "react-dom": "^18.3.1"
+
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",
