@@ -1,5 +1,865 @@
 [
   {
+    "id": "income-tax-return-due-date-extended-to-august-31-2026-for-nonaudited-businesses-certain-trusts-1770208610495",
+    "title": "Income Tax Return Due Date Extended to August 31, 2026, for Non-Audited Businesses & Certain Trusts",
+    "date": "4 February 2026",
+    "createdDate": "4 February 2026",
+    "publishedDate": "4 February 2026",
+    "url": "/data/updates/income-tax-return-due-date-extended-to-august-31-2026-for-nonaudited-businesses-certain-trusts-1770208610495.json",
+    "slug": "income-tax-return-due-date-extended-to-august-31-2026-for-nonaudited-businesses-certain-trusts",
+    "excerpt": "Income Tax Return Due Date Extended to August 31, 2026, for Non-Audited Businesses & Certain Trust..."
+  },
+  {
+    "id": "icai-announces-special-examination-for-members-of-foreign-accounting-bodies-1770167254565",
+    "title": "ICAI Announces Special Examination for Members of Foreign Accounting Bodies",
+    "date": "4 February 2026",
+    "createdDate": "4 February 2026",
+    "publishedDate": "4 February 2026",
+    "url": "/data/updates/icai-announces-special-examination-for-members-of-foreign-accounting-bodies-1770167254565.json",
+    "slug": "icai-announces-special-examination-for-members-of-foreign-accounting-bodies",
+    "excerpt": "ICAI Announces Special Examination for Members of Foreign Accounting Bodies\n\nEk important update h..."
+  },
+  {
+    "id": "budget-2026-itr-filing-deadlines-extended-for-revised-returns-and-staggered-deadlines-introduced-1770122217022",
+    "title": "Budget 2026: ITR Filing Deadlines Extended for Revised Returns and Staggered Deadlines Introduced",
+    "date": "3 February 2026",
+    "createdDate": "3 February 2026",
+    "publishedDate": "3 February 2026",
+    "url": "/data/updates/budget-2026-itr-filing-deadlines-extended-for-revised-returns-and-staggered-deadlines-introduced-1770122217022.json",
+    "slug": "budget-2026-itr-filing-deadlines-extended-for-revised-returns-and-staggered-deadlines-introduced",
+    "excerpt": "Budget 2026: ITR Filing Deadlines Extended for Revised Returns and Staggered Deadlines Introduced..."
+  },
+  {
+    "id": "important-update-cbdt-extends-itr-revised-return-filing-due-date-to-march-31-2026-1770081155473",
+    "title": "Important Update: CBDT Extends ITR Revised Return Filing Due Date to March 31, 2026",
+    "date": "3 February 2026",
+    "createdDate": "3 February 2026",
+    "publishedDate": "3 February 2026",
+    "url": "/data/updates/important-update-cbdt-extends-itr-revised-return-filing-due-date-to-march-31-2026-1770081155473.json",
+    "slug": "important-update-cbdt-extends-itr-revised-return-filing-due-date-to-march-31-2026",
+    "excerpt": "Important Update: CBDT Extends ITR Revised Return Filing Due Date to March 31, 2026\n\nEk important..."
+  },
+  {
+    "id": "cbic-exempts-excise-duty-on-unbranded-nonretail-unmanufactured-tobacco-and-refuse-1770035750841",
+    "title": "CBIC Exempts Excise Duty on Unbranded, Non-Retail Unmanufactured Tobacco and Refuse",
+    "date": "2 February 2026",
+    "createdDate": "2 February 2026",
+    "publishedDate": "2 February 2026",
+    "url": "/data/updates/cbic-exempts-excise-duty-on-unbranded-nonretail-unmanufactured-tobacco-and-refuse-1770035750841.json",
+    "slug": "cbic-exempts-excise-duty-on-unbranded-nonretail-unmanufactured-tobacco-and-refuse",
+    "excerpt": "CBIC Exempts Excise Duty on Unbranded, Non-Retail Unmanufactured Tobacco and Refuse\n\nEk important..."
+  },
+  {
+    "id": "cbic-hsns-cess-login-registration-payment-procedures-advisories-advisories-012026-022026-1-2026--1769994723989",
+    "title": "CBIC ने जारी की HSNS Cess के Login, Registration, और Payment Procedures पर Advisories (Advisories 01/2026 & 02/2026, 1 फरवरी 2026 से प्रभावी)",
+    "date": "2 February 2026",
+    "createdDate": "2 February 2026",
+    "publishedDate": "2 February 2026",
+    "url": "/data/updates/cbic-hsns-cess-login-registration-payment-procedures-advisories-advisories-012026-022026-1-2026--1769994723989.json",
+    "slug": "cbic-hsns-cess-login-registration-payment-procedures-advisories-advisories-012026-022026-1-2026-",
+    "excerpt": "CBIC ने जारी की HSNS Cess के Login, Registration, और Payment Procedures पर Advisories (Advisories..."
+  },
+  {
+    "id": "sebi-updates-master-circular-for-lodr-compliance-rules-1769948855903",
+    "title": "SEBI Updates Master Circular for LODR Compliance Rules",
+    "date": "1 February 2026",
+    "createdDate": "1 February 2026",
+    "publishedDate": "1 February 2026",
+    "url": "/data/updates/sebi-updates-master-circular-for-lodr-compliance-rules-1769948855903.json",
+    "slug": "sebi-updates-master-circular-for-lodr-compliance-rules",
+    "excerpt": "SEBI Updates Master Circular for LODR Compliance Rules\n\nEk important update hai! Securities and Ex..."
+  },
+  {
+    "id": "union-budget-202627-presented-today-february-1-2026-1769908783290",
+    "title": "Union Budget 2026-27 Presented Today, February 1, 2026",
+    "date": "1 February 2026",
+    "createdDate": "1 February 2026",
+    "publishedDate": "1 February 2026",
+    "url": "/data/updates/union-budget-202627-presented-today-february-1-2026-1769908783290.json",
+    "slug": "union-budget-202627-presented-today-february-1-2026",
+    "excerpt": "Union Budget 2026-27 Presented Today, February 1, 2026\n\nEk important update hai. Government ne Uni..."
+  },
+  {
+    "id": "cbic-announces-scheduled-maintenance-for-hsns-cess-application-integration-1769862340893",
+    "title": "CBIC Announces Scheduled Maintenance for HSNS Cess Application Integration",
+    "date": "31 January 2026",
+    "createdDate": "31 January 2026",
+    "publishedDate": "31 January 2026",
+    "url": "/data/updates/cbic-announces-scheduled-maintenance-for-hsns-cess-application-integration-1769862340893.json",
+    "slug": "cbic-announces-scheduled-maintenance-for-hsns-cess-application-integration",
+    "excerpt": "CBIC Announces Scheduled Maintenance for HSNS Cess Application Integration\n\nEk important update ha..."
+  },
+  {
+    "id": "important-update-gstn-advisory-on-interest-collection-and-gstr3b-enhancements-advisory-no-647-1769821510389",
+    "title": "Important Update: GSTN Advisory on Interest Collection and GSTR-3B Enhancements (Advisory No. 647)",
+    "date": "31 January 2026",
+    "createdDate": "31 January 2026",
+    "publishedDate": "31 January 2026",
+    "url": "/data/updates/important-update-gstn-advisory-on-interest-collection-and-gstr3b-enhancements-advisory-no-647-1769821510389.json",
+    "slug": "important-update-gstn-advisory-on-interest-collection-and-gstr3b-enhancements-advisory-no-647",
+    "excerpt": "Important Update: GSTN Advisory on Interest Collection and GSTR-3B Enhancements (Advisory No. 647)..."
+  },
+  {
+    "id": "cbic-issues-advisory-on-hsns-cess-login-and-payment-procedures-1769776373936",
+    "title": "CBIC Issues Advisory on HSNS Cess Login and Payment Procedures",
+    "date": "30 January 2026",
+    "createdDate": "30 January 2026",
+    "publishedDate": "30 January 2026",
+    "url": "/data/updates/cbic-issues-advisory-on-hsns-cess-login-and-payment-procedures-1769776373936.json",
+    "slug": "cbic-issues-advisory-on-hsns-cess-login-and-payment-procedures",
+    "excerpt": "CBIC Issues Advisory on HSNS Cess Login and Payment Procedures\n\nEk important update hai! Governmen..."
+  },
+  {
+    "id": "cbic-extends-customs-integrated-system-eoi-deadline-to-january-31-2026-1769735295685",
+    "title": "CBIC Extends Customs Integrated System EoI Deadline to January 31, 2026",
+    "date": "30 January 2026",
+    "createdDate": "30 January 2026",
+    "publishedDate": "30 January 2026",
+    "url": "/data/updates/cbic-extends-customs-integrated-system-eoi-deadline-to-january-31-2026-1769735295685.json",
+    "slug": "cbic-extends-customs-integrated-system-eoi-deadline-to-january-31-2026",
+    "excerpt": "CBIC Extends Customs Integrated System EoI Deadline to January 31, 2026\n\nEk important update hai...."
+  },
+  {
+    "id": "ca-final-may-2026-exams-mock-test-papers-series-i-ii-announced-by-icai-1769648911945",
+    "title": "CA Final May 2026 Exams: Mock Test Papers Series I & II Announced by ICAI!",
+    "date": "29 January 2026",
+    "createdDate": "29 January 2026",
+    "publishedDate": "29 January 2026",
+    "url": "/data/updates/ca-final-may-2026-exams-mock-test-papers-series-i-ii-announced-by-icai-1769648911945.json",
+    "slug": "ca-final-may-2026-exams-mock-test-papers-series-i-ii-announced-by-icai",
+    "excerpt": "CA Final May 2026 Exams: Mock Test Papers Series I & II Announced by ICAI!\n\nEk important update ha..."
+  },
+  {
+    "id": "indiaeu-free-trade-agreement-a-landmark-deal-concluded-1769562003723",
+    "title": "India-EU Free Trade Agreement: A Landmark Deal Concluded!",
+    "date": "28 January 2026",
+    "createdDate": "28 January 2026",
+    "publishedDate": "28 January 2026",
+    "url": "/data/updates/indiaeu-free-trade-agreement-a-landmark-deal-concluded-1769562003723.json",
+    "slug": "indiaeu-free-trade-agreement-a-landmark-deal-concluded",
+    "excerpt": "India-EU Free Trade Agreement: A Landmark Deal Concluded!\n\nEk important update hai. Government ne..."
+  },
+  {
+    "id": "icai-announces-mock-test-papers-series-i-ii-for-ca-final-may-2026-exams-1769516886431",
+    "title": "ICAI Announces Mock Test Papers Series I & II for CA Final May 2026 Exams",
+    "date": "27 January 2026",
+    "createdDate": "27 January 2026",
+    "publishedDate": "27 January 2026",
+    "url": "/data/updates/icai-announces-mock-test-papers-series-i-ii-for-ca-final-may-2026-exams-1769516886431.json",
+    "slug": "icai-announces-mock-test-papers-series-i-ii-for-ca-final-may-2026-exams",
+    "excerpt": "ICAI Announces Mock Test Papers Series I & II for CA Final May 2026 Exams\n\nHello CA Aspirants! Ek..."
+  },
+  {
+    "id": "important-update-icai-ca-intermediate-paper-5-auditing-and-ethics-exam-rescheduled-to-january-31-2026-1769343818532",
+    "title": "Important Update: ICAI CA Intermediate Paper 5 (Auditing and Ethics) Exam Rescheduled to January 31, 2026",
+    "date": "25 January 2026",
+    "createdDate": "25 January 2026",
+    "publishedDate": "25 January 2026",
+    "url": "/data/updates/important-update-icai-ca-intermediate-paper-5-auditing-and-ethics-exam-rescheduled-to-january-31-2026-1769343818532.json",
+    "slug": "important-update-icai-ca-intermediate-paper-5-auditing-and-ethics-exam-rescheduled-to-january-31-2026",
+    "excerpt": "Important Update: ICAI CA Intermediate Paper 5 (Auditing and Ethics) Exam Rescheduled to January 3..."
+  },
+  {
+    "id": "icai-releases-draft-bank-branch-auditors-panel-mef-for-202526-1769303183114",
+    "title": "ICAI Releases Draft Bank Branch Auditors' Panel (MEF) for 2025-26",
+    "date": "25 January 2026",
+    "createdDate": "25 January 2026",
+    "publishedDate": "25 January 2026",
+    "url": "/data/updates/icai-releases-draft-bank-branch-auditors-panel-mef-for-202526-1769303183114.json",
+    "slug": "icai-releases-draft-bank-branch-auditors-panel-mef-for-202526",
+    "excerpt": "ICAI Releases Draft Bank Branch Auditors' Panel (MEF) for 2025-26\n\nEk important update hai! The In..."
+  },
+  {
+    "id": "dgft-announces-second-round-of-gold-trq-allocation-under-indiauae-cepa-for-fy-202526-1769257369323",
+    "title": "DGFT Announces Second Round of Gold TRQ Allocation under India-UAE CEPA for FY 2025-26",
+    "date": "24 January 2026",
+    "createdDate": "24 January 2026",
+    "publishedDate": "24 January 2026",
+    "url": "/data/updates/dgft-announces-second-round-of-gold-trq-allocation-under-indiauae-cepa-for-fy-202526-1769257369323.json",
+    "slug": "dgft-announces-second-round-of-gold-trq-allocation-under-indiauae-cepa-for-fy-202526",
+    "excerpt": "DGFT Announces Second Round of Gold TRQ Allocation under India-UAE CEPA for FY 2025-26\n\nEk importa..."
+  },
+  {
+    "id": "icai-confirms-new-tax-audit-limit-of-60-audits-per-partner-from-april-2026-1769216269620",
+    "title": "ICAI Confirms New Tax Audit Limit of 60 Audits Per Partner from April 2026",
+    "date": "24 January 2026",
+    "createdDate": "24 January 2026",
+    "publishedDate": "24 January 2026",
+    "url": "/data/updates/icai-confirms-new-tax-audit-limit-of-60-audits-per-partner-from-april-2026-1769216269620.json",
+    "slug": "icai-confirms-new-tax-audit-limit-of-60-audits-per-partner-from-april-2026",
+    "excerpt": "ICAI Confirms New Tax Audit Limit of 60 Audits Per Partner from April 2026\n\nEk important update ha..."
+  },
+  {
+    "id": "important-update-sebi-amends-regulations-for-nonconvertible-securities-1769130040799",
+    "title": "Important Update: SEBI Amends Regulations for Non-Convertible Securities",
+    "date": "23 January 2026",
+    "createdDate": "23 January 2026",
+    "publishedDate": "23 January 2026",
+    "url": "/data/updates/important-update-sebi-amends-regulations-for-nonconvertible-securities-1769130040799.json",
+    "slug": "important-update-sebi-amends-regulations-for-nonconvertible-securities",
+    "excerpt": "Important Update: SEBI Amends Regulations for Non-Convertible Securities\n\nEk important update hai..."
+  },
+  {
+    "id": "important-update-mca-user-awareness-sessions-on-annual-filing-by-icsi-1769084885022",
+    "title": "Important Update: MCA User Awareness Sessions on Annual Filing by ICSI",
+    "date": "22 January 2026",
+    "createdDate": "22 January 2026",
+    "publishedDate": "22 January 2026",
+    "url": "/data/updates/important-update-mca-user-awareness-sessions-on-annual-filing-by-icsi-1769084885022.json",
+    "slug": "important-update-mca-user-awareness-sessions-on-annual-filing-by-icsi",
+    "excerpt": "Important Update: MCA User Awareness Sessions on Annual Filing by ICSI\n\nEk important update hai. T..."
+  },
+  {
+    "id": "icsi-cs-cs-2026--1769043615515",
+    "title": "ICSI को मिले नए लीडर्स: CS पवन जी चंदक बने प्रेसिडेंट, CS द्वारकानाथ चेन्नूर वाइस प्रेसिडेंट (2026 के लिए)",
+    "date": "22 January 2026",
+    "createdDate": "22 January 2026",
+    "publishedDate": "22 January 2026",
+    "url": "/data/updates/icsi-cs-cs-2026--1769043615515.json",
+    "slug": "icsi-cs-cs-2026-",
+    "excerpt": "ICSI को मिले नए लीडर्स: CS पवन जी चंदक बने प्रेसिडेंट, CS द्वारकानाथ चेन्नूर वाइस प्रेसिडेंट (2026..."
+  },
+  {
+    "id": "important-update-icai-reschedules-ca-intermediate-paper-5-auditing-and-ethics-exam-1768998493836",
+    "title": "Important Update: ICAI Reschedules CA Intermediate Paper 5 (Auditing and Ethics) Exam",
+    "date": "21 January 2026",
+    "createdDate": "21 January 2026",
+    "publishedDate": "21 January 2026",
+    "url": "/data/updates/important-update-icai-reschedules-ca-intermediate-paper-5-auditing-and-ethics-exam-1768998493836.json",
+    "slug": "important-update-icai-reschedules-ca-intermediate-paper-5-auditing-and-ethics-exam",
+    "excerpt": "Important Update: ICAI Reschedules CA Intermediate Paper 5 (Auditing and Ethics) Exam\n\nEk importan..."
+  },
+  {
+    "id": "icsi-cseet-january-2026-results-declared-1768957229510",
+    "title": "ICSI CSEET January 2026 Results Declared",
+    "date": "21 January 2026",
+    "createdDate": "21 January 2026",
+    "publishedDate": "21 January 2026",
+    "url": "/data/updates/icsi-cseet-january-2026-results-declared-1768957229510.json",
+    "slug": "icsi-cseet-january-2026-results-declared",
+    "excerpt": "ICSI CSEET January 2026 Results Declared\n\nEk important update hai! The Institute of Company Secret..."
+  },
+  {
+    "id": "cbic-reports-nil-indirect-tax-proposals-for-budget-session-202627-1768912094954",
+    "title": "CBIC Reports 'NIL' Indirect Tax Proposals for Budget Session 2026-27",
+    "date": "20 January 2026",
+    "createdDate": "20 January 2026",
+    "publishedDate": "20 January 2026",
+    "url": "/data/updates/cbic-reports-nil-indirect-tax-proposals-for-budget-session-202627-1768912094954.json",
+    "slug": "cbic-reports-nil-indirect-tax-proposals-for-budget-session-202627",
+    "excerpt": "CBIC Reports 'NIL' Indirect Tax Proposals for Budget Session 2026-27\n\nEk important update hai. The..."
+  },
+  {
+    "id": "icsi-council-meeting-key-decisions-from-january-11-2026-1768784594471",
+    "title": "ICSI Council Meeting: Key Decisions from January 11, 2026",
+    "date": "19 January 2026",
+    "createdDate": "19 January 2026",
+    "publishedDate": "19 January 2026",
+    "url": "/data/updates/icsi-council-meeting-key-decisions-from-january-11-2026-1768784594471.json",
+    "slug": "icsi-council-meeting-key-decisions-from-january-11-2026",
+    "excerpt": "ICSI Council Meeting: Key Decisions from January 11, 2026\n\nEk important update hai. The Institute..."
+  },
+  {
+    "id": "mca-imposes-penalties-for-incorrect-eform-filing-even-if-later-rectified-1768738965646",
+    "title": "MCA Imposes Penalties for Incorrect E-Form Filing, Even If Later Rectified!",
+    "date": "18 January 2026",
+    "createdDate": "18 January 2026",
+    "publishedDate": "18 January 2026",
+    "url": "/data/updates/mca-imposes-penalties-for-incorrect-eform-filing-even-if-later-rectified-1768738965646.json",
+    "slug": "mca-imposes-penalties-for-incorrect-eform-filing-even-if-later-rectified",
+    "excerpt": "MCA Imposes Penalties for Incorrect E-Form Filing, Even If Later Rectified!\n\nEk important update h..."
+  },
+  {
+    "id": "icai-further-postpones-ca-intermediate-auditing-ethics-paper-scheduled-19-january-2026-1768652518652",
+    "title": "ICAI Further Postpones CA Intermediate Auditing & Ethics Paper (Scheduled 19 January 2026)",
+    "date": "17 January 2026",
+    "createdDate": "17 January 2026",
+    "publishedDate": "17 January 2026",
+    "url": "/data/updates/icai-further-postpones-ca-intermediate-auditing-ethics-paper-scheduled-19-january-2026-1768652518652.json",
+    "slug": "icai-further-postpones-ca-intermediate-auditing-ethics-paper-scheduled-19-january-2026",
+    "excerpt": "ICAI Further Postpones CA Intermediate Auditing & Ethics Paper (Scheduled 19 January 2026)\n\nEk imp..."
+  },
+  {
+    "id": "cbic-extends-export-incentives-for-postal-shipments-effective-january-15-2026-1768611416914",
+    "title": "CBIC Extends Export Incentives for Postal Shipments, Effective January 15, 2026!",
+    "date": "17 January 2026",
+    "createdDate": "17 January 2026",
+    "publishedDate": "17 January 2026",
+    "url": "/data/updates/cbic-extends-export-incentives-for-postal-shipments-effective-january-15-2026-1768611416914.json",
+    "slug": "cbic-extends-export-incentives-for-postal-shipments-effective-january-15-2026",
+    "excerpt": "CBIC Extends Export Incentives for Postal Shipments, Effective January 15, 2026!\n\nEk important upd..."
+  },
+  {
+    "id": "cbic-extends-export-incentives-to-boost-postal-shipments-1768566312594",
+    "title": "CBIC Extends Export Incentives to Boost Postal Shipments!",
+    "date": "16 January 2026",
+    "createdDate": "16 January 2026",
+    "publishedDate": "16 January 2026",
+    "url": "/data/updates/cbic-extends-export-incentives-to-boost-postal-shipments-1768566312594.json",
+    "slug": "cbic-extends-export-incentives-to-boost-postal-shipments",
+    "excerpt": "CBIC Extends Export Incentives to Boost Postal Shipments!\n\nEk important update hai! Government ne..."
+  },
+  {
+    "id": "rbi-invites-public-comments-on-draft-amendments-for-net-open-position-1768525210574",
+    "title": "RBI Invites Public Comments on Draft Amendments for Net Open Position",
+    "date": "16 January 2026",
+    "createdDate": "16 January 2026",
+    "publishedDate": "16 January 2026",
+    "url": "/data/updates/rbi-invites-public-comments-on-draft-amendments-for-net-open-position-1768525210574.json",
+    "slug": "rbi-invites-public-comments-on-draft-amendments-for-net-open-position",
+    "excerpt": "RBI Invites Public Comments on Draft Amendments for Net Open Position\n\nEk important update hai! Th..."
+  },
+  {
+    "id": "gst-appeals-update-allahabad-hc-disposes-cases-extended-filing-till-june-30-2026-as-gstat-operationalises-1768479982422",
+    "title": "GST Appeals Update: Allahabad HC Disposes Cases, Extended Filing Till June 30, 2026, as GSTAT Operationalises",
+    "date": "15 January 2026",
+    "createdDate": "15 January 2026",
+    "publishedDate": "15 January 2026",
+    "url": "/data/updates/gst-appeals-update-allahabad-hc-disposes-cases-extended-filing-till-june-30-2026-as-gstat-operationalises-1768479982422.json",
+    "slug": "gst-appeals-update-allahabad-hc-disposes-cases-extended-filing-till-june-30-2026-as-gstat-operationalises",
+    "excerpt": "GST Appeals Update: Allahabad HC Disposes Cases, Extended Filing Till June 30, 2026, as GSTAT Oper..."
+  },
+  {
+    "id": "important-update-icai-invites-observations-on-jan-2026-ca-exam-question-papers-1768438646271",
+    "title": "Important Update: ICAI Invites Observations on Jan 2026 CA Exam Question Papers",
+    "date": "15 January 2026",
+    "createdDate": "15 January 2026",
+    "publishedDate": "15 January 2026",
+    "url": "/data/updates/important-update-icai-invites-observations-on-jan-2026-ca-exam-question-papers-1768438646271.json",
+    "slug": "important-update-icai-invites-observations-on-jan-2026-ca-exam-question-papers",
+    "excerpt": "Important Update: ICAI Invites Observations on Jan 2026 CA Exam Question Papers\n\nEk important upda..."
+  },
+  {
+    "id": "icai-invites-feedback-on-january-2026-ca-exam-question-papers-1768393569100",
+    "title": "ICAI Invites Feedback on January 2026 CA Exam Question Papers",
+    "date": "14 January 2026",
+    "createdDate": "14 January 2026",
+    "publishedDate": "14 January 2026",
+    "url": "/data/updates/icai-invites-feedback-on-january-2026-ca-exam-question-papers-1768393569100.json",
+    "slug": "icai-invites-feedback-on-january-2026-ca-exam-question-papers",
+    "excerpt": "ICAI Invites Feedback on January 2026 CA Exam Question Papers\n\nEk important update hai! The Instit..."
+  },
+  {
+    "id": "rbi-issues-new-foreign-exchange-management-guarantees-regulations-2026-1768352488261",
+    "title": "RBI Issues New Foreign Exchange Management (Guarantees) Regulations, 2026",
+    "date": "14 January 2026",
+    "createdDate": "14 January 2026",
+    "publishedDate": "14 January 2026",
+    "url": "/data/updates/rbi-issues-new-foreign-exchange-management-guarantees-regulations-2026-1768352488261.json",
+    "slug": "rbi-issues-new-foreign-exchange-management-guarantees-regulations-2026",
+    "excerpt": "RBI Issues New Foreign Exchange Management (Guarantees) Regulations, 2026\n\nEk important update hai..."
+  },
+  {
+    "id": "icegatelpms-integration-at-icp-agartala-a-digital-leap-for-crossborder-trade-1768307218817",
+    "title": "ICEGATE–LPMS Integration at ICP Agartala: A Digital Leap for Cross-Border Trade",
+    "date": "13 January 2026",
+    "createdDate": "13 January 2026",
+    "publishedDate": "13 January 2026",
+    "url": "/data/updates/icegatelpms-integration-at-icp-agartala-a-digital-leap-for-crossborder-trade-1768307218817.json",
+    "slug": "icegatelpms-integration-at-icp-agartala-a-digital-leap-for-crossborder-trade",
+    "excerpt": "ICEGATE–LPMS Integration at ICP Agartala: A Digital Leap for Cross-Border Trade\n\nEk important upda..."
+  },
+  {
+    "id": "icai-revises-industrial-training-empanelment-criteria-1768265726903",
+    "title": "ICAI Revises Industrial Training Empanelment Criteria",
+    "date": "13 January 2026",
+    "createdDate": "13 January 2026",
+    "publishedDate": "13 January 2026",
+    "url": "/data/updates/icai-revises-industrial-training-empanelment-criteria-1768265726903.json",
+    "slug": "icai-revises-industrial-training-empanelment-criteria",
+    "excerpt": "ICAI Revises Industrial Training Empanelment Criteria\n\nEk important update hai! The Institute of C..."
+  },
+  {
+    "id": "cseet-january-2026-icsi-announces-one-more-opportunity-on-january-12-2026-1768134176566",
+    "title": "CSEET January 2026: ICSI Announces One More Opportunity on January 12, 2026!",
+    "date": "11 January 2026",
+    "createdDate": "11 January 2026",
+    "publishedDate": "11 January 2026",
+    "url": "/data/updates/cseet-january-2026-icsi-announces-one-more-opportunity-on-january-12-2026-1768134176566.json",
+    "slug": "cseet-january-2026-icsi-announces-one-more-opportunity-on-january-12-2026",
+    "excerpt": "CSEET January 2026: ICSI Announces One More Opportunity on January 12, 2026!\n\nHello everyone! Ek i..."
+  },
+  {
+    "id": "cbic-warns-against-fake-gst-notices-dont-forget-to-verify-din-1768093507258",
+    "title": "CBIC Warns Against Fake GST Notices: Don't Forget to Verify DIN!",
+    "date": "11 January 2026",
+    "createdDate": "11 January 2026",
+    "publishedDate": "11 January 2026",
+    "url": "/data/updates/cbic-warns-against-fake-gst-notices-dont-forget-to-verify-din-1768093507258.json",
+    "slug": "cbic-warns-against-fake-gst-notices-dont-forget-to-verify-din",
+    "excerpt": "CBIC Warns Against Fake GST Notices: Don't Forget to Verify DIN!\n\nEk important update hai. Central..."
+  },
+  {
+    "id": "income-tax-update-amc-repo-clearing-limiteds-core-settlement-guarantee-fund-notified-1768047700934",
+    "title": "Income Tax Update: AMC Repo Clearing Limited's Core Settlement Guarantee Fund Notified",
+    "date": "10 January 2026",
+    "createdDate": "10 January 2026",
+    "publishedDate": "10 January 2026",
+    "url": "/data/updates/income-tax-update-amc-repo-clearing-limiteds-core-settlement-guarantee-fund-notified-1768047700934.json",
+    "slug": "income-tax-update-amc-repo-clearing-limiteds-core-settlement-guarantee-fund-notified",
+    "excerpt": "Income Tax Update: AMC Repo Clearing Limited's Core Settlement Guarantee Fund Notified\n\nEk importa..."
+  },
+  {
+    "id": "income-tax-exemption-for-kota-development-authority-us-1046a-notified-by-cbdt-1767920406466",
+    "title": "Income Tax Exemption for Kota Development Authority u/s 10(46A) Notified by CBDT!",
+    "date": "9 January 2026",
+    "createdDate": "9 January 2026",
+    "publishedDate": "9 January 2026",
+    "url": "/data/updates/income-tax-exemption-for-kota-development-authority-us-1046a-notified-by-cbdt-1767920406466.json",
+    "slug": "income-tax-exemption-for-kota-development-authority-us-1046a-notified-by-cbdt",
+    "excerpt": "Income Tax Exemption for Kota Development Authority u/s 10(46A) Notified by CBDT!\n\nEk important up..."
+  },
+  {
+    "id": "mca-relaxes-indemnity-for-government-company-name-removal-1767833992192",
+    "title": "MCA Relaxes Indemnity for Government Company Name Removal!",
+    "date": "8 January 2026",
+    "createdDate": "8 January 2026",
+    "publishedDate": "8 January 2026",
+    "url": "/data/updates/mca-relaxes-indemnity-for-government-company-name-removal-1767833992192.json",
+    "slug": "mca-relaxes-indemnity-for-government-company-name-removal",
+    "excerpt": "MCA Relaxes Indemnity for Government Company Name Removal!\n\nHello, everyone! Ek important update h..."
+  },
+  {
+    "id": "llp-rules-effective-date-extended-to-february-16-2026-an-important-mca-update-1767747598502",
+    "title": "LLP Rules Effective Date Extended to February 16, 2026 – An Important MCA Update!",
+    "date": "7 January 2026",
+    "createdDate": "7 January 2026",
+    "publishedDate": "7 January 2026",
+    "url": "/data/updates/llp-rules-effective-date-extended-to-february-16-2026-an-important-mca-update-1767747598502.json",
+    "slug": "llp-rules-effective-date-extended-to-february-16-2026-an-important-mca-update",
+    "excerpt": "LLP Rules Effective Date Extended to February 16, 2026 – An Important MCA Update!\n\nEk important up..."
+  },
+  {
+    "id": "mca-notification-effective-date-for-section-396-extended-to-february-16-2026-1767702346163",
+    "title": "MCA Notification Effective Date for Section 396 Extended to February 16, 2026!",
+    "date": "6 January 2026",
+    "createdDate": "6 January 2026",
+    "publishedDate": "6 January 2026",
+    "url": "/data/updates/mca-notification-effective-date-for-section-396-extended-to-february-16-2026-1767702346163.json",
+    "slug": "mca-notification-effective-date-for-section-396-extended-to-february-16-2026",
+    "excerpt": "MCA Notification Effective Date for Section 396 Extended to February 16, 2026!\n\nEk important updat..."
+  },
+  {
+    "id": "mca-eases-director-kyc-compliance-now-triennial-1767616019120",
+    "title": "MCA Eases Director KYC Compliance: Now Triennial!",
+    "date": "5 January 2026",
+    "createdDate": "5 January 2026",
+    "publishedDate": "5 January 2026",
+    "url": "/data/updates/mca-eases-director-kyc-compliance-now-triennial-1767616019120.json",
+    "slug": "mca-eases-director-kyc-compliance-now-triennial",
+    "excerpt": "MCA Eases Director KYC Compliance: Now Triennial!\n\nEk important update hai! Government ne Director..."
+  },
+  {
+    "id": "important-update-cbic-extends-scmtr-transitional-provisions-till-march-31-2026-1767529345037",
+    "title": "Important Update: CBIC Extends SCMTR Transitional Provisions till March 31, 2026",
+    "date": "4 January 2026",
+    "createdDate": "4 January 2026",
+    "publishedDate": "4 January 2026",
+    "url": "/data/updates/important-update-cbic-extends-scmtr-transitional-provisions-till-march-31-2026-1767529345037.json",
+    "slug": "important-update-cbic-extends-scmtr-transitional-provisions-till-march-31-2026",
+    "excerpt": "Important Update: CBIC Extends SCMTR Transitional Provisions till March 31, 2026\n\nEk important upd..."
+  },
+  {
+    "id": "icsi-invites-suggestions-for-its-strategic-action-plan-202630-a-call-to-action-1767488721178",
+    "title": "ICSI Invites Suggestions for its Strategic Action Plan (2026-30) – A Call to Action!",
+    "date": "4 January 2026",
+    "createdDate": "4 January 2026",
+    "publishedDate": "4 January 2026",
+    "url": "/data/updates/icsi-invites-suggestions-for-its-strategic-action-plan-202630-a-call-to-action-1767488721178.json",
+    "slug": "icsi-invites-suggestions-for-its-strategic-action-plan-202630-a-call-to-action",
+    "excerpt": "ICSI Invites Suggestions for its Strategic Action Plan (2026-30) – A Call to Action!\n\nEk important..."
+  },
+  {
+    "id": "cbic-extends-deadline-for-sea-cargo-manifest-and-transshipment-regulations-2018-1767442939401",
+    "title": "CBIC Extends Deadline for Sea Cargo Manifest and Transshipment Regulations, 2018",
+    "date": "3 January 2026",
+    "createdDate": "3 January 2026",
+    "publishedDate": "3 January 2026",
+    "url": "/data/updates/cbic-extends-deadline-for-sea-cargo-manifest-and-transshipment-regulations-2018-1767442939401.json",
+    "slug": "cbic-extends-deadline-for-sea-cargo-manifest-and-transshipment-regulations-2018",
+    "excerpt": "CBIC Extends Deadline for Sea Cargo Manifest and Transshipment Regulations, 2018\n\nEk important upd..."
+  },
+  {
+    "id": "cbic-notifies-new-excise-and-gst-rules-for-tobacco-and-allied-products-effective-february-1-2026-1767356632265",
+    "title": "CBIC Notifies New Excise and GST Rules for Tobacco and Allied Products, Effective February 1, 2026",
+    "date": "2 January 2026",
+    "createdDate": "2 January 2026",
+    "publishedDate": "2 January 2026",
+    "url": "/data/updates/cbic-notifies-new-excise-and-gst-rules-for-tobacco-and-allied-products-effective-february-1-2026-1767356632265.json",
+    "slug": "cbic-notifies-new-excise-and-gst-rules-for-tobacco-and-allied-products-effective-february-1-2026",
+    "excerpt": "CBIC Notifies New Excise and GST Rules for Tobacco and Allied Products, Effective February 1, 2026..."
+  },
+  {
+    "id": "mca-extends-annual-filing-deadline-for-fy-202425-to-january-31-2026-1767270308307",
+    "title": "MCA Extends Annual Filing Deadline for FY 2024-25 to January 31, 2026",
+    "date": "1 January 2026",
+    "createdDate": "1 January 2026",
+    "publishedDate": "1 January 2026",
+    "url": "/data/updates/mca-extends-annual-filing-deadline-for-fy-202425-to-january-31-2026-1767270308307.json",
+    "slug": "mca-extends-annual-filing-deadline-for-fy-202425-to-january-31-2026",
+    "excerpt": "MCA Extends Annual Filing Deadline for FY 2024-25 to January 31, 2026\n\nEk important update hai for..."
+  },
+  {
+    "id": "icai-extends-peer-review-mandate-phase-iv-applicability-to-december-31-2026-1767229462516",
+    "title": "ICAI Extends Peer Review Mandate Phase IV Applicability to December 31, 2026",
+    "date": "1 January 2026",
+    "createdDate": "1 January 2026",
+    "publishedDate": "1 January 2026",
+    "url": "/data/updates/icai-extends-peer-review-mandate-phase-iv-applicability-to-december-31-2026-1767229462516.json",
+    "slug": "icai-extends-peer-review-mandate-phase-iv-applicability-to-december-31-2026",
+    "excerpt": "ICAI Extends Peer Review Mandate Phase IV Applicability to December 31, 2026\n\nEk important update..."
+  },
+  {
+    "id": "icai-defers-phase-iv-of-peer-review-mandate-till-31st-december-2025-1767183819017",
+    "title": "ICAI Defers Phase IV of Peer Review Mandate till 31st December 2025!",
+    "date": "31 December 2025",
+    "createdDate": "31 December 2025",
+    "publishedDate": "31 December 2025",
+    "url": "/data/updates/icai-defers-phase-iv-of-peer-review-mandate-till-31st-december-2025-1767183819017.json",
+    "slug": "icai-defers-phase-iv-of-peer-review-mandate-till-31st-december-2025",
+    "excerpt": "ICAI Defers Phase IV of Peer Review Mandate till 31st December 2025!\n\nEk important update hai for..."
+  },
+  {
+    "id": "icsi-releases-cs-june-2026-examination-time-table-1767142742394",
+    "title": "ICSI Releases CS June 2026 Examination Time Table",
+    "date": "31 December 2025",
+    "createdDate": "31 December 2025",
+    "publishedDate": "31 December 2025",
+    "url": "/data/updates/icsi-releases-cs-june-2026-examination-time-table-1767142742394.json",
+    "slug": "icsi-releases-cs-june-2026-examination-time-table",
+    "excerpt": "ICSI Releases CS June 2026 Examination Time Table\n\nEk important update hai Company Secretary aspir..."
+  },
+  {
+    "id": "mca-extends-annual-filing-due-date-for-fy-202425-to-january-31-2026-1767097487089",
+    "title": "MCA Extends Annual Filing Due Date for FY 2024-25 to January 31, 2026!",
+    "date": "30 December 2025",
+    "createdDate": "30 December 2025",
+    "publishedDate": "30 December 2025",
+    "url": "/data/updates/mca-extends-annual-filing-due-date-for-fy-202425-to-january-31-2026-1767097487089.json",
+    "slug": "mca-extends-annual-filing-due-date-for-fy-202425-to-january-31-2026",
+    "excerpt": "MCA Extends Annual Filing Due Date for FY 2024-25 to January 31, 2026!\n\nEk important update hai fo..."
+  },
+  {
+    "id": "icai-announces-dmbf-february-2026-examination-schedule-1767056280124",
+    "title": "ICAI Announces DMBF February 2026 Examination Schedule",
+    "date": "30 December 2025",
+    "createdDate": "30 December 2025",
+    "publishedDate": "30 December 2025",
+    "url": "/data/updates/icai-announces-dmbf-february-2026-examination-schedule-1767056280124.json",
+    "slug": "icai-announces-dmbf-february-2026-examination-schedule",
+    "excerpt": "ICAI Announces DMBF February 2026 Examination Schedule\n\nEk important update hai! The Institute of..."
+  },
+  {
+    "id": "important-update-icai-ca-intermediate-paper-5-auditing-and-ethics-rescheduled-to-january-19-2026-1767011152918",
+    "title": "Important Update: ICAI CA Intermediate Paper 5 (Auditing and Ethics) Rescheduled to January 19, 2026",
+    "date": "29 December 2025",
+    "createdDate": "29 December 2025",
+    "publishedDate": "29 December 2025",
+    "url": "/data/updates/important-update-icai-ca-intermediate-paper-5-auditing-and-ethics-rescheduled-to-january-19-2026-1767011152918.json",
+    "slug": "important-update-icai-ca-intermediate-paper-5-auditing-and-ethics-rescheduled-to-january-19-2026",
+    "excerpt": "Important Update: ICAI CA Intermediate Paper 5 (Auditing and Ethics) Rescheduled to January 19, 20..."
+  },
+  {
+    "id": "icsi-advisory-on-mgt7mgt7a-certification-under-mca-v3-portal-1766924560298",
+    "title": "ICSI Advisory on MGT-7/MGT-7A Certification under MCA V3 Portal",
+    "date": "28 December 2025",
+    "createdDate": "28 December 2025",
+    "publishedDate": "28 December 2025",
+    "url": "/data/updates/icsi-advisory-on-mgt7mgt7a-certification-under-mca-v3-portal-1766924560298.json",
+    "slug": "icsi-advisory-on-mgt7mgt7a-certification-under-mca-v3-portal",
+    "excerpt": "ICSI Advisory on MGT-7/MGT-7A Certification under MCA V3 Portal\n\nEk important update hai Company S..."
+  },
+  {
+    "id": "icai-ca-intermediate-paper-5-auditing-ethics-exam-rescheduled-to-january-19-2026-1766883872095",
+    "title": "ICAI CA Intermediate Paper 5 (Auditing & Ethics) Exam Rescheduled to January 19, 2026",
+    "date": "28 December 2025",
+    "createdDate": "28 December 2025",
+    "publishedDate": "28 December 2025",
+    "url": "/data/updates/icai-ca-intermediate-paper-5-auditing-ethics-exam-rescheduled-to-january-19-2026-1766883872095.json",
+    "slug": "icai-ca-intermediate-paper-5-auditing-ethics-exam-rescheduled-to-january-19-2026",
+    "excerpt": "ICAI CA Intermediate Paper 5 (Auditing & Ethics) Exam Rescheduled to January 19, 2026\n\nEk importan..."
+  },
+  {
+    "id": "mca-issues-advisory-warning-against-fake-circular-on-annual-filing-due-date-extension-1766838173452",
+    "title": "MCA Issues Advisory Warning Against Fake Circular on Annual Filing Due Date Extension",
+    "date": "27 December 2025",
+    "createdDate": "27 December 2025",
+    "publishedDate": "27 December 2025",
+    "url": "/data/updates/mca-issues-advisory-warning-against-fake-circular-on-annual-filing-due-date-extension-1766838173452.json",
+    "slug": "mca-issues-advisory-warning-against-fake-circular-on-annual-filing-due-date-extension",
+    "excerpt": "MCA Issues Advisory Warning Against Fake Circular on Annual Filing Due Date Extension\n\nEk importan..."
+  },
+  {
+    "id": "income-tax-department-updates-utilities-and-json-schemas-for-ay-202526-1766796957430",
+    "title": "Income Tax Department Updates Utilities and JSON Schemas for AY 2025–26",
+    "date": "27 December 2025",
+    "createdDate": "27 December 2025",
+    "publishedDate": "27 December 2025",
+    "url": "/data/updates/income-tax-department-updates-utilities-and-json-schemas-for-ay-202526-1766796957430.json",
+    "slug": "income-tax-department-updates-utilities-and-json-schemas-for-ay-202526",
+    "excerpt": "Income Tax Department Updates Utilities and JSON Schemas for AY 2025–26\n\nEk important update hai...."
+  },
+  {
+    "id": "icai-invites-comments-on-exposure-draft-of-information-systems-audit-standards-isas-1766751815730",
+    "title": "ICAI Invites Comments on Exposure Draft of Information Systems Audit Standards (ISAS)",
+    "date": "26 December 2025",
+    "createdDate": "26 December 2025",
+    "publishedDate": "26 December 2025",
+    "url": "/data/updates/icai-invites-comments-on-exposure-draft-of-information-systems-audit-standards-isas-1766751815730.json",
+    "slug": "icai-invites-comments-on-exposure-draft-of-information-systems-audit-standards-isas",
+    "excerpt": "ICAI Invites Comments on Exposure Draft of Information Systems Audit Standards (ISAS)\n\nEk importan..."
+  },
+  {
+    "id": "income-tax-department-urges-taxpayers-review-itr-mismatches-file-revised-returns-for-ay-202526-by-december-31-2025-1766710660120",
+    "title": "Income Tax Department Urges Taxpayers: Review ITR Mismatches & File Revised Returns for AY 2025-26 by December 31, 2025",
+    "date": "26 December 2025",
+    "createdDate": "26 December 2025",
+    "publishedDate": "26 December 2025",
+    "url": "/data/updates/income-tax-department-urges-taxpayers-review-itr-mismatches-file-revised-returns-for-ay-202526-by-december-31-2025-1766710660120.json",
+    "slug": "income-tax-department-urges-taxpayers-review-itr-mismatches-file-revised-returns-for-ay-202526-by-december-31-2025",
+    "excerpt": "Income Tax Department Urges Taxpayers: Review ITR Mismatches & File Revised Returns for AY 2025-26..."
+  },
+  {
+    "id": "indian-professional-services-unlocking-global-markets-through-fta-commitments-1766665422240",
+    "title": "Indian Professional Services: Unlocking Global Markets Through FTA Commitments",
+    "date": "25 December 2025",
+    "createdDate": "25 December 2025",
+    "publishedDate": "25 December 2025",
+    "url": "/data/updates/indian-professional-services-unlocking-global-markets-through-fta-commitments-1766665422240.json",
+    "slug": "indian-professional-services-unlocking-global-markets-through-fta-commitments",
+    "excerpt": "Indian Professional Services: Unlocking Global Markets Through FTA Commitments\n\nEk important updat..."
+  },
+  {
+    "id": "important-gst-update-icai-releases-revised-handbook-on-interest-late-fee-penalties-december-2025-1766624243603",
+    "title": "Important GST Update: ICAI Releases Revised Handbook on Interest, Late Fee & Penalties (December 2025)",
+    "date": "25 December 2025",
+    "createdDate": "25 December 2025",
+    "publishedDate": "25 December 2025",
+    "url": "/data/updates/important-gst-update-icai-releases-revised-handbook-on-interest-late-fee-penalties-december-2025-1766624243603.json",
+    "slug": "important-gst-update-icai-releases-revised-handbook-on-interest-late-fee-penalties-december-2025",
+    "excerpt": "Important GST Update: ICAI Releases Revised Handbook on Interest, Late Fee & Penalties (December 2..."
+  },
+  {
+    "id": "cbdt-urges-taxpayers-review-ineligible-deductionexemption-claims-for-ay-202526-by-december-31-2025-1766579061878",
+    "title": "CBDT Urges Taxpayers: Review Ineligible Deduction/Exemption Claims for AY 2025-26 by December 31, 2025",
+    "date": "24 December 2025",
+    "createdDate": "24 December 2025",
+    "publishedDate": "24 December 2025",
+    "url": "/data/updates/cbdt-urges-taxpayers-review-ineligible-deductionexemption-claims-for-ay-202526-by-december-31-2025-1766579061878.json",
+    "slug": "cbdt-urges-taxpayers-review-ineligible-deductionexemption-claims-for-ay-202526-by-december-31-2025",
+    "excerpt": "CBDT Urges Taxpayers: Review Ineligible Deduction/Exemption Claims for AY 2025-26 by December 31,..."
+  },
+  {
+    "id": "icai-mandates-preceding-year-audit-details-for-udin-generation-1766537840048",
+    "title": "ICAI Mandates Preceding Year Audit Details for UDIN Generation",
+    "date": "24 December 2025",
+    "createdDate": "24 December 2025",
+    "publishedDate": "24 December 2025",
+    "url": "/data/updates/icai-mandates-preceding-year-audit-details-for-udin-generation-1766537840048.json",
+    "slug": "icai-mandates-preceding-year-audit-details-for-udin-generation",
+    "excerpt": "ICAI Mandates Preceding Year Audit Details for UDIN Generation\n\nEk important update hai! The Insti..."
+  },
+  {
+    "id": "income-tax-department-itrais-mismatch-emails-are-advisory-not-punitive-1766319691494",
+    "title": "Income Tax Department: ITR-AIS Mismatch Emails Are Advisory, Not Punitive",
+    "date": "21 December 2025",
+    "createdDate": "21 December 2025",
+    "publishedDate": "21 December 2025",
+    "url": "/data/updates/income-tax-department-itrais-mismatch-emails-are-advisory-not-punitive-1766319691494.json",
+    "slug": "income-tax-department-itrais-mismatch-emails-are-advisory-not-punitive",
+    "excerpt": "Income Tax Department: ITR-AIS Mismatch Emails Are Advisory, Not Punitive\n\nEk important update hai..."
+  },
+  {
+    "id": "important-update-online-assessment-test-for-icai-nbfc-certificate-course-on-december-20-2025-1766278880733",
+    "title": "Important Update: Online Assessment Test for ICAI NBFC Certificate Course on December 20, 2025",
+    "date": "21 December 2025",
+    "createdDate": "21 December 2025",
+    "publishedDate": "21 December 2025",
+    "url": "/data/updates/important-update-online-assessment-test-for-icai-nbfc-certificate-course-on-december-20-2025-1766278880733.json",
+    "slug": "important-update-online-assessment-test-for-icai-nbfc-certificate-course-on-december-20-2025",
+    "excerpt": "Important Update: Online Assessment Test for ICAI NBFC Certificate Course on December 20, 2025\n\nEk..."
+  },
+  {
+    "id": "icai-releases-admit-cards-for-ca-foundation-intermediate-and-final-january-2026-examinations-1766233283522",
+    "title": "ICAI Releases Admit Cards for CA Foundation, Intermediate, and Final January 2026 Examinations",
+    "date": "20 December 2025",
+    "createdDate": "20 December 2025",
+    "publishedDate": "20 December 2025",
+    "url": "/data/updates/icai-releases-admit-cards-for-ca-foundation-intermediate-and-final-january-2026-examinations-1766233283522.json",
+    "slug": "icai-releases-admit-cards-for-ca-foundation-intermediate-and-final-january-2026-examinations",
+    "excerpt": "ICAI Releases Admit Cards for CA Foundation, Intermediate, and Final January 2026 Examinations\n\nEk..."
+  },
+  {
+    "id": "cbic-launches-online-module-for-voluntary-postclearance-revision-of-bills-of-entry-1766192066040",
+    "title": "CBIC Launches Online Module for Voluntary Post-Clearance Revision of Bills of Entry",
+    "date": "20 December 2025",
+    "createdDate": "20 December 2025",
+    "publishedDate": "20 December 2025",
+    "url": "/data/updates/cbic-launches-online-module-for-voluntary-postclearance-revision-of-bills-of-entry-1766192066040.json",
+    "slug": "cbic-launches-online-module-for-voluntary-postclearance-revision-of-bills-of-entry",
+    "excerpt": "CBIC Launches Online Module for Voluntary Post-Clearance Revision of Bills of Entry\n\nEk important..."
+  },
+  {
+    "id": "securities-markets-code-2025-tabled-in-lok-sabha-a-step-towards-simplified-securities-law-1766147044924",
+    "title": "Securities Markets Code 2025 Tabled in Lok Sabha: A Step Towards Simplified Securities Law",
+    "date": "19 December 2025",
+    "createdDate": "19 December 2025",
+    "publishedDate": "19 December 2025",
+    "url": "/data/updates/securities-markets-code-2025-tabled-in-lok-sabha-a-step-towards-simplified-securities-law-1766147044924.json",
+    "slug": "securities-markets-code-2025-tabled-in-lok-sabha-a-step-towards-simplified-securities-law",
+    "excerpt": "Securities Markets Code 2025 Tabled in Lok Sabha: A Step Towards Simplified Securities Law\n\nEk imp..."
+  },
+  {
+    "id": "icai-revises-fees-for-ca-exam-answer-book-verification-certified-copies-1766105854324",
+    "title": "ICAI Revises Fees for CA Exam Answer Book Verification & Certified Copies",
+    "date": "19 December 2025",
+    "createdDate": "19 December 2025",
+    "publishedDate": "19 December 2025",
+    "url": "/data/updates/icai-revises-fees-for-ca-exam-answer-book-verification-certified-copies-1766105854324.json",
+    "slug": "icai-revises-fees-for-ca-exam-answer-book-verification-certified-copies",
+    "excerpt": "ICAI Revises Fees for CA Exam Answer Book Verification & Certified Copies\n\nEk important update hai..."
+  },
+  {
+    "id": "udin-portal-gets-a-makeover-icai-introduces-enhanced-userfriendly-features-1766019282357",
+    "title": "UDIN Portal Gets a Makeover: ICAI Introduces Enhanced User-Friendly Features",
+    "date": "18 December 2025",
+    "createdDate": "18 December 2025",
+    "publishedDate": "18 December 2025",
+    "url": "/data/updates/udin-portal-gets-a-makeover-icai-introduces-enhanced-userfriendly-features-1766019282357.json",
+    "slug": "udin-portal-gets-a-makeover-icai-introduces-enhanced-userfriendly-features",
+    "excerpt": "UDIN Portal Gets a Makeover: ICAI Introduces Enhanced User-Friendly Features\n\nEk important update..."
+  },
+  {
+    "id": "cbic-revises-customs-tariff-values-an-important-update-for-importers-1765932802057",
+    "title": "CBIC Revises Customs Tariff Values: An Important Update for Importers",
+    "date": "17 December 2025",
+    "createdDate": "17 December 2025",
+    "publishedDate": "17 December 2025",
+    "url": "/data/updates/cbic-revises-customs-tariff-values-an-important-update-for-importers-1765932802057.json",
+    "slug": "cbic-revises-customs-tariff-values-an-important-update-for-importers",
+    "excerpt": "CBIC Revises Customs Tariff Values: An Important Update for Importers\n\nEk important update hai for..."
+  },
+  {
+    "id": "important-update-cseet-january-2026-session-registration-deadline-passes-1765846673903",
+    "title": "Important Update: CSEET January 2026 Session Registration Deadline Passes",
+    "date": "16 December 2025",
+    "createdDate": "16 December 2025",
+    "publishedDate": "16 December 2025",
+    "url": "/data/updates/important-update-cseet-january-2026-session-registration-deadline-passes-1765846673903.json",
+    "slug": "important-update-cseet-january-2026-session-registration-deadline-passes",
+    "excerpt": "Important Update: CSEET January 2026 Session Registration Deadline Passes\n\nEk important update hai..."
+  },
+  {
+    "id": "icmai-cop-holders-get-cpe-deadline-extension-till-march-31-2026-1765760388463",
+    "title": "ICMAI CoP Holders Get CPE Deadline Extension Till March 31, 2026!",
+    "date": "15 December 2025",
+    "createdDate": "15 December 2025",
+    "publishedDate": "15 December 2025",
+    "url": "/data/updates/icmai-cop-holders-get-cpe-deadline-extension-till-march-31-2026-1765760388463.json",
+    "slug": "icmai-cop-holders-get-cpe-deadline-extension-till-march-31-2026",
+    "excerpt": "ICMAI CoP Holders Get CPE Deadline Extension Till March 31, 2026!\n\nEk important update hai for all..."
+  },
+  {
+    "id": "mca-small-company-definition-paidup-capital-10-crore-turnover-100-crore--1765714906718",
+    "title": "MCA ने Small Company की Definition में किया बदलाव: Paid-Up Capital ₹10 Crore और Turnover ₹100 Crore हुआ!",
+    "date": "14 December 2025",
+    "createdDate": "14 December 2025",
+    "publishedDate": "14 December 2025",
+    "url": "/data/updates/mca-small-company-definition-paidup-capital-10-crore-turnover-100-crore--1765714906718.json",
+    "slug": "mca-small-company-definition-paidup-capital-10-crore-turnover-100-crore-",
+    "excerpt": "MCA ने Small Company की Definition में किया बदलाव: Paid-Up Capital ₹10 Crore और Turnover ₹100 Cror..."
+  },
+  {
+    "id": "icai-announces-convocation-for-december-2025-1765674075953",
+    "title": "ICAI Announces Convocation for December 2025",
+    "date": "14 December 2025",
+    "createdDate": "14 December 2025",
+    "publishedDate": "14 December 2025",
+    "url": "/data/updates/icai-announces-convocation-for-december-2025-1765674075953.json",
+    "slug": "icai-announces-convocation-for-december-2025",
+    "excerpt": "ICAI Announces Convocation for December 2025\n\nEk important update hai for all newly qualified Char..."
+  },
+  {
+    "id": "icsi-cs-executive-professional-december-2025-admit-cards-released-1765628483366",
+    "title": "ICSI CS Executive & Professional December 2025 Admit Cards Released!",
+    "date": "13 December 2025",
+    "createdDate": "13 December 2025",
+    "publishedDate": "13 December 2025",
+    "url": "/data/updates/icsi-cs-executive-professional-december-2025-admit-cards-released-1765628483366.json",
+    "slug": "icsi-cs-executive-professional-december-2025-admit-cards-released",
+    "excerpt": "ICSI CS Executive & Professional December 2025 Admit Cards Released!\n\nEk important update hai Comp..."
+  },
+  {
+    "id": "icai-ca-examinations-may-2026-important-dates-announced-1765587265830",
+    "title": "ICAI CA Examinations, May 2026 – Important Dates Announced!",
+    "date": "13 December 2025",
+    "createdDate": "13 December 2025",
+    "publishedDate": "13 December 2025",
+    "url": "/data/updates/icai-ca-examinations-may-2026-important-dates-announced-1765587265830.json",
+    "slug": "icai-ca-examinations-may-2026-important-dates-announced",
+    "excerpt": "ICAI CA Examinations, May 2026 – Important Dates Announced!\n\nEk important update hai! The Institut..."
+  },
+  {
+    "id": "central-excise-amendment-act-2025-receives-presidential-assent-1765542251473",
+    "title": "Central Excise (Amendment) Act, 2025 Receives Presidential Assent!",
+    "date": "12 December 2025",
+    "createdDate": "12 December 2025",
+    "publishedDate": "12 December 2025",
+    "url": "/data/updates/central-excise-amendment-act-2025-receives-presidential-assent-1765542251473.json",
+    "slug": "central-excise-amendment-act-2025-receives-presidential-assent",
+    "excerpt": "Central Excise (Amendment) Act, 2025 Receives Presidential Assent!\n\nEk important update hai. Gover..."
+  },
+  {
+    "id": "icai-clears-new-global-networking-guidelines-revised-advertising-norms-for-ca-firms-1765501017665",
+    "title": "ICAI Clears New Global Networking Guidelines & Revised Advertising Norms for CA Firms",
+    "date": "12 December 2025",
+    "createdDate": "12 December 2025",
+    "publishedDate": "12 December 2025",
+    "url": "/data/updates/icai-clears-new-global-networking-guidelines-revised-advertising-norms-for-ca-firms-1765501017665.json",
+    "slug": "icai-clears-new-global-networking-guidelines-revised-advertising-norms-for-ca-firms",
+    "excerpt": "ICAI Clears New Global Networking Guidelines & Revised Advertising Norms for CA Firms\n\nEk importan..."
+  },
+  {
+    "id": "mca-introduces-online-facilitation-centre-for-smoother-annual-filings-1765455987043",
+    "title": "MCA Introduces Online Facilitation Centre for Smoother Annual Filings",
+    "date": "11 December 2025",
+    "createdDate": "11 December 2025",
+    "publishedDate": "11 December 2025",
+    "url": "/data/updates/mca-introduces-online-facilitation-centre-for-smoother-annual-filings-1765455987043.json",
+    "slug": "mca-introduces-online-facilitation-centre-for-smoother-annual-filings",
+    "excerpt": "MCA Introduces Online Facilitation Centre for Smoother Annual Filings\n\nEk important update hai for..."
+  },
+  {
+    "id": "icai-announces-online-assessment-test-for-nbfc-certificate-course-1765414658909",
+    "title": "ICAI Announces Online Assessment Test for NBFC Certificate Course",
+    "date": "11 December 2025",
+    "createdDate": "11 December 2025",
+    "publishedDate": "11 December 2025",
+    "url": "/data/updates/icai-announces-online-assessment-test-for-nbfc-certificate-course-1765414658909.json",
+    "slug": "icai-announces-online-assessment-test-for-nbfc-certificate-course",
+    "excerpt": "ICAI Announces Online Assessment Test for NBFC Certificate Course\n\nEk important update hai. The In..."
+  },
+  {
+    "id": "income-tax-return-due-date-for-ay-202526-extended-1765369479322",
+    "title": "Income Tax Return Due Date for AY 2025-26 Extended!",
+    "date": "10 December 2025",
+    "createdDate": "10 December 2025",
+    "publishedDate": "10 December 2025",
+    "url": "/data/updates/income-tax-return-due-date-for-ay-202526-extended-1765369479322.json",
+    "slug": "income-tax-return-due-date-for-ay-202526-extended",
+    "excerpt": "Income Tax Return Due Date for AY 2025-26 Extended!\n\nEk important update hai for all taxpayers! Go..."
+  },
+  {
+    "id": "icai-confirms-income-tax-act-2025-applicability-for-may-2027-ca-exams-1765283075417",
+    "title": "ICAI Confirms Income Tax Act, 2025 Applicability for May 2027 CA Exams",
+    "date": "9 December 2025",
+    "createdDate": "9 December 2025",
+    "publishedDate": "9 December 2025",
+    "url": "/data/updates/icai-confirms-income-tax-act-2025-applicability-for-may-2027-ca-exams-1765283075417.json",
+    "slug": "icai-confirms-income-tax-act-2025-applicability-for-may-2027-ca-exams",
+    "excerpt": "ICAI Confirms Income Tax Act, 2025 Applicability for May 2027 CA Exams\n\nEk important update hai fo..."
+  },
+  {
     "id": "cbic-announces-acesgst-application-maintenance-on-dec-78-2025-1765204320365",
     "title": "CBIC Announces ACES-GST Application Maintenance on Dec 7-8, 2025",
     "date": "8 December 2025",
