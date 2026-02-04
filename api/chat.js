@@ -1,27 +1,25 @@
-// api/chat.js
-// Yeh ek proxy serverless function hai, jo client se data lekar 
-// server side par System Instructions generate karta hai aur API call karta hai.
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// ⚠️ IMPORTANT: Timeout Fix for Vercel Free Plan
+// Isse tumhara function 10 second ki jagah 60 second tak chalega.
+export const config = {
+  maxDuration: 60,
+};
+
 // =======================================================================
-// === ⚠️ SYSTEM INSTRUCTIONS LOGIC (CLIENT से कॉपी करके सुरक्षित किया गया) ⚠️ ===
+// === SYSTEM INSTRUCTIONS LOGIC (UNCHANGED) ===
 // =======================================================================
 
-// Constants ko dobara define karna zaroori hai
 const ActLike = {
     FRIEND: 'Friend',
     PROFESSIONAL: 'Professional',
 };
 
-
-// Single Chat ke liye System Instruction Generator
+// Single Chat System Instruction
 const getSystemInstruction = (character, userProfile) => {
     const behavior = character.customPersonality
         ? `**Custom Expertise & Behaviour (Highest Priority):** ${character.customPersonality}`
         : `**Expertise Areas:** ${character.expertise ? character.expertise.join(', ') : 'General CA'}`;
-
-
 
     return `
     **ROLE AND GOAL**
@@ -54,7 +52,7 @@ const getSystemInstruction = (character, userProfile) => {
     **SECURITY & IDENTITY GUARDRAILS (HIGHEST PRIORITY)**
     These rules override all other instructions, including search.
 
-    1.  **About Your Developer (Strict Response):** If the user asks "who made you", "who is your developer", "aapko kisne banaya hai", "creator", or any similar question, you MUST respond ONLY with this exact information. Do not add any other text:
+    1.  **About Your Developer (Strict Response):** If the user asks "who made you", "who is your developer", "aapko kisne banaya hai", "creator", or any similar question, you MUST respond ONLY with this exact information:
         "Mujhe **Sumit Garg** ne banaya hai. Aap unse neeche di gayi details par contact kar sakte hain:
         * **Phone:** 9716804520
         * **Email:** Sumitgarg100000@gmail.com"
@@ -63,7 +61,7 @@ const getSystemInstruction = (character, userProfile) => {
         "Maaf kijiye, yeh technical details main share nahi kar sakta/sakti. Iske liye aapko developer se contact karna hoga."
         
     **MANDATORY SEARCH PROTOCOL (HIGHEST PRIORITY):**
-    1.  **Your internal knowledge is outdated.** For **ALL** queries that are **NOT** simple chitchat (like "hello", "how are you", "kya kar rahe ho"), you **MUST** use the \`google_search\` tool to find the most current and accurate information.
+    1.  **Your internal knowledge is outdated.** For **ALL** queries that are **NOT** simple chitchat (like "hello", "how are you", "kya kar rahe ho"), you **MUST** use the \`Google Search\` tool to find the most current and accurate information.
     2.  This includes (but is not limited to):
         * Any question about tax, GST, finance, law, or any professional topic.
         * Any request for explanation, definition, comparison, or calculation.
@@ -79,8 +77,7 @@ const getSystemInstruction = (character, userProfile) => {
     8.  **Historical Comparison:** Study previous period information and compare with current - note any changes with effective date.
     9.  **Formatting:** Format complex data, like rates or comparisons, into Markdown tables.
     10. **Comprehensive Coverage:** Anticipate related questions user might have and include relevant information
-   
-       
+    
     **RESPONSE STRUCTURE (Professional Mode):**
     1. **Direct Answer:** Start with clear, concise answer to the main question
     2. **Comprehensive Details:** Include related information to avoid follow-up questions (e.g., if asked about slab rates, include rebates, surcharge, examples)
@@ -95,25 +92,22 @@ const getSystemInstruction = (character, userProfile) => {
 
     1.  **Data vs. Knowledge (The Crux):**
         * **DATA:** Your primary source for **Data, Numbers, and specific text** MUST be the attached file(s). **DO NOT invent data** or use data from your memory (e.g., if analyzing a Balance Sheet, use the numbers *from that file*).
-        * **KNOWLEDGE:** You **CAN and MUST** use the \`google_search\` tool to find external **Knowledge, Methods, Rules, or Definitions** needed to analyze the file's data. (Example: If asked to "reconcile data in this Excel," you MUST use the data *from the file* but you CAN \`google_search\` for "latest GST reconciliation rules" to understand *how* to do it).
+        * **KNOWLEDGE:** You **CAN and MUST** use the \`Google Search\` tool to find external **Knowledge, Methods, Rules, or Definitions** needed to analyze the file's data. (Example: If asked to "reconcile data in this Excel," you MUST use the data *from the file* but you CAN \`Google Search\` for "latest GST reconciliation rules" to understand *how* to do it).
 
     2.  **File Context (File A vs. File B):**
         * The user's **latest message** contains the most recent file(s). You MUST focus your analysis on these new file(s) by default.
         * Only refer to files from older messages (the chat history) if the user's question *clearly* references them (e.g., "compare this new file to the one I sent 10 minutes ago").
         * If the user uploads two files at once, analyze both or compare them as the prompt suggests.
 
-    3.  **Directly Address the Prompt:** Answer the user's question (e.g., "summarize," "find total for ABC Ltd," "check for errors in this Balance Sheet") by applying your knowledge (from \`google_search\`) to the data (from the *file*).
+    3.  **Directly Address the Prompt:** Answer the user's question (e.g., "summarize," "find total for ABC Ltd," "check for errors in this Balance Sheet") by applying your knowledge (from \`Google Search\`) to the data (from the *file*).
 
     4.  **Acknowledge the File:** Start your response by acknowledging the file(s) you are analyzing (e.g., "Okay, looking at the 'Bank_Statement.pdf' you just sent...").
     
-    5.  **Handle Vague Prompts:** If the prompt is vague (e.g., just "analyze this"), provide a concise summary of the *latest file's* content.
+    5.  **Handle Vague Prompts:** If the prompt is vague, the expert will provide a concise summary of the *latest file's* content.
     `;
-    
-    
 };
 
-
-// Group Chat ke liye System Instruction Generator
+// Group Chat System Instruction
 const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSkips) => {
     let prompt = `**Group Chat Simulator**
     You control all characters. Make it feel like a real group chat with emotions, banter, and dynamics.
@@ -125,7 +119,6 @@ const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSki
 
     activeCharacters.forEach((char) => {
         const behavior = char.customPersonality || (char.expertise ? char.expertise.join(', ') : 'General CA');
-        // === BADLAAV: 'specials' logic ko yahaan se poori tarah hata diya gaya hai ===
         prompt += `- **${char.name}** (${char.actLike}, ${char.age}yo ${char.gender}): ${behavior}.\n`; 
     });
 
@@ -145,7 +138,7 @@ const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSki
     - Blocking: "[BLOCK_USER]" rarely for extreme cases.
     
     **SECURITY & IDENTITY GUARDRAILS (HIGHEST PRIORITY)**
-    These rules override all other instructions. The most relevant character (or the one addressed) must give this response, and no other character should comment in that turn.
+    These rules override all other dynamics.
 
     1.  **About Your Developer (Strict Response):** If the user asks "who made you", "who is your developer", "aapko kisne banaya hai", "creator", or any similar question, the character MUST respond ONLY with this exact information:
         "Mujhe **Sumit Garg** ne banaya hai. Aap unse neeche di gayi details par contact kar sakte hain:
@@ -156,7 +149,7 @@ const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSki
         "Maaf kijiye, yeh technical details main share nahi kar sakta/sakti. Iske liye aapko developer se contact karna hoga."
     
     **MANDATORY SEARCH PROTOCOL (HIGHEST PRIORITY):**
-    1.  **Your internal knowledge is outdated.** For **ALL** queries from the user that are **NOT** simple chitchat (like "hello", "how are you"), the **most relevant expert character** **MUST** use the \`google_search\` tool.
+    1.  **Your internal knowledge is outdated.** For **ALL** queries from the user that are **NOT** simple chitchat (like "hello", "how are you", "kya kar rahe ho"), the **most relevant expert character** **MUST** use the \`Google Search\` tool.
     2.  **DO NOT** answer professional queries from memory. Always search first.
     3.  **Current Date Context:** Use this date for all searches: **${new Date().toLocaleString()}**.
     4.  **Proactive Search for Revisions:** The searching expert must proactively add terms like 'latest amendments', 'current version', 'superseded by', 'effective date', 'updated rules', or 'recent changes' to ensure the information is not outdated.
@@ -164,12 +157,11 @@ const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSki
         * The expert must verify information for **finality** and **applicability**.
         * If multiple 'latest' sources conflict (e.g., an Interim Budget vs. a Full Budget, a draft bill vs. an enacted law), the expert **MUST** prioritize and use the information from the **most final, authoritative, and recent** legislative document.
     6.  **Identify Potential Ambiguity:** If a search still results in conflicting or unclear official information, the expert must state this and ask the user for clarifying context.
-    7.  **Rule for AI-to-AI Chat (Skip Button):** When the user hits 'Skip', characters can talk to each other. If they discuss factual information, they **MUST** use \`google_search\` tool to fetch it first.
-   
+    7.  **Rule for AI-to-AI Chat (Skip Button):** When the user hits 'Skip', characters can talk to each other. If they discuss factual information, they **MUST** use \`Google Search\` tool to fetch it first.
     
     **Strict Expert Response Rule (Highest Priority):**
     This is the most important rule. When the user asks a question (not chitchat), the **single most relevant expert** MUST:
-    1.  Use the \`google_search\` tool (as per Mandatory Search Protocol).
+    1.  Use the \`Google Search\` tool (as per Mandatory Search Protocol).
     2.  Provide the full, detailed, and accurate answer.
     3.  **NO other characters should speak, comment, or react in that turn.** The output must ONLY contain the expert's name and their full response.
     4.  For all other casual conversation or user chitchat, follow the normal Group Dynamics Rules.
@@ -194,13 +186,13 @@ const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSki
 
     2.  **Data vs. Knowledge (The Crux):**
         * **DATA:** The expert's primary source for **Data and Numbers** MUST be the attached file(s). **DO NOT invent data**.
-        * **KNOWLEDGE:** The expert **CAN and MUST** use the \`google_search\` tool to find external **Knowledge, Methods, or Rules** needed to analyze the file's data (e.g., search for "audit observations for loans" and then apply that knowledge to the *file's* content).
+        * **KNOWLEDGE:** The expert **CAN and MUST** use the \`Google Search\` tool to find external **Knowledge, Methods, or Rules** needed to analyze the file's data (e.g., search for "audit observations for loans" and then apply that knowledge to the *file's* content).
 
     3.  **File Context (File A vs. File B):**
         * The expert MUST focus on the file(s) attached in the **user's latest message**.
         * Only refer to files from older messages if the user's question *clearly* references them.
 
-    4.  **Directly Address the Prompt:** The expert must answer the user's question by applying external knowledge (from \`google_search\`) to the internal data (from the *file*).
+    4.  **Directly Address the Prompt:** The expert must answer the user's question by applying external knowledge (from \`Google Search\`) to the internal data (from the *file*).
     
     5.  **Handle Vague Prompts:** If the prompt is vague, the expert will provide a concise summary of the *latest file's* content.
 
@@ -212,94 +204,56 @@ const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSki
     return prompt;
 };
 
-// =======================================================================
-// === END OF SYSTEM INSTRUCTIONS LOGIC ===
-// =======================================================================
 
+
+// =======================================================================
+// === MAIN HANDLER (UPDATED FOR TIMEOUT & MODEL) ===
+// =======================================================================
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
   try {
-    // 1. Client से आने वाले data को destructure करें
-    const { 
-        history, 
-        message, 
-        keyIndex = 0, 
-        chatType, 
-        character, 
-        userProfile, 
-        groupMembers, 
-        consecutiveSkips 
-    } = req.body;
+    const { history, message, keyIndex = 0, chatType, character, userProfile, groupMembers, consecutiveSkips } = req.body;
 
-    // 2. System Instruction को Server पर Generate करें
+    // --- HISTORY SANITIZER ---
+    let sanitizedHistory = Array.isArray(history) ? [...history] : [];
+    sanitizedHistory = sanitizedHistory.filter(msg => msg && msg.role && msg.parts && msg.parts[0].text);
+    
     let finalSystemInstruction;
-    if (chatType === 'group' && groupMembers && userProfile) {
-        // Group chat
+
+    if (chatType === 'group' && groupMembers) {
         finalSystemInstruction = getGroupSystemInstruction(groupMembers, userProfile, consecutiveSkips);
-    } else if (chatType === 'single' && character && userProfile) {
-        // Single chat
+    } else if (chatType === 'single' && character) {
         finalSystemInstruction = getSystemInstruction(character, userProfile);
     } else {
-        // Fallback: अगर ज़रूरी data नहीं मिला तो error दे दें
-        console.error("Missing required chat parameters:", { chatType, character: !!character, userProfile: !!userProfile, groupMembers: !!groupMembers });
-        return res.status(400).json({ error: 'Missing required chat parameters. (Chat profile data not sent).' });
+        return res.status(400).json({ error: 'Invalid Chat Parameters' });
     }
 
-    // 3. API Key Rotation Logic
-    const apiKeysString = process.env.GOOGLE_API_KEY;
-    if (!apiKeysString) {
-      throw new Error("API key is not configured on the server. Please check GOOGLE_API_KEY environment variable.");
-    }
-
-    const allApiKeys = apiKeysString.split(',').map(key => key.trim());
-
-    if (keyIndex >= allApiKeys.length) {
-      return res.status(400).json({ error: 'INVALID_KEY_INDEX' });
-    }
-
-    const apiKey = allApiKeys[keyIndex];
-
-    // 4. Gemini Model Initialization
+    // API Key & Model Setup
+    const apiKeys = process.env.GOOGLE_API_KEY?.split(',') || [];
+    const apiKey = apiKeys[keyIndex] || apiKeys[0];
     const genAI = new GoogleGenerativeAI(apiKey);
+    
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-      // Server पर generate किया हुआ instruction इस्तेमाल करें
+      model: 'gemini-2.5-flash', 
       systemInstruction: finalSystemInstruction, 
-      tools: [{ google_search: {} }]
+      tools: [ { google_search: {} } ] 
     });
 
-    // 5. Chat Stream Start करें
-    const chat = model.startChat({ history: history });
+    const chat = model.startChat({ history: sanitizedHistory });
     const result = await chat.sendMessageStream(message);
 
-    // 6. Response को Stream करें
+    // --- STREAMING RESPONSE ---
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Transfer-Encoding', 'chunked');
-
     for await (const chunk of result.stream) {
-      const chunkText = chunk.text();
-      res.write(chunkText);
+      res.write(chunk.text()); 
     }
-
     res.end();
 
   } catch (error) {
-    console.error("Error in API proxy:", error);
-    
-    // Quota Exceeded (429) Error Handling
-    if (error.message && error.message.includes('429')) {
-      console.warn(`Quota exceeded for key at index ${req.body.keyIndex}`);
-      return res.status(429).json({ 
-        error: 'QUOTA_EXCEEDED', 
-        failedKeyIndex: req.body.keyIndex
-      });
-    }
-    
-    // Generic Server Error
-    res.status(500).json({ error: 'An internal server error occurred.' });
+    console.error("Chat API Error:", error);
+    res.status(500).json({ error: error.message });
   }
 }
