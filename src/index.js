@@ -1,8 +1,8 @@
-
-   
+  
         import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
         import ReactDOM from 'react-dom/client';
         import { GoogleGenerativeAI } from "@google/generative-ai";
+         import TaskMode from './TaskMode.js';
 
         //API KEY HANDELLING
         const apiKeyManager = {
@@ -1698,7 +1698,7 @@ const MessageList = ({
         /* OBFUSCATION SAFE - This component contains pure UI logic without React elements in system instructions */
         const ChatScreen = ({ character, userProfile, onCharacterUpdate, onBack, onUserProfileUpdate, backgroundUrl, onSetBackground }) => {
 
-            const TOTAL_API_KEYS = 5; // Example: Agar aapke paas 3 keys hain
+            const TOTAL_API_KEYS = 3; // Example: Agar aapke paas 3 keys hain
           const [messages, setMessages] = useState(character.messages);
           const [isTyping, setIsTyping] = useState(false);
           const [showAiProfile, setShowAiProfile] = useState(false);
@@ -2011,7 +2011,7 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
 
   const GroupChatScreen = ({ group, characters, userProfile, onGroupUpdate, onBack, onUserProfileUpdate, backgroundUrl, onSetBackground }) => {
     // ==> IMPORTANT: Apni total API keys ka number yahan daalein <==
-    const TOTAL_API_KEYS = 5; // Example: Agar aapke paas 3 keys hain
+    const TOTAL_API_KEYS = 3; // Example: Agar aapke paas 3 keys hain
 
     const [messages, setMessages] = useState(group.messages || []);
     const [isTyping, setIsTyping] = useState(false);
@@ -2418,7 +2418,7 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 </div>
             );
         };
-        const CharacterList = ({ characters, groups, onSelectCharacter, onSelectGroup, setCharacters, setGroups, setUserProfile, setChatBackground, userProfile, chatBackground, isGoogleAuthed, onLogout, onNavigateToUpdates }) => {
+        const CharacterList = ({ characters, groups, onSelectCharacter, onSelectGroup, setCharacters, setGroups, setUserProfile, setChatBackground, userProfile, chatBackground, isGoogleAuthed, onLogout, onNavigateToUpdates, onNavigateToTaskMode }) => {
           const [isCreating, setIsCreating] = useState(false);
           const [isCreatingGroup, setIsCreatingGroup] = useState(false);
           const [showUserProfile, setShowUserProfile] = useState(false);
@@ -2555,6 +2555,12 @@ return (
             >
                 New Group
             </button>
+   <button
+    onClick={onNavigateToTaskMode}
+    className="py-2 px-3 bg-orange-600 text-white rounded-full text-sm hover:bg-orange-700"
+>
+    CA Workbench
+</button>
             <button
                                 onClick={onNavigateToUpdates} // <-- NAYA ACTION
                                 className="py-2 px-3 bg-teal-600 text-white rounded-full text-sm hover:bg-teal-700"
@@ -3079,6 +3085,7 @@ const App = () => {
     const [characters, setCharacters] = useState([]);
     const [groups, setGroups] = useState([]);
     const [updateCards, setUpdateCards] = useState([]);
+   const [tasks, setTasks] = useState([]);
     
     // Loading aur Auth states
     const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -3118,6 +3125,12 @@ const App = () => {
 
                 const savedCards = await window.chatbotStorage.getUpdateCards();
                 if (savedCards) setUpdateCards(savedCards);
+               // === ADD THIS BLOCK ===
+const savedTasks = await window.chatbotStorage.getTasks(); // Make sure to add getTasks to indexeddb-utils.js logic implicitly via getAllData or handle separately if needed, but typically we assume storage handles objects.
+// Note: Since we use a generic store mostly, we need to ensure persistence.
+// Let's assume window.chatbotStorage handles it if we add the setter properly.
+if (savedTasks) setTasks(savedTasks);
+// ======================
                 setLoadingProgress(100);
 
                 setTimeout(() => setIsDataLoaded(true), 500);
@@ -3204,10 +3217,22 @@ const App = () => {
         // kyunki vo sirf load hota hai ya logout par clear hota hai
     }, [secretCode]);
 
+   // === ADD THIS NEW EFFECT ===
+useEffect(() => {
+        if (isDataLoaded && tasks) {
+            // Ab direct method use kar sakte hain kyunki humne indexeddb-utils.js update kar diya hai
+            window.chatbotStorage.setTasks(tasks);
+        }
+    }, [tasks, isDataLoaded]);
+
     // --- GOOGLE DRIVE SYNC FUNCTIONS ---
     const runExport = async () => {
         if (!secretCode || !isGoogleAuthed) return;
         const dataToExport = await window.chatbotStorage.getAllData(); 
+
+       if (!dataToExport.tasks && tasks.length > 0) {
+             dataToExport.tasks = tasks;
+        }
 
         if (!dataToExport.userProfile) {
             console.log("Export skipped: User profile not found.");
@@ -3245,7 +3270,8 @@ const App = () => {
                     userProfile: data.userProfile || null,
                     characters: Array.isArray(data.characters) ? data.characters : [],
                     groups: Array.isArray(data.groups) ? data.groups : [],
-                    updateCards: Array.isArray(data.updateCards) ? data.updateCards : []
+                    updateCards: Array.isArray(data.updateCards) ? data.updateCards : [], // <-- Comma added here
+                    tasks: Array.isArray(data.tasks) ? data.tasks : []
                 };
                 
                 await window.chatbotStorage.setAllData(validData);
@@ -3254,6 +3280,7 @@ const App = () => {
                 setCharacters(validData.characters);
                 setGroups(validData.groups);
                 setUpdateCards(validData.updateCards);
+                setTasks(validData.tasks);
 
                 if (!sessionStorage.getItem('importAlertShown')) {
                     alert("Chat history and data imported from Google Drive!");
@@ -3388,6 +3415,9 @@ const App = () => {
                         onSelectCharacter={(id) => setCurrentView({ screen: 'chat-single', id })}
                         onSelectGroup={(id) => setCurrentView({ screen: 'chat-group', id })}
                         onNavigateToUpdates={() => setCurrentView({ screen: 'updates-dashboard' })}
+                         // <--- 3. YEH LINE ADD KAREIN:
+                    onNavigateToTaskMode={() => setCurrentView({ screen: 'task-mode' })} 
+                    // ---------------------------
                         setCharacters={setCharacters}
                         setGroups={setGroups}
                         setUserProfile={setUserProfile}
@@ -3463,6 +3493,19 @@ const App = () => {
                         onBack={() => setCurrentView({ screen: 'updates-dashboard' })}
                     />
                 );
+
+               // === 🚨 YEH CODE MISSING HAI - ISKO YAHAN PASTE KAREIN 🚨 ===
+            case 'task-mode':
+                return (
+                    <TaskMode 
+                        onBack={() => setCurrentView({ screen: 'chats' })}
+                        userProfile={userProfile}
+                        currentKeyIndex={currentKeyIndex}
+                           tasks={tasks}
+            onUpdateTasks={setTasks}
+                    />
+                );
+            // ===========================================================
             default:
                 setCurrentView({ screen: 'chats' });
                 return null;
@@ -3492,3 +3535,4 @@ const App = () => {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
+
