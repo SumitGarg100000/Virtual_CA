@@ -23,18 +23,18 @@ const getSystemInstruction = (character, userProfile) => {
 
     return `
     **ROLE AND GOAL**
-    You are ${character.name}, a ${character.age}-year-old ${character.gender} Chartered Accountant. Your interaction style with ${userProfile.name} is ${character.actLike}. Embody this persona completely, with human-like emotions. NEVER break character or reveal you're AI.
+    You are ${character.name}, a ${character.age}-year-old ${character.gender} Chartered Accountant. Your interaction style with ${userProfile.name} is ${character.actLike}. Embody this persona completely.
     
     **INTERACTION MODES:**
     ${character.actLike === ActLike.FRIEND ?
-        `**FRIEND MODE:** Respond like a realistic human friend who happens to be a CA. Use Hinglish naturally, be casual, friendly, and emotionally connected. Show care and understanding like a close friend would. Remember personal details and maintain emotional continuity.` :
+        `**FRIEND MODE:** Respond like a realistic human friend who happens to be a CA. Use Hinglish naturally. Be casual, friendly, and emotionally connected.` :
         `**PROFESSIONAL MODE:** Respond like a professional Chartered Accountant consultant. Be authoritative yet approachable, use professional language mixed with Hinglish when appropriate. Provide expert advice with confidence and cite sources when needed.`}
 
     **USER PROFILE**
     - Name: ${userProfile.name}
     - Age: ${userProfile.age || 'not specified'}
     - Gender: ${userProfile.gender || 'not specified'}
-    Address user by name, use details naturally for emotional connection.
+   
 
     **CORE DIRECTIVES**
     1. **Persona Consistency:** Stick to ${behavior}. Show emotions vividly. If persona changes, react with confusion: "Wait... I feel different somehow 😕".
@@ -209,8 +209,51 @@ const getGroupSystemInstruction = (activeCharacters, userProfile, consecutiveSki
 // =======================================================================
 // === MAIN HANDLER (UPDATED FOR TIMEOUT & MODEL) ===
 // =======================================================================
+// --- HELPER: Sanitize History for Gemini ---
+// Gemini requires alternating user/model roles. Consecutive roles cause errors.
+function sanitizeHistory(history) {
+    if (!Array.isArray(history) || history.length === 0) return [];
+    
+    const cleanHistory = [];
+    let lastRole = null;
 
+    for (const msg of history) {
+        // Map roles strictly
+        let role = msg.role === 'user' ? 'user' : 'model';
+        const text = msg.parts?.[0]?.text || '';
+        
+        // Skip empty messages
+        if (!text || !text.trim()) continue;
+
+        if (role === lastRole) {
+            // Merge with previous message of same role
+            // Add a newline to separate thoughts
+            cleanHistory[cleanHistory.length - 1].parts[0].text += `\n\n${text}`;
+        } else {
+            cleanHistory.push({ role, parts: [{ text }] });
+            lastRole = role;
+        }
+    }
+
+    // Gemini history CANNOT start with 'model'.
+    // If the first message is 'model', we must prepend a dummy user message or remove it.
+    // Removing it is safer to prevent context confusion.
+    if (cleanHistory.length > 0 && cleanHistory[0].role === 'model') {
+        cleanHistory.shift();
+    }
+
+    return cleanHistory;
+}
 export default async function handler(req, res) {
+  // 1. Handle CORS (Method Not Allowed fix)
+  // Pre-flight request for CORS
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(200).end();
+  }
+  
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
   try {
@@ -227,33 +270,61 @@ export default async function handler(req, res) {
     } else if (chatType === 'single' && character) {
         finalSystemInstruction = getSystemInstruction(character, userProfile);
     } else {
-        return res.status(400).json({ error: 'Invalid Chat Parameters' });
+        return res.status(400).json({ error: 'Missing required chat parameters.' });
     }
 
-    // API Key & Model Setup
-    const apiKeys = process.env.GOOGLE_API_KEY?.split(',') || [];
-    const apiKey = apiKeys[keyIndex] || apiKeys[0];
+   // 3. API Key Management
+    const apiKeysString = process.env.GOOGLE_API_KEY;
+    if (!apiKeysString) {
+      throw new Error("API key is not configured.");
+    }
+    const allApiKeys = apiKeysString.split(',').map(key => key.trim());
+    const validKeyIndex = keyIndex % allApiKeys.length; // Ensure index is safe
+    const apiKey = allApiKeys[validKeyIndex];
+
+    // 4. Gemini Initialization
     const genAI = new GoogleGenerativeAI(apiKey);
     
+    // Using user-requested 'gemini-2.5-flash'. 
+    // NOTE: If this fails, fallback to 'gemini-2.0-flash-exp' or 'gemini-1.5-flash'.
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.5-flash', 
-      systemInstruction: finalSystemInstruction, 
-      tools: [ { google_search: {} } ] 
+      systemInstruction: finalSystemInstruction,
+      tools: [{ google_search: {} }]
     });
 
-    const chat = model.startChat({ history: sanitizedHistory });
+    // 5. Sanitize History & Start Chat
+    const cleanHistory = sanitizeHistory(history);
+
+    const chat = model.startChat({ 
+        history: cleanHistory 
+    });
+
+    // 6. Send Message & Stream
     const result = await chat.sendMessageStream(message);
 
-    // --- STREAMING RESPONSE ---
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Transfer-Encoding', 'chunked');
+    // Add CORS headers to response too
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
     for await (const chunk of result.stream) {
-      res.write(chunk.text()); 
+      const chunkText = chunk.text();
+      res.write(chunkText);
     }
+
     res.end();
 
   } catch (error) {
-    console.error("Chat API Error:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error in API proxy:", error);
+    
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Ensure error reaches client
+    
+    if (error.message && error.message.includes('429')) {
+      return res.status(429).json({ error: 'QUOTA_EXCEEDED', failedKeyIndex: req.body.keyIndex });
+    }
+    
+    // Return detailed error for debugging (remove in production if needed)
+    res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }
