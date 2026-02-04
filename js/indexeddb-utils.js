@@ -33,7 +33,7 @@ class ChatbotStorage {
                 
                 // Naya, behtar tareeka object stores banane ka
                 // <-- BADLAV 2: 'updateCards' store add kiya
-                const stores = ['userProfile', 'characters', 'groups', 'authTokens', 'secretCode', 'updateCards'];
+                const stores = ['userProfile', 'characters', 'groups', 'authTokens', 'secretCode', 'updateCards', 'tasks'];
                 stores.forEach(storeName => {
                     if (!db.objectStoreNames.contains(storeName)) {
                         db.createObjectStore(storeName, { keyPath: 'id' });
@@ -147,6 +147,14 @@ class ChatbotStorage {
     async setUpdateCards(cards) {
         await this.setItems('updateCards', cards);
     }
+    // --- Tasks ---
+async getTasks() {
+    return this.getAllItems('tasks');
+}
+
+async setTasks(tasks) {
+    await this.setItems('tasks', tasks);
+}
     // --- Naya function khatam ---
 
     // --- Auth Token ---
@@ -189,6 +197,7 @@ class ChatbotStorage {
         const characters = await this.getCharacters();
         const groups = await this.getGroups();
         const updateCards = await this.getUpdateCards(); // <-- BADLAV 4: Naya data add kiya
+        const tasks = await this.getTasks();
         return { userProfile, characters, groups, updateCards }; // <-- BADLAV 4: Naya data return kiya
     }
     
@@ -198,6 +207,7 @@ class ChatbotStorage {
         if (data.characters) await this.setCharacters(data.characters);
         if (data.groups) await this.setGroups(data.groups);
         if (data.updateCards) await this.setUpdateCards(data.updateCards); // <-- BADLAV 5: Naya data import kiya
+        if (data.tasks) await this.setTasks(data.tasks);
     }
 }
 
