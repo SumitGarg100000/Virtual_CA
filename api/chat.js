@@ -289,8 +289,8 @@ export default async function handler(req, res) {
     // NOTE: If this fails, fallback to 'gemini-2.0-flash-exp' or 'gemini-1.5-flash'.
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.5-flash', 
-      systemInstruction: finalSystemInstruction
-   //   tools: [{ google_search: {} }]
+      systemInstruction: finalSystemInstruction,
+      tools: [{ google_search: {} }]
     });
 
     // 5. Sanitize History & Start Chat
