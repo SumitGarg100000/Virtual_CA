@@ -2,9 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // ⚠️ IMPORTANT: Timeout Fix for Vercel Free Plan
 // Isse tumhara function 10 second ki jagah 60 second tak chalega.
-export const config = {
-  maxDuration: 60,
-};
+
 
 // =======================================================================
 // === SYSTEM INSTRUCTIONS LOGIC (UNCHANGED) ===
@@ -254,20 +252,20 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
   
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
 
   try {
     const { history, message, keyIndex = 0, chatType, character, userProfile, groupMembers, consecutiveSkips } = req.body;
 
-    // --- HISTORY SANITIZER ---
-    let sanitizedHistory = Array.isArray(history) ? [...history] : [];
-    sanitizedHistory = sanitizedHistory.filter(msg => msg && msg.role && msg.parts && msg.parts[0].text);
+
     
     let finalSystemInstruction;
 
-    if (chatType === 'group' && groupMembers) {
+    if (chatType === 'group' && groupMembers && userProfile) {
         finalSystemInstruction = getGroupSystemInstruction(groupMembers, userProfile, consecutiveSkips);
-    } else if (chatType === 'single' && character) {
+    } else if (chatType === 'single' && character && userProfile) {
         finalSystemInstruction = getSystemInstruction(character, userProfile);
     } else {
         return res.status(400).json({ error: 'Missing required chat parameters.' });
@@ -313,18 +311,21 @@ export default async function handler(req, res) {
       res.write(chunkText);
     }
 
-    res.end();
+ res.end();
 
   } catch (error) {
     console.error("Error in API proxy:", error);
     
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Ensure error reaches client
+    // Ensure headers are set before sending error
+    if (!res.headersSent) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Content-Type', 'application/json');
+    }
     
     if (error.message && error.message.includes('429')) {
       return res.status(429).json({ error: 'QUOTA_EXCEEDED', failedKeyIndex: req.body.keyIndex });
     }
     
-    // Return detailed error for debugging (remove in production if needed)
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }
