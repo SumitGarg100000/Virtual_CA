@@ -1,7 +1,12 @@
 {
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "googleapis": "latest",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
