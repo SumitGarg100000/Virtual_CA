@@ -191,9 +191,12 @@
 
     const generateGroupChatResponseStream = async (activeCharacters, userProfile, updatedMessages, latestMessage, updateStreamingMessage, consecutiveSkips, onBlock, keyIndex) => {
     const history = updatedMessages.slice(0, -1).map(msg => {
-        const senderName = msg.sender === 'user' ? userProfile.name : activeCharacters.find(c => c.id === msg.sender)?.name || 'Unknown';
-        return { role: 'user', parts: [{ text: `${senderName}: ${msg.text}` }] };
-    });
+    return {
+        // Role ko sender ke hisaab se change karna zaroori hai
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+    };
+});
     
     // Skip message ke liye alag se prompt
     const lastUserPrompt = latestMessage.text.startsWith('[System:') 
@@ -2157,21 +2160,51 @@ if (file.type.startsWith('text/') || file.type.includes('json') || file.type.inc
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullResponse = '';
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    const chunk = decoder.decode(value, { stream: true });
-                    fullResponse += chunk;
-                }
-                
-                // YEH AAPKA ORIGINAL [BLOCK_USER] AUR MESSAGE PARSING LOGIC HAI
-                if (fullResponse.includes('[BLOCK_USER]')) {
-                    setBlockCount(prev => prev + 1);
-                    setIsBlocked(true);
-                    setMessages(prev => prev.filter(m => m.id !== groupStreamId)); // Temp message hatao
-                } else {
-                    const newMessages = [];
-                    const lines = fullResponse.split('\n');
+             
+              
+        
+                            
+              while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    
+    const chunk = decoder.decode(value);
+    fullResponse += chunk;
+    
+    // --- NAYA LOGIC: Loop ke andar hi parse karo ---
+    const lines = fullResponse.split('\n');
+    const parsedMessages = [];
+    let currentMsg = null;
+
+    lines.forEach(line => {
+        const match = line.match(/^([\w\s]+):\s*(.*)/);
+        if (match) {
+            const charName = match[1].trim();
+            const charText = match[2].trim();
+            const char = allCharacters.find(c => c.name === charName);
+            if (char) {
+                currentMsg = {
+                    id: `msg_${char.id}_${Date.now()}`,
+                    sender: char.id,
+                    text: charText,
+                    timestamp: Date.now()
+                };
+                parsedMessages.push(currentMsg);
+            }
+        } else if (currentMsg && line.trim()) {
+            // Agar line mein ":" nahi hai toh purane message mein hi jodo
+            currentMsg.text += '\n' + line;
+        }
+    });
+
+    // UI ko turant update karo
+    if (parsedMessages.length > 0) {
+        setMessages(prev => {
+            const base = prev.filter(m => m.id !== streamId);
+            return [...base, ...parsedMessages];
+        });
+    }
+}
                     
                     const nameRegex = /^([\w\s]+):\s*(.*)/;
                     lines.forEach(line => {
