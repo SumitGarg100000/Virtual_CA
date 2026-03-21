@@ -190,19 +190,15 @@
 // index.html (Client-side JavaScript, around original line 520)
 
     const generateGroupChatResponseStream = async (activeCharacters, userProfile, updatedMessages, latestMessage, updateStreamingMessage, consecutiveSkips, onBlock, keyIndex) => {
-    // FIX: Map characters to 'model' role and user to 'user' role for correct history
     const history = updatedMessages.slice(0, -1).map(msg => {
-        const isUser = msg.sender === 'user';
-        const role = isUser ? 'user' : 'model';
-        const senderName = isUser ? userProfile.name : activeCharacters.find(c => c.id === msg.sender)?.name || 'Unknown';
-        // Format: "Name: Message" so the model knows who said what
-        return { role: role, parts: [{ text: `${senderName}: ${msg.text}` }] };
+        const senderName = msg.sender === 'user' ? userProfile.name : activeCharacters.find(c => c.id === msg.sender)?.name || 'Unknown';
+        return { role: 'user', parts: [{ text: `${senderName}: ${msg.text}` }] };
     });
     
-    // Skip message prompt
+    // Skip message ke liye alag se prompt
     const lastUserPrompt = latestMessage.text.startsWith('[System:') 
         ? latestMessage.text 
-        : `User: ${latestMessage.text}\n\n(Context: User ${userProfile.name} said this. Respond as the group characters.)`;;
+        : `User: ${latestMessage.text}\n\nContinue the group conversation following the rules and format exactly.`;
     
     const response = await fetch('/api/chat', {
         method: 'POST',
@@ -3539,3 +3535,4 @@ useEffect(() => {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
+
