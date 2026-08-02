@@ -1,0 +1,8 @@
+{
+  "id": "eway-bill-enhancements-postponed-shipto-gstin-and-closure-facility-deferred-1785635185933",
+  "title": "E-Way Bill Enhancements Postponed: Ship-To GSTIN and Closure Facility Deferred",
+  "slug": "eway-bill-enhancements-postponed-shipto-gstin-and-closure-facility-deferred",
+  "date": "2 August 2026",
+  "content": "# E-Way Bill Enhancements Postponed: Ship-To GSTIN and Closure Facility Deferred\n\nEk important update hai taxpayers ke liye! The Goods and Services Tax Network (GSTN) ne e-Way Bill system mein hone wale kuch proposed changes ko abhi ke liye hold par rakh diya hai. Yeh changes August 1, 2026 se लागू होने वाले थे.\n\nGSTN ne **July 29, 2026** ko ek advisory issue ki hai, jismein yeh bataya gaya hai ki:\n\n*   **Old Effective Date:** August 1, 2026.\n*   **Status of Changes:** The implementation of these enhancements has been kept on hold until further notice.\n*   **Key Deferments:**\n    *   Mandatory 'Ship-To GSTIN' field in Bill-To/Ship-To transactions.\n    *   Voluntary e-Way Bill closure facility.\n*   **Action for Taxpayers:** All stakeholders are advised that no changes are required to be implemented in their production environments based on the earlier advisories (dated June 9, 2026, and June 17, 2026) until further communication.\n*   **Withdrawal of Previous Communications:** Pehle issue kiye gaye related advisories aur FAQs (dated July 2, 2026) bhi GST Portal se withdraw kar liye jayenge.\n\nToh, abhi ke liye existing e-Way Bill process continue rahega. Jab koi naya update aayega, we’ll let you know!\n\n## Read the Official Document\n*   [Download the Official Advisory here](https://ewaybill.nic.in/Doc/Advisory_eWB_Enhancements_Hold_29July2026.pdf)\n\n*Published on: 2 August 2026*",
+  "type": "update"
+}
